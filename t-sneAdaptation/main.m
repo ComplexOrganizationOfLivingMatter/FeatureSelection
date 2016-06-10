@@ -1,0 +1,10 @@
+cd 'E:\Pablo\t-sneAdaptation'
+load('Matrices_cc')
+PCA_2_cc(WT_100, G93A_100, 'WT_100', 'G93A_100');
+PCA_2_cc(WT_120, G93A_120, 'WT_120', 'G93A_120');
+
+PCA_2_cc(WT_120, CONT_120, 'WT_120', 'CONT_120');
+PCA_2_cc(WT_100, CONT_100, 'WT_100', 'CONT_100');
+
+PCA_2_cc(G93A_120, CONT_120, 'G93A_120', 'CONT_120');
+PCA_2_cc(G93A_100, CONT_100, 'G93A_100', 'CONT_100');
