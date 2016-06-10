@@ -53,10 +53,11 @@ for paso=1:size(Mejores,1)
                 P = d2p(D, perplexity, 1e-5);                                           % compute affinities using fixed perplexity
                 clear D
 
-                no_dims = ind;
+                no_dims = 2;
                 V = tsne_p(P, [], no_dims);
-
-                W{1,Niteracion}=V'*X;  %Proyecciones
+                
+                V=V(1:2, :);
+                W{1,Niteracion}=V*X;  %Proyecciones
 
                 %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
                 label=[ones(1, n_imagenes_tipo1), 2*ones(1,n_imagenes_tipo2)];
