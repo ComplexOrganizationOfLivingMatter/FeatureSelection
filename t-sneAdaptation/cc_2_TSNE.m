@@ -1,5 +1,5 @@
 %%PCA_2_cc
-function cc_2_tsne(m_t1,m_t2,n_t1,n_t2, indice_cc_seleccionadas)
+function cc_2_TSNE(m_t1,m_t2,n_t1,n_t2, indice_cc_seleccionadas)
 
 
 matriz_t1=m_t1;

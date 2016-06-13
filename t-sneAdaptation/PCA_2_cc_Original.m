@@ -85,7 +85,7 @@ for cc1=1:n_cc_totales-1
         
         
         %Convierto los autovalores de X'X en los autovectores de X*X'
-        Vectors = X*V;
+        Vectors = V'*X;
         
         % Normalizo los vectores, para conseguir longitud unitaria
         for i=1:size(X,2)
