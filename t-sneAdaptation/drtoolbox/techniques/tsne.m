@@ -50,10 +50,13 @@ function ydata = tsne(X, labels, no_dims, initial_dims, perplexity)
         initial_solution = false;
     end
     
+    X(isnan(X))=0;
+    
     % Normalize input data
     X = X - min(X(:));
     X = X / max(X(:));
     X = bsxfun(@minus, X, mean(X, 1));
+    
     
     % Perform preprocessing using PCA
     if ~initial_solution
