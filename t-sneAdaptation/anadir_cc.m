@@ -27,38 +27,35 @@ for paso=1:size(Mejores,1)
                 vector_caracteristicas_defi(isnan(vector_caracteristicas_defi))=0;% PARA HACER 0 TODOS LOS NAN
                 %% PCA
                 X=vector_caracteristicas_defi';
-                %Calculo la media
-                Media=mean(X,2);
-                
-                %Le resto la media a cada imagen
+                %Calculamos la media
+                 Media=mean(X,2);
+
+                 %Le resto la media a cada imagen
                  for i = 1:size(X,2)
                     X(:,i) = X(:,i) - Media;
                  end
 
-                 if size(X, 2) < size(X, 1)
-                    C = X' * X;
-                else
-                    C = (1 / size(X, 1)) * (X * X');
-                end
+                 L = X'*X;
 
                 % Cálculo de los autovalores/autovesctores
-                [Vectors,Values] = eig(C);
+                [Vectors,Values] = eig(L);
                 [lambda,ind]=sort(diag(Values),'descend');   % se ordenan los autovalores
+                V = Vectors(:,ind);
 
-                sum_X = sum(X .^ 2, 2);
-                D = bsxfun(@plus, sum_X, bsxfun(@plus, sum_X', -2 * (X * X')));
+                V = X * V;
+
+                sum_X = sum(V .^ 2, 2);
+                D = bsxfun(@plus, sum_X, bsxfun(@plus, sum_X', -2 * (V * V')));
 
                 % Compute joint probabilities
                 perplexity = 30;
-                P = d2p(D, perplexity, 1e-5);                                           % compute affinities using fixed perplexity
+                P = d2p(D, perplexity, 1e-5); % compute affinities using fixed perplexity
                 clear D
 
-                no_dims = 2; %2 or n_imagenes_tipo1 + n_imagenes_tipo2
+                no_dims = n_imagenes_tipo1 + n_imagenes_tipo2;
                 V = tsne_p(P, [], no_dims);
 
-                V = V(1:2, :);
-                X = X(1:2, :);
-                W{1,Niteracion}=V'*X;  %Proyecciones
+                W{1,Niteracion}=V;  %Proyecciones
 
                 %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
                 label=[ones(1, n_imagenes_tipo1), 2*ones(1,n_imagenes_tipo2)];
