@@ -1,5 +1,5 @@
 %%PCA_2_cc
-function PCA_2_cc(m_t1,m_t2,n_t1,n_t2)
+function PCA_2_cc_Original(m_t1,m_t2,n_t1,n_t2)
 
 
 %Seleccionamos las características que queramos: 
