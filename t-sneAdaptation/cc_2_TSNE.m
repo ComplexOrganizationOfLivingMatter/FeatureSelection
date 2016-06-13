@@ -1,5 +1,5 @@
 %%PCA_2_cc
-function cc_2_tsne(m_t1,m_t2,n_t1,n_t2)
+function cc_2_tsne(m_t1,m_t2,n_t1,n_t2, indice_cc_seleccionadas)
 
 
 matriz_t1=m_t1;
@@ -57,16 +57,10 @@ clear D
 no_dims = n_img_tipo1 + n_img_tipo2;
 V = tsne_p(P, [], no_dims);
 
-W{1,Niteracion}=V;  %Proyecciones
-
-%%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
-label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
-[T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
-C=sinterluc/sintraluc;
-Proy=abs(trace(C));
 
 
-Proyecc=Proy{1,1};
+
+Proyecc = V;
 h=figure; plot(Proyecc(1,1:n_img_tipo1),Proyecc(2,1:n_img_tipo1),'.g','MarkerSize',30)
 hold on, plot(Proyecc(1,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),Proyecc(2,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),'.r','MarkerSize',30)
 
@@ -75,5 +69,4 @@ stringres=strcat(num2str(indice_cc_seleccionadas));
 title(stringres)
 saveas(h,['tsneClassifierPCA_' n_t1 '_' n_t2 '.jpg'])
 
-close all
 end
