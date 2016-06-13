@@ -96,9 +96,7 @@ for cc1=1:n_cc_totales-1
         no_dims = n_img_tipo1 + n_img_tipo2;
 		V = tsne_p(P, [], no_dims);
         
-        %Hasta aqui está bien
-        
-        W{1,Niteracion}=V'*X;  %Proyecciones
+        W{1,Niteracion}=V;  %Proyecciones
         
         %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
         label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
