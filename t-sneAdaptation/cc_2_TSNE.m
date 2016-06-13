@@ -25,7 +25,7 @@ n_imagenes=n_img_tipo1+n_img_tipo2;
 X = vector_todas_caracteristicas;
 
 %% PCA
-X=X(indice_cc_seleccionadas, :);
+X = X (:, indice_cc_seleccionadas)
 
 X = X';
 
