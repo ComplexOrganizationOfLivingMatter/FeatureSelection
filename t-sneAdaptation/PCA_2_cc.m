@@ -82,14 +82,13 @@ for cc1=1:n_cc_totales-1
         [Vectors,Values] = eig(L);
         [lambda,ind]=sort(diag(Values),'descend');   % se ordenan los autovalores
         V = Vectors(:,ind);
-        
         V = X * V;
 		
 		%Convierto los autovalores de X'X en los autovectores de X*X'
-        %Vectors = V'*X;
+        Vectors = V'*X;
         
         
-        
+        % Compute pairwise distance matrix between eigenvectors
 		sum_X = sum(Vectors .^ 2, 2);
 		D = bsxfun(@plus, sum_X, bsxfun(@plus, sum_X', -2 * (Vectors * Vectors')));
 		

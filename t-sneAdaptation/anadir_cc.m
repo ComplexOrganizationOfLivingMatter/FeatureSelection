@@ -45,7 +45,7 @@ for paso=1:size(Mejores,1)
 				V = X * V;
 				
 				%Convierto los autovalores de X'X en los autovectores de X*X'
-				%Vectors = V'*X;
+				Vectors = V'*X;
 				
 				
 				
