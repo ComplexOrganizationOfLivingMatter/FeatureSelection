@@ -48,6 +48,9 @@ V = Vectors(:,ind);
 
 V = X * V;
 
+%Convierto los autovalores de X'X en los autovectores de X*X'
+V = V'*X;
+
 sum_X = sum(V .^ 2, 2);
 D = bsxfun(@plus, sum_X, bsxfun(@plus, sum_X', -2 * (V * V')));
 
@@ -59,7 +62,11 @@ clear D
 no_dims = n_img_tipo1 + n_img_tipo2;
 V = tsne_p(P, [], no_dims);
 
-
+V=V(1:2, :);
+        
+for i=1:size(X,2)
+    Vectors(:,i) = Vectors(:,i)/norm(Vectors(:,i));
+end
 
 
 Proyecc = V;
