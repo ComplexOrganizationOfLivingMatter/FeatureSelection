@@ -22,6 +22,8 @@ vector_todas_caracteristicas=[matriz_t1;matriz_t2];
 
 n_imagenes=n_img_tipo1+n_img_tipo2;
 
+vector_todas_caracteristicas(isnan(vector_todas_caracteristicas))=0;
+
 X = vector_todas_caracteristicas;
 
 %% PCA
