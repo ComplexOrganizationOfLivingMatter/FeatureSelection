@@ -60,7 +60,7 @@ function ydata = tsne(X, labels, no_dims, initial_dims, perplexity)
     
     % Perform preprocessing using PCA
     if ~initial_solution
-        disp('Preprocessing data using PCA...');
+        %disp('Preprocessing data using PCA...');
         if size(X, 2) < size(X, 1)
             C = X' * X;
         else

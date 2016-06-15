@@ -66,49 +66,12 @@ for cc1=1:n_cc_totales-1
         
          %% Realizamos PCA
          
-         X=vectores_caracteristicas';
+         X=vectores_caracteristicas;
           
-         %Calculamos la media
-         Media=mean(X,2);
-          
-         %Le resto la media a cada imagen
-         for i = 1:size(X,2)
-            X(:,i) = X(:,i) - Media;
-         end
+        %label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
+         V = tsne(X, [], 2, 2);
         
-         L = X'*X;
-
-        % Cálculo de los autovalores/autovesctores
-        [Vectors,Values] = eig(L);
-        [lambda,ind]=sort(diag(Values),'descend');   % se ordenan los autovalores
-        V = Vectors(:,ind);
-        V = X * V;
-		
-		%Convierto los autovalores de X'X en los autovectores de X*X'
-        Vectors = V'*X;
-        
-        
-        % Compute pairwise distance matrix between eigenvectors
-		sum_X = sum(Vectors .^ 2, 2);
-		D = bsxfun(@plus, sum_X, bsxfun(@plus, sum_X', -2 * (Vectors * Vectors')));
-		
-		% Compute joint probabilities
-		perplexity = 30;
-		P = d2p(D, perplexity, 1e-5); % compute affinities using fixed perplexity
-		clear D
-		
-        no_dims = n_img_tipo1 + n_img_tipo2;
-		V = tsne_p(P, [], no_dims);
-        
-        V=V(1:2, :);
-        
-        for i=1:size(X,2)
-            Vectors(:,i) = Vectors(:,i)/norm(Vectors(:,i));
-        end
-        
-         %V=V(:, 1:2);
-        
-        W{1,Niteracion}=V;  %Proyecciones
+        W{1,Niteracion}=V';  %Proyecciones
         
         %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
         label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
@@ -294,7 +257,7 @@ Mejor_pca=Mejores(1,1);
 indice_cc_seleccionadas=sort(Mejores(1,2:size(Mejores,2)));
 
 
-save( ['tsne_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'Mejores', 'Mejores_des', 'Proy', 'Mejor_pca','indice_cc_seleccionadas')
+save( ['tsne2_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'Mejores', 'Mejores_des', 'Proy', 'Mejor_pca','indice_cc_seleccionadas')
 
 
 %%Representar
@@ -315,7 +278,7 @@ hold on, plot(Proyecc(1,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),Proyecc(2,n_img_t
 
 stringres=strcat(num2str(indice_cc_seleccionadas));
 title(stringres)
-saveas(h,['tsne_' n_t1 '_' n_t2 '.jpg'])
+saveas(h,['tsne2_' n_t1 '_' n_t2 '.jpg'])
 
 close all
 end
