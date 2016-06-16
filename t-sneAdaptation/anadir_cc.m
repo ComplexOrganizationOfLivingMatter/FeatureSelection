@@ -1,4 +1,4 @@
-function [Mejores_i,Mejores_i_des,Proy]=anadir_cc(Mejores,Mejores_des,vector_todas_caracteristicas,expansion,n_imagenes_tipo1,n_imagenes_tipo2)
+function [Mejores_i,Mejores_i_des,Proy, eigenvectors]=anadir_cc(Mejores,Mejores_des,vector_todas_caracteristicas,expansion,n_imagenes_tipo1,n_imagenes_tipo2)
 cuenta=0;
 Niteracion=1;
 for paso=1:size(Mejores,1)
@@ -14,6 +14,7 @@ for paso=1:size(Mejores,1)
             if p1==0
                 Ratio_pca(1,Niteracion)=0;
                 Ratio_pca(2,Niteracion)=caract;
+                eigenvectors{1,Niteracion} = 0;
                 Niteracion=Niteracion+1;
             else
                 
@@ -39,12 +40,9 @@ for paso=1:size(Mejores,1)
                 C=sinterluc/sintraluc;
                 Ratio_pca(1,Niteracion)=abs(trace(C));
                 Ratio_pca(2,Niteracion)=caract;
-
+                eigenvectors{1,Niteracion} = V;
+                
                 Niteracion=Niteracion+1;
-
-
-                %%%%-----$$$$------PROBAR DIRECTAMENTE EL COMANDO PCA DE MATLAB y  observar DIFERENCIAS-----$$$$----%%%%
-        
             end
         end
     end
@@ -58,6 +56,7 @@ for paso=1:size(Mejores,1)
         Mejores_i(cuenta+i,size(Mejores,2)+1)=Ratio_pca(2,num);
         Mejores_i_des(cuenta+i,size(Mejores,2)+1)=Ratio_pca(2,num);
         Proy{cuenta+i,1}=W{1,num};
+        eigenvectorsF{cuenta+i,1} = eigenvectors{1, num};
         auxiliar(1,num)=0;
     end
     cuenta=cuenta+expansion;

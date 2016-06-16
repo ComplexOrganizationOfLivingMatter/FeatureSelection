@@ -74,6 +74,7 @@ for cc1=1:n_cc_totales-1
         W{1,Niteracion}=V';  %Proyecciones
         
         %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
+        %%How good is the method? -> trace(C)
         label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
         [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
         C=sinterluc/sintraluc;
@@ -126,6 +127,7 @@ expansion=[1 5 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 
 add_cc=1;
 Mejores_ant=Mejores;
+eigenvectors = 0;
 Proy_ant=Proy;
 Mejores_des=Mejores;
 Mejores_ant_des=Mejores_des;
@@ -138,16 +140,20 @@ while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
     Mejores_ant=Mejores;
     Mejores_ant_des=Mejores_des;
     Proy_ant=Proy;
+    eigenvectors_ant = eigenvectors
     clear Proy
-    [Mejores,Mejores_des,Proy]=anadir_cc(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2);
+    [Mejores,Mejores_des,Proy, eigenvectors]=anadir_cc(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2);
     % Ordenamos Mejores de mejor a peor PCA
     [Mejores orden]=sortrows(Mejores,-1);
     
     for i=1:size(orden,1)
         Proyb{i,1}=Proy{orden(i),1};
+        eigenvectorsb{i,1} = eigenvectors(orden(i), 1);
         Mejores_des_aux(i,:)=Mejores_des(orden(i),:);
     end
     Proy=Proyb;
+    eigenvectors = eigenvectorsb;
+    clear eigenvectorsb;
     clear Proyb
     Mejores_des=Mejores_des_aux;
     clear Mejores_des_aux
@@ -161,6 +167,7 @@ while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
                 Mejores(i,2:end)=sort(Mejores(i,2:end));
                 Mejores(i+cuenta,:)=[];
                 Proy(i+cuenta,:)=[];
+                eigenvectors(i+cuenta, :) = [];
                 Mejores_des(i+cuenta,:)=[];
                 if i+cuenta < size(Mejores,1)
                     cuenta=cuenta+1;
@@ -254,11 +261,11 @@ end
 
 %% Evaluacion final
 Mejor_pca=Mejores(1,1);
-indice_cc_seleccionadas=sort(Mejores(1,2:size(Mejores,2)));
+indice_cc_seleccionadas=Mejores(1,2:size(Mejores,2));
+eigenvectors = eigenvectors{1,1}{1};
 
 
-save( ['tsne2_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'Mejores', 'Mejores_des', 'Proy', 'Mejor_pca','indice_cc_seleccionadas')
-
+save( ['tsne2_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'Mejores', 'Mejores_des', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors')
 
 %%Representar
 
