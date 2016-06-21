@@ -25,7 +25,7 @@ for paso=1:size(Mejores,1)
                 X=vector_caracteristicas_defi;
           
                 %label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
-                V = tsne(X, [], 2, 2);
+                V = tsne(X, [], 2, size(vector_caracteristicas_defi,2));
         
                 W{1,Niteracion}=V';  %Proyecciones %Proyecciones
 
