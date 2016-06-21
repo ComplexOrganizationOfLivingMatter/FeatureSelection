@@ -163,7 +163,7 @@ while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
     Mejores_ant=Mejores;
     Mejores_ant_des=Mejores_des;
     Proy_ant=Proy;
-    eigenvectors_ant = eigenvectors
+    eigenvectors_ant = eigenvectors;
     clear Proy
     [Mejores,Mejores_des,Proy, eigenvectors]=anadir_cc_original(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2);
     % Ordenamos Mejores de mejor a peor PCA
@@ -176,7 +176,7 @@ while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
     end
     Proy=Proyb;
     eigenvectors = eigenvectorsb;
-    clear eigenvectorsb;
+    clear eigenvectorsb
     clear Proyb
     Mejores_des=Mejores_des_aux;
     clear Mejores_des_aux

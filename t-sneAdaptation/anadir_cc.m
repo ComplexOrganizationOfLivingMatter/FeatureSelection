@@ -20,11 +20,6 @@ for paso=1:size(Mejores,1)
                 
                 %Voy incluyendo caracteristica
                 vector_caracteristicas_defi=[vector_caracteristicas,vector_todas_caracteristicas(:,caract)];
-                %normalizamos los vectores
-                for car=1:size(vector_caracteristicas_defi,2)
-                    vector_caracteristicas_defi(:,car)=vector_caracteristicas_defi(:,car)-min(vector_caracteristicas_defi(:,car));
-                    vector_caracteristicas_defi(:,car)=vector_caracteristicas_defi(:,car)/max(vector_caracteristicas_defi(:,car));
-                end
                 vector_caracteristicas_defi(isnan(vector_caracteristicas_defi))=0;% PARA HACER 0 TODOS LOS NAN
                 %% PCA
                 X=vector_caracteristicas_defi;

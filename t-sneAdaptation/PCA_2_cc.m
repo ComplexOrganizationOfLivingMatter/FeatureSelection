@@ -52,14 +52,6 @@ for cc1=1:n_cc_totales-1
     
          %Voy incluyendo caracteristica
          vectores_caracteristicas(:,1:2)=[vector_todas_caracteristicas(:,cc1) ,vector_todas_caracteristicas(:,cc2)];
-        
-         %Normalizamos los vectores
-         for cc=1:2
-             
-            vectores_caracteristicas(:,cc)=vectores_caracteristicas(:,cc)-min(vectores_caracteristicas(:,cc));
-            vectores_caracteristicas(:,cc)=vectores_caracteristicas(:,cc)/max(vectores_caracteristicas(:,cc));  
-             
-         end
          
          vectores_caracteristicas(isnan(vectores_caracteristicas))=0;% PARA HACER 0 TODOS LOS NAN
 
@@ -107,7 +99,7 @@ end
 %Incrementamos el nº de cc a las que queramos. Nosotros nos quedamos con 
 %el vector expansión de este modo ya que seguimos un proceso:
 
-expansion=[1 5 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
+expansion=[5 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
 
 % 1-Bucle anterior: Ya hemos testeado las 10 mejores parejas que separan
 % mejor. Ahora les añadimos una cc para que sean los 10 mejores trios que
@@ -127,7 +119,6 @@ expansion=[1 5 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 
 add_cc=1;
 Mejores_ant=Mejores;
-eigenvectors = 0;
 Proy_ant=Proy;
 Mejores_des=Mejores;
 Mejores_ant_des=Mejores_des;
@@ -140,7 +131,6 @@ while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
     Mejores_ant=Mejores;
     Mejores_ant_des=Mejores_des;
     Proy_ant=Proy;
-    eigenvectors_ant = eigenvectors
     clear Proy
     [Mejores,Mejores_des,Proy, eigenvectors]=anadir_cc(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2);
     % Ordenamos Mejores de mejor a peor PCA
@@ -148,11 +138,9 @@ while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
     
     for i=1:size(orden,1)
         Proyb{i,1}=Proy{orden(i),1};
-        eigenvectorsb{i,1} = eigenvectors(orden(i), 1);
         Mejores_des_aux(i,:)=Mejores_des(orden(i),:);
     end
     Proy=Proyb;
-    eigenvectors = eigenvectorsb;
     clear eigenvectorsb;
     clear Proyb
     Mejores_des=Mejores_des_aux;
@@ -167,7 +155,6 @@ while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
                 Mejores(i,2:end)=sort(Mejores(i,2:end));
                 Mejores(i+cuenta,:)=[];
                 Proy(i+cuenta,:)=[];
-                eigenvectors(i+cuenta, :) = [];
                 Mejores_des(i+cuenta,:)=[];
                 if i+cuenta < size(Mejores,1)
                     cuenta=cuenta+1;
@@ -262,10 +249,9 @@ end
 %% Evaluacion final
 Mejor_pca=Mejores(1,1);
 indice_cc_seleccionadas=Mejores(1,2:size(Mejores,2));
-eigenvectors = eigenvectors{1,1}{1};
 
 
-save( ['tsne2_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'Mejores', 'Mejores_des', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors')
+save( ['tsne2_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'Mejores', 'Mejores_des', 'Proy', 'Mejor_pca','indice_cc_seleccionadas')
 
 %%Representar
 
