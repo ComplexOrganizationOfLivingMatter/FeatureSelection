@@ -1,6 +1,8 @@
 function [ weightCC ] = calculateWeightOfSelectedCC( OriginalMatrix, Points, indices_cc_seleccionadas )
-%UNTITLED Summary of this function goes here
-%   Thanks to Pedro Gomez-Galvez
+%CALCULATEWEIGHTOFSELECTEDCC Summary of this function goes here
+%	
+%	
+%   Developed by Pedro Gomez-Galvez
     
     OriginalMatrix = OriginalMatrix(:, indices_cc_seleccionadas);
     OriginalMatrix(isnan(OriginalMatrix))=0;
