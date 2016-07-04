@@ -47,41 +47,43 @@ tic
 
 %% Calculamos las combinaciones iniciales de 2 caracteristicas
 
-for cc1=1:n_cc_totales-1
-    for cc2=cc1+1:n_cc_totales
-    
-         %Voy incluyendo caracteristica
-         vectores_caracteristicas(:,1:2)=[vector_todas_caracteristicas(:,cc1) ,vector_todas_caracteristicas(:,cc2)];
-         
-         vectores_caracteristicas(isnan(vectores_caracteristicas))=0;% PARA HACER 0 TODOS LOS NAN
-
-        
-         %% Realizamos PCA
-         
-         X=vectores_caracteristicas;
-          
-        %label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
-         V = tsne(X, [], 2, 2);
-        
-        W{1,Niteracion}=V';  %Proyecciones
-        
-        %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
-        %%How good is the method? -> trace(C)
-        label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
-        [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
-        C=sinterluc/sintraluc;
-        Ratio_pca(1,Niteracion)=trace(C);
-        Ratio_pca(2,Niteracion)=cc1;
-        Ratio_pca(3,Niteracion)=cc2;
-        
-        Niteracion=Niteracion+1;
-        
-          
-        %%%%-----$$$$------PROBAR DIRECTAMENTE EL COMANDO PCA DE MATLAB y  observar DIFERENCIAS-----$$$$----%%%%
-        
-        
-         
-        
+for cc1=1:n_cc_totales - 2
+    for cc2=cc1+1:n_cc_totales - 1
+        for cc3 = cc2 + 1:n_cc_totales
+            
+            %Voy incluyendo caracteristica
+            vectores_caracteristicas(:,1:3)=[vector_todas_caracteristicas(:,cc1) ,vector_todas_caracteristicas(:,cc2), vector_todas_caracteristicas(:, cc3)];
+            
+            vectores_caracteristicas(isnan(vectores_caracteristicas))=0;% PARA HACER 0 TODOS LOS NAN
+            
+            
+            %% Realizamos PCA
+            
+            X=vectores_caracteristicas;
+            
+            %label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
+            V = tsne(X, [], 2, 3);
+            
+            W{1,Niteracion}=V';  %Proyecciones
+            
+            %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
+            %%How good is the method? -> trace(C)
+            label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
+            [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
+            C=sinterluc/sintraluc;
+            Ratio_pca(1,Niteracion)=trace(C);
+            Ratio_pca(2,Niteracion)=cc1;
+            Ratio_pca(3,Niteracion)=cc2;
+            Ratio_pca(4,Niteracion)=cc3;
+            
+            Niteracion=Niteracion+1;
+            
+            
+            %%%%-----$$$$------PROBAR DIRECTAMENTE EL COMANDO PCA DE MATLAB y  observar DIFERENCIAS-----$$$$----%%%%
+            
+            
+            
+        end
     end
 end
 
@@ -92,6 +94,7 @@ for i=1:10
     [Mejores(i,1) num]=max(auxiliar);
     Mejores(i,2)=Ratio_pca(2,num);
     Mejores(i,3)=Ratio_pca(3,num);
+    Mejores(i,4)=Ratio_pca(4,num);
     Proy{i,1}=W{1,num};
     auxiliar(1,num)=0;
 end
