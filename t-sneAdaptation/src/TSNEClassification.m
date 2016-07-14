@@ -1,11 +1,11 @@
 %%PCA_2_cc
 
-function PCA_2_cc(m_t1,m_t2,n_t1,n_t2)
+function TSNEClassification(m_t1,m_t2,n_t1,n_t2)
 
 
 %Seleccionamos las características que queramos: 
 
-CARACT=1:81; %69 cc de estructura celular + 12 cc de núcleos.
+CARACT=1:69; %69 cc de estructura celular + 12 cc de núcleos.
 
 
 % Grupo 1. Asignamos al grupo 1 la matriz elegida en la función.
@@ -102,7 +102,7 @@ end
 %Incrementamos el nº de cc a las que queramos. Nosotros nos quedamos con 
 %el vector expansión de este modo ya que seguimos un proceso:
 
-expansion=[1 5 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
+expansion=[5 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
 
 % 1-Bucle anterior: Ya hemos testeado las 10 mejores parejas que separan
 % mejor. Ahora les añadimos una cc para que sean los 10 mejores trios que
@@ -130,7 +130,7 @@ Mejores_ant_des=Mejores_des;
 %del paso anterior o hasta que se expanden las cc 4 veces. Es decir, como
 %máximo se realizarán 4 expansiones.
 
-while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<=5
+while Mejores(1,1)>=Mejores_ant(1,1) && add_cc<5
     Mejores_ant=Mejores;
     Mejores_ant_des=Mejores_des;
     Proy_ant=Proy;
