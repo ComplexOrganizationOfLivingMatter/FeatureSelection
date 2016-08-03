@@ -2,6 +2,8 @@
 *.jpg
 *.asv
 *.xlsx
+*.pdf
 
 DNA-Damage/Useful_Dani
-*.pdf
+SalivaryGland/docs/*
+SalivaryGland/test/*
