@@ -1,4 +1,4 @@
-function [ vertices, neighbour_vertex ] = getVerticesAndNeighbours( img )
+function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -21,11 +21,14 @@ function [ vertices, neighbour_vertex ] = getVerticesAndNeighbours( img )
                 neighbours = neighbours(neighbours ~= 113 & neighbours ~= 0);
                 if size(neighbours, 1) > 2
                     vertices{countVertices} = [row, col];
-                    neighbour_vertex{countVertices} = neighbours;
+                    neighbours_vertices{countVertices} = neighbours;
                     countVertices = countVertices + 1;
                 end
             end
         end
     end
-
+    vertices = vertices';
+    vertices = vertcat(vertices{:});
+    neighbours_vertices = neighbours_vertices';
+    neighbours_vertices = vertcat(neighbours_vertices{:});
 end
