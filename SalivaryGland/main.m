@@ -6,30 +6,39 @@ voronoiNoiseOriginal = importdata('test/Imagen_1_Diagrama_2_Vonoroi_Noise.mat');
 voronoiOriginalImage = importdata('test/Imagen_1_Diagrama_2_Vonoroi_1.png');
 voronoiNoiseOriginalImage = importdata('test/Imagen_1_Diagrama_2_Vonoroi_Noise.png');
 
-sizeMask = 100;
+sizeMask = 2048;
+voronoiClass = voronoiOriginal(1:sizeMask, 1:sizeMask);
+voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
+
 voronoiImage = voronoiOriginalImage(1:sizeMask, 1:sizeMask);
-voronoiNoise = voronoiNoiseOriginalImage(1:sizeMask, 1:sizeMask);
+voronoiNoiseImage = voronoiNoiseOriginalImage(1:sizeMask, 1:sizeMask);
 
-figure;
-imshow(voronoiImage);
-hold on
-%verticesV = corner(voronoiImage, 'MinimumEigenvalue', 100000, 'QualityLevel', 0.2); % 'SensitivityFactor', 0.15
-verticesV = detectHarrisFeatures(voronoiImage, 'MinQuality', 0.1, 'FilterSize', 5);
-plot(verticesV.Location(:,1), verticesV.Location(:,2), 'r*');
-figure;
-imshow(voronoiNoise);
-hold on
-%verticesVNoise = corner(voronoiNoise, 'MinimumEigenvalue', 100000, 'QualityLevel', 0.2); % 'SensitivityFactor', 0.15
-verticesVNoise = detectHarrisFeatures(voronoiNoise, 'MinQuality', 0.1, 'FilterSize', 5);
-plot(verticesVNoise.Location(:,1), verticesVNoise.Location(:,2), 'r*');
+% figure;
+% [map r c] = susanCorner(im2double(voronoiImage));
+% figure,imshow(voronoiImage),hold on
+% plot(c,r,'o')
 
+% figure;
+% imshow(voronoiImage);
+% hold on
+% %verticesV = corner(voronoiImage, 'MinimumEigenvalue', 100000, 'QualityLevel', 0.2); % 'SensitivityFactor', 0.15
+% verticesV = detectHarrisFeatures(voronoiImage, 'MinQuality', 0.1, 'FilterSize', 5);
+% plot(verticesV.Location(:,1), verticesV.Location(:,2), 'r*');
+% figure;
+% imshow(voronoiNoise);
+% hold on
+% %verticesVNoise = corner(voronoiNoise, 'MinimumEigenvalue', 100000, 'QualityLevel', 0.2); % 'SensitivityFactor', 0.15
+% verticesVNoise = detectHarrisFeatures(voronoiNoise, 'MinQuality', 0.1, 'FilterSize', 5);
+% plot(verticesVNoise.Location(:,1), verticesVNoise.Location(:,2), 'r*');
 
+verticesV = getVerticesAndNeighbours(voronoiClass);
+verticesVNoise = getVerticesAndNeighbours(voronoiNoise);
 
 verticesVAdded = zeros(size(verticesV,1), 1);
 verticesVNoiseAdded = zeros(size(verticesVNoise, 1), 1);
 
 edgesBetweenLevels = [];
-maxDistance = size(voronoiImage, 1)/(max(voronoiImage(:))/20);
+maxDistance = size(voronoiClass, 1)/(max(voronoiClass(:))/20);
 
 for i = 1:size(verticesV, 1)
     xMin = verticesV(i, 1) - maxDistance;
@@ -69,4 +78,27 @@ for i = 1:size(verticesV, 1)
     end
 end
 figure;
-plot3(edgesBetweenLevels(:,1), edgesBetweenLevels(:,2), edgesBetweenLevels(:,3));
+%plot3(edgesBetweenLevels(:,1), edgesBetweenLevels(:,2), edgesBetweenLevels(:,3));xMaxImage = size(voronoiImage, 1);
+yMaxImage = size(voronoiClass, 2);
+xImage = [0 xMaxImage; 0 yMaxImage];   %# The x data for the image corners
+yImage = [0 0; xMaxImage yMaxImage];             %# The y data for the image corners
+zImage = [2 2; 2 2];   %# The z data for the image corners
+surf(xImage,yImage,zImage,...    %# Plot the surface
+     'CData',voronoiClass,...
+     'FaceColor','texturemap');
+hold on;
+xMaxImage = size(voronoiNoise, 1);
+yMaxImage = size(voronoiNoise, 2);
+xImage = [0 xMaxImage; 0 yMaxImage];   %# The x data for the image corners
+yImage = [0 0; xMaxImage yMaxImage];             %# The y data for the image corners
+zImage = [0 0; 0 0];   %# The z data for the image corners
+surf(xImage,yImage,zImage,...    %# Plot the surface
+     'CData',voronoiNoise,...
+     'FaceColor','texturemap');
+numRow = 1;
+while numRow < size(edgesBetweenLevels,1)
+    plot3(edgesBetweenLevels(numRow:numRow+1,2), edgesBetweenLevels(numRow:numRow+1,1), edgesBetweenLevels(numRow:numRow+1,3));
+    numRow = numRow + 2;
+end
+hold off;
+
