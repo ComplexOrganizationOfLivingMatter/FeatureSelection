@@ -18,7 +18,7 @@ function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img )
                 pixels_Neigh = BW2_dilate == 1;
                 
                 neighbours = unique(imgAux(pixels_Neigh));
-                neighbours = neighbours(neighbours ~= 113 & neighbours ~= 0);
+                neighbours = neighbours(neighbours ~= maxClass & neighbours ~= 0);
                 if size(neighbours, 1) > 2
                     vertices{countVertices} = [row, col];
                     neighbours_vertices{countVertices} = neighbours;
