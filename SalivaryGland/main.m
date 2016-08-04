@@ -13,27 +13,7 @@ voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
 voronoiImage = voronoiOriginalImage(1:sizeMask, 1:sizeMask);
 voronoiNoiseImage = voronoiNoiseOriginalImage(1:sizeMask, 1:sizeMask);
 
-% figure;
-% [map r c] = susanCorner(im2double(voronoiImage));
-% figure,imshow(voronoiImage),hold on
-% plot(c,r,'o')
+edgesBetweenLevels = findingEdgesBetweenLevels(voronoiClass, voronoiNoise);
 
-% figure;
-% imshow(voronoiImage);
-% hold on
-% %verticesV = corner(voronoiImage, 'MinimumEigenvalue', 100000, 'QualityLevel', 0.2); % 'SensitivityFactor', 0.15
-% verticesV = detectHarrisFeatures(voronoiImage, 'MinQuality', 0.1, 'FilterSize', 5);
-% plot(verticesV.Location(:,1), verticesV.Location(:,2), 'r*');
-% figure;
-% imshow(voronoiNoise);
-% hold on
-% %verticesVNoise = corner(voronoiNoise, 'MinimumEigenvalue', 100000, 'QualityLevel', 0.2); % 'SensitivityFactor', 0.15
-% verticesVNoise = detectHarrisFeatures(voronoiNoise, 'MinQuality', 0.1, 'FilterSize', 5);
-% plot(verticesVNoise.Location(:,1), verticesVNoise.Location(:,2), 'r*');
-
-verticesV = getVerticesAndNeighbours(voronoiClass);
-verticesVNoise = getVerticesAndNeighbours(voronoiNoise);
-
-
-
+plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels);
 
