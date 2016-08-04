@@ -6,7 +6,7 @@ voronoiNoiseOriginal = importdata('test/Imagen_1_Diagrama_2_Vonoroi_Noise.mat');
 voronoiOriginalImage = importdata('test/Imagen_1_Diagrama_2_Vonoroi_1.png');
 voronoiNoiseOriginalImage = importdata('test/Imagen_1_Diagrama_2_Vonoroi_Noise.png');
 
-sizeMask = 2048;
+sizeMask = 500;
 voronoiClass = voronoiOriginal(1:sizeMask, 1:sizeMask);
 voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
 
@@ -77,8 +77,11 @@ for i = 1:size(verticesV, 1)
         end
     end
 end
+
+%plot image
 figure;
 %plot3(edgesBetweenLevels(:,1), edgesBetweenLevels(:,2), edgesBetweenLevels(:,3));xMaxImage = size(voronoiImage, 1);
+zMaxImage = size(voronoiClass, 1);
 yMaxImage = size(voronoiClass, 2);
 xImage = [0 xMaxImage; 0 yMaxImage];   %# The x data for the image corners
 yImage = [0 0; xMaxImage yMaxImage];             %# The y data for the image corners
@@ -100,5 +103,22 @@ while numRow < size(edgesBetweenLevels,1)
     plot3(edgesBetweenLevels(numRow:numRow+1,2), edgesBetweenLevels(numRow:numRow+1,1), edgesBetweenLevels(numRow:numRow+1,3));
     numRow = numRow + 2;
 end
+
+missingVerticesNum = find(verticesVAdded == 0);
+missingVertices = verticesV(missingVerticesNum, :);
+
+for i = 1:size(missingVertices, 1)
+    plot3(missingVertices(i, 2), missingVertices(i, 1), 2, 'r*');
+end
+
+missingVerticesNum = find(verticesVNoiseAdded == 0);
+missingVertices = verticesVNoise(missingVerticesNum, :);
+
+for i = 1:size(missingVertices, 1)
+    plot3(missingVertices(i, 2), missingVertices(i, 1), 0, 'r*');
+end
+
+
 hold off;
+
 
