@@ -28,6 +28,6 @@ function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img )
     end
     vertices = vertices';
     vertices = vertcat(vertices{:});
+    neighbours_vertices = horzcat(neighbours_vertices{:});
     neighbours_vertices = neighbours_vertices';
-    neighbours_vertices = vertcat(neighbours_vertices{:});
 end

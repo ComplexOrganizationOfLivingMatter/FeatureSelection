@@ -13,32 +13,62 @@ function [ edgesBetweenLevels ] = findingEdgesBetweenLevels(voronoiClass, vorono
 
     for class = 1:size(classes, 2)
         %Get vertices of both classes
-        verticesVoronoiOfClass = neighboursVerticesV(neighboursVerticesV(:,:) == class);
-
-
+        %Firstly, we get the rows of the class, which will correspond with
+        %its vertices.
+        [verticesVoronoiOfClassRows, verticesVoronoiOfClassCols] = find(neighboursVerticesV(:,:) == class)
+        centroidsOfVoronoiClass = verticesV(verticesVoronoiOfClassRows, :);
+        
+        [verticesVoronoiNoiseOfClassRows, verticesVoronoiNoiseOfClassCols] = find(neighboursVerticesVNoise(:,:) == class)
+        centroidsOfVoronoiNoiseClass = verticesV(verticesVoronoiNoiseOfClassRows, :);
+        
+        %In the case they don't match all the vertices of one class to the
+        %other, one vertex (or more) should be linked to more than one
+        %vertex.
+        if size(centroidsOfVoronoiClass, 1) == size(centroidsOfVoronoiNoiseClass, 1)
             %calculate distance between the current point and all near him.
-            distancePointNoiseRegion = pdist([verticesV(class,:); vNoiseFiltered]);
+            distancePoints = pdist([centroidsOfVoronoiClass; centroidsOfVoronoiNoiseClass]);
             %Square form
-            distancePointNoiseRegion = squareform(distancePointNoiseRegion);
-            %We only want the distances related with our point
-            distances = distancePointNoiseRegion(1,:);
-            %Get the minimum distance
-            minimumDistance = min(distances(2:end));
-            %The number of corner (-1 because we added the first point)
-            cornerNumberInZone = find(distances == minimumDistance, 1) - 1;
-            if cornerNumberInZone ~= 0
-                %Corner points
-                cornerPoints = vNoiseFiltered(cornerNumberInZone, :);
-                %Find the number of corner within the noise voronoi and all the area
-                numberOfCornerNoise = find(verticesVNoise(:,1) == cornerPoints(:,1) & verticesVNoise(:,2) == cornerPoints(:,2));
-                %Mark the vertices with them number of edges
-                verticesVAdded(class) = verticesVAdded(class) + 1;
-                verticesVNoiseAdded(numberOfCornerNoise) = verticesVNoiseAdded(numberOfCornerNoise) + 1;
-
-                %the even will be points in the interior (voronoi noise) level and the
-                %%odd cells will be point in the exterior (voronoi) level.
-                edgesBetweenLevels = [edgesBetweenLevels; verticesV(class,:), 2; cornerPoints, 0];
+            distancePoints = squareform(distancePoints);
+            %Don't want the points with themselves
+            %Don't want points within the same plane
+            distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiClass,1)) = NaN;
+            rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
+            colsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
+            distancePoints(rowsAux, colsAux) = NaN;
+            
+            for vertex = 1:size(centroidsOfVoronoiClass,1)
+                minimumDistance = min(distancePoints(:));
+                [rowMin, colMin] = find(distancePoints == minimumDistance, 1);
+                distancePoints(rowMin, :) = NaN;
+                distancePoints(colMin, :) = NaN;
+                distancePoints(:, rowMin) = NaN;
+                distancePoints(:, colMin) = NaN;
+                %add to the list of edges
+                edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
             end
+            edgesBetweenLevels
+        else
+            %calculate distance between the current point and all near him.
+            distancePoints = pdist([centroidsOfVoronoiClass; centroidsOfVoronoiNoiseClass]);
+            %Square form
+            distancePoints = squareform(distancePoints);
+            %Don't want the points with themselves
+            %Don't want points within the same plane
+            distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiClass,1)) = NaN;
+            rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
+            colsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
+            distancePoints(rowsAux, colsAux) = NaN;
+            
+            for vertex = 1:max(size(centroidsOfVoronoiClass,1), size(centroidsOfVoronoiNoiseClass,1))
+                minimumDistance = min(distancePoints(:));
+                [rowMin, colMin] = find(distancePoints == minimumDistance, 1);
+                distancePoints(rowMin, colMin) = NaN;
+                distancePoints(colMin, rowMin) = NaN;
+                %add to the list of edges
+                edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
+            end
+            edgesBetweenLevels
+        end
     end
 
 end
