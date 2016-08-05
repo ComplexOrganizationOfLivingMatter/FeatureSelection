@@ -25,16 +25,9 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
         %other, one vertex (or more) should be linked to more than one
         %vertex.
         if size(centroidsOfVoronoiClass, 1) == size(centroidsOfVoronoiNoiseClass, 1)
-            %calculate distance between the current point and all near him.
-            distancePoints = pdist([centroidsOfVoronoiClass; centroidsOfVoronoiNoiseClass]);
-            %Square form
-            distancePoints = squareform(distancePoints);
-            %Don't want the points with themselves
-            %Don't want points within the same plane
-            distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiClass,1)) = NaN;
-            rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
-            colsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
-            distancePoints(rowsAux, colsAux) = NaN;
+            
+            
+            matching = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass);
             
             for vertex = 1:size(centroidsOfVoronoiClass,1)
                 minimumDistance = min(distancePoints(:));
