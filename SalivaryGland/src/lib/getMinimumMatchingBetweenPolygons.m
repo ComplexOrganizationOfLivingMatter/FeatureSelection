@@ -35,7 +35,7 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
         edgesCombinations{end+1} = combinationActual;
     end
     
-    minMatchingEdges = [];
+    
     minMatchingDistance = intmax('int32');
     for edgesCombination = 1:size(edgesCombinations, 2)
        combActual = edgesCombinations{edgesCombination};
@@ -45,10 +45,11 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
        
        if distanceActual < minMatchingDistance
            combActual(:, 2) = combActual(:, 2) - size(centroidsOfVoronoiClass, 1);
-           minMatchingEdges = [centroidsOfVoronoiClass(combActual(:, 1), :); centroidsOfVoronoiNoiseClass(combActual(:, 2), :)];
-           zCol = repmat([2; 0], size(minMatchingEdges, 1)/2);
-           minMatchingEdges = horzcat(minMatchingEdges, zCol(:, 1));
-           minMatchingDistance = distanceActual;
+           minMatchingEdges = zeros(size(combActual, 1)*2, 3);
+           for i = 1:size(combActual, 1)
+               minMatchingEdges = [minMatchingEdges; centroidsOfVoronoiClass(combActual(i, 1), :), 2; centroidsOfVoronoiNoiseClass(combActual(i, 2), :), 0];
+           end
+           minMatchingDistance = distanceActual
        end
     end
 end

@@ -24,7 +24,7 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
         %In the case they don't match all the vertices of one class to the
         %other, one vertex (or more) should be linked to more than one
         %vertex.
-        if size(centroidsOfVoronoiClass, 1) == size(centroidsOfVoronoiNoiseClass, 1)
+        if size(centroidsOfVoronoiClass, 1) == size(centroidsOfVoronoiNoiseClass, 1) && size(centroidsOfVoronoiClass, 1) > 0
             matching = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass)
             edgesBetweenLevels = [edgesBetweenLevels; matching]
         else
