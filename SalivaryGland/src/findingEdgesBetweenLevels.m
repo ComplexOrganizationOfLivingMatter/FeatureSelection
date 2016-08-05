@@ -70,7 +70,7 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
                 verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) = verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) + 1;
                 verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) = verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) + 1;
                 %add to the list of edges
-                %edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
+                edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
             end
             edgesBetweenLevels;
         end

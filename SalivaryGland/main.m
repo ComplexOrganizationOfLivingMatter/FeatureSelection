@@ -13,7 +13,9 @@ voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
 [verticesV, neighboursVerticesV] = getVerticesAndNeighbours(voronoiClass);
 [verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise);
 
-[ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, voronoiNoise, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise);
+[ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise);
+
+[ edgesBetweenLevelsVerified ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
 
 plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded);
 
