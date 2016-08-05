@@ -1,17 +1,14 @@
 %Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez
 %Both images have the labels and boundaries of cells
-voronoiOriginal = importdata('test/Imagen_1_Diagrama_2_Vonoroi_1.mat');
-voronoiNoiseOriginal = importdata('test/Imagen_1_Diagrama_2_Vonoroi_Noise.mat');
+voronoiOriginal = importdata('test\image_1_Diagram_1_Vonoroi_out.mat');
+voronoiNoiseOriginal = importdata('test\image_1_Diagram_2_Vonoroi_out.mat');
 
-voronoiOriginalImage = importdata('test/Imagen_1_Diagrama_2_Vonoroi_1.png');
-voronoiNoiseOriginalImage = importdata('test/Imagen_1_Diagrama_2_Vonoroi_Noise.png');
+voronoiOriginal = voronoiOriginal.L_original;
+voronoiNoiseOriginal = voronoiNoiseOriginal.L_original;
 
-sizeMask = 500;
+sizeMask = size(voronoiOriginal, 1);
 voronoiClass = voronoiOriginal(1:sizeMask, 1:sizeMask);
 voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
-
-voronoiImage = voronoiOriginalImage(1:sizeMask, 1:sizeMask);
-voronoiNoiseImage = voronoiNoiseOriginalImage(1:sizeMask, 1:sizeMask);
 
 edgesBetweenLevels = findingEdgesBetweenLevels(voronoiClass, voronoiNoise);
 
