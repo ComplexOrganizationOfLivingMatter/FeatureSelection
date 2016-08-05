@@ -1,4 +1,4 @@
-function [ edgesCombinations ] = getMinimumMatchingBetweenPolygons( centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass )
+function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass )
 %UNTITLED8 Summary of this function goes here
 %   Detailed explanation goes here
     %calculate distance between the current point and all near him.
@@ -19,26 +19,14 @@ function [ edgesCombinations ] = getMinimumMatchingBetweenPolygons( centroidsOfV
         combinationActual = zeros(size(centroidsOfVoronoiClass, 1), 2);
         numCombinations = 1;
         row = i;
-        mid = 0;
-        while numCombinations < size(centroidsOfVoronoiClass, 1)
-            if sum(combinationsAux(row, :) == -1) == 0
-               if combinationsAux(row, 1) == numCombinations || combinationsAux(row, 2) == numCombinations
-                   combinationActual(numCombinations, :) = combinationsAux(row, :);
-                   combinationsAux(combinationsAux(:, 1) == combinationsAux(row, 1)) = -1;
-                   combinationsAux(combinationsAux(:, 2) == combinationsAux(row, 2)) = -1;
-                   numCombinations = numCombinations + 1;
-%                    if combinationsAux(row, 1) == combinationsAux(row, 2) && mid == 0
-%                        numCombinations = numCombinations + 1;
-%                    else
-%                        if mid == 1
-%                            mid = 0;
-%                            numCombinations = numCombinations + 1;
-%                        else
-%                           mid = 1; 
-%                        end
-%                    end
-               end
-            end
+        while numCombinations <= size(centroidsOfVoronoiClass, 1)
+           if combinationsAux(row, 1) ~= -1 && combinationsAux(row, 2) ~= -1
+               combinationActual(numCombinations, 1) = combinationsAux(row, 1);
+               combinationActual(numCombinations, 2) = combinationsAux(row, 2) + size(centroidsOfVoronoiClass, 1);
+               combinationsAux(combinationsAux(:, 1) == combinationsAux(row, 1)) = -1;
+               combinationsAux(combinationsAux(:, 2) == combinationsAux(row, 2)) = -1;
+               numCombinations = numCombinations + 1;
+           end
             row = row + 1;
             if row > size(combinationsAux, 1)
                row = 1; 
@@ -47,8 +35,21 @@ function [ edgesCombinations ] = getMinimumMatchingBetweenPolygons( centroidsOfV
         edgesCombinations{end+1} = combinationActual;
     end
     
-    
-    distancePointsAux = distancePoints;
-
+    minMatchingEdges = [];
+    minMatchingDistance = intmax('int32');
+    for edgesCombination = 1:size(edgesCombinations, 2)
+       combActual = edgesCombinations{edgesCombination};
+       distances = distancePoints(combActual(:, 1), combActual(:, 2));
+       %The diag are the correct values
+       distanceActual = sum(diag(distances));
+       
+       if distanceActual < minMatchingDistance
+           combActual(:, 2) = combActual(:, 2) - size(centroidsOfVoronoiClass, 1);
+           minMatchingEdges = [centroidsOfVoronoiClass(combActual(:, 1), :); centroidsOfVoronoiNoiseClass(combActual(:, 2), :)];
+           zCol = repmat([2; 0], size(minMatchingEdges, 1)/2);
+           minMatchingEdges = horzcat(minMatchingEdges, zCol(:, 1));
+           minMatchingDistance = distanceActual;
+       end
+    end
 end
 

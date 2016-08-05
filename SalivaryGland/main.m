@@ -6,7 +6,7 @@ voronoiNoiseOriginal = importdata('test\image_1_Diagram_2_Vonoroi_out.mat');
 voronoiOriginal = voronoiOriginal.L_original;
 voronoiNoiseOriginal = voronoiNoiseOriginal.L_original;
 
-sizeMask = size(voronoiOriginal, 1);
+sizeMask = 100;
 voronoiClass = voronoiOriginal(1:sizeMask, 1:sizeMask);
 voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
 
@@ -15,7 +15,7 @@ voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
 
 [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise);
 
-[ edgesBetweenLevelsVerified ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
+%[ edgesBetweenLevelsVerified ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
 
 plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded);
 
