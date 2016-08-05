@@ -10,7 +10,10 @@ sizeMask = size(voronoiOriginal, 1);
 voronoiClass = voronoiOriginal(1:sizeMask, 1:sizeMask);
 voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
 
-edgesBetweenLevels = findingEdgesBetweenLevels(voronoiClass, voronoiNoise);
+[verticesV, neighboursVerticesV] = getVerticesAndNeighbours(voronoiClass);
+[verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise);
 
-plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels);
+[ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, voronoiNoise, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise);
+
+plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded);
 

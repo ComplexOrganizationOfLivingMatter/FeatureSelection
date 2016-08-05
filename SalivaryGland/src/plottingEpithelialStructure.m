@@ -1,4 +1,4 @@
-function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels )
+function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 

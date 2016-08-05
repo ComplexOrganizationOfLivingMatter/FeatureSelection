@@ -1,8 +1,7 @@
-function [ edgesBetweenLevels, verticesV, verticesVNoise ] = findingEdgesBetweenLevels(voronoiClass, voronoiNoise)
+function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise)
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
-    [verticesV, neighboursVerticesV] = getVerticesAndNeighbours(voronoiClass);
-    [verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise);
+
 
     verticesVAdded = zeros(size(verticesV,1), 1);
     verticesVNoiseAdded = zeros(size(verticesVNoise, 1), 1);
@@ -16,10 +15,10 @@ function [ edgesBetweenLevels, verticesV, verticesVNoise ] = findingEdgesBetween
         %Get vertices of both classes
         %Firstly, we get the rows of the class, which will correspond with
         %its vertices.
-        [verticesVoronoiOfClassRows, verticesVoronoiOfClassCols] = find(neighboursVerticesV(:,:) == class)
+        [verticesVoronoiOfClassRows, verticesVoronoiOfClassCols] = find(neighboursVerticesV(:,:) == class);
         centroidsOfVoronoiClass = verticesV(verticesVoronoiOfClassRows, :);
         
-        [verticesVoronoiNoiseOfClassRows, verticesVoronoiNoiseOfClassCols] = find(neighboursVerticesVNoise(:,:) == class)
+        [verticesVoronoiNoiseOfClassRows, verticesVoronoiNoiseOfClassCols] = find(neighboursVerticesVNoise(:,:) == class);
         centroidsOfVoronoiNoiseClass = verticesVNoise(verticesVoronoiNoiseOfClassRows, :);
         
         %In the case they don't match all the vertices of one class to the
@@ -44,6 +43,8 @@ function [ edgesBetweenLevels, verticesV, verticesVNoise ] = findingEdgesBetween
                 distancePoints(colMin, :) = NaN;
                 distancePoints(:, rowMin) = NaN;
                 distancePoints(:, colMin) = NaN;
+                verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) = verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) + 1;
+                verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) = verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) + 1;
                 %add to the list of edges
                 edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
             end
@@ -65,8 +66,11 @@ function [ edgesBetweenLevels, verticesV, verticesVNoise ] = findingEdgesBetween
                 [rowMin, colMin] = find(distancePoints == minimumDistance, 1);
                 distancePoints(rowMin, colMin) = NaN;
                 distancePoints(colMin, rowMin) = NaN;
+                
+                verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) = verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) + 1;
+                verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) = verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) + 1;
                 %add to the list of edges
-                edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
+                %edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
             end
             edgesBetweenLevels;
         end
