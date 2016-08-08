@@ -6,9 +6,10 @@ voronoiNoiseOriginal = importdata('test\image_1_Diagram_2_Vonoroi_out.mat');
 voronoiOriginal = voronoiOriginal.L_original;
 voronoiNoiseOriginal = voronoiNoiseOriginal.L_original;
 
-sizeMask = size(voronoiOriginal, 1);
-voronoiClass = voronoiOriginal(1:sizeMask, 1:sizeMask);
-voronoiNoise = voronoiNoiseOriginal(1:sizeMask, 1:sizeMask);
+sizeMask = 120;
+initMask = 20;
+voronoiClass = voronoiOriginal(initMask:sizeMask, initMask:sizeMask);
+voronoiNoise = voronoiNoiseOriginal(initMask:sizeMask, initMask:sizeMask);
 
 [verticesV, neighboursVerticesV] = getVerticesAndNeighbours(voronoiClass);
 [verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise);
