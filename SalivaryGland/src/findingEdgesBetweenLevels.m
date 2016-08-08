@@ -25,7 +25,7 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
         %other, one vertex (or more) should be linked to more than one
         %vertex.
         if size(centroidsOfVoronoiClass, 1) == size(centroidsOfVoronoiNoiseClass, 1) && size(centroidsOfVoronoiClass, 1) > 0
-            if find(class == classesToVisualize{:}, 1) > 0
+            if find(class == classesToVisualize, 1) > 0
                 matching = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass)
                 edgesBetweenLevels = [edgesBetweenLevels; matching]
             end
