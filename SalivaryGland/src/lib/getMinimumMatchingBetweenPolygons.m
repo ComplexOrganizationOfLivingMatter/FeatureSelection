@@ -7,11 +7,10 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     distancePoints = squareform(distancePoints);
     %Don't want the points with themselves
     %Don't want points within the same plane
-    distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiNoiseClass,1)) = NaN;
-    rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
-    colsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
-    distancePoints(rowsAux, colsAux) = NaN;
-    distancePoints(rowsAux, :) = NaN;
+    
+    rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));  
+    distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiClass,1)) = NaN;
+    distancePoints(rowsAux(:), :) = NaN;
     
     verticesVoronoiAdded = zeros(size(centroidsOfVoronoiClass, 1) , 1);
     verticesNoiseAdded = zeros(size(centroidsOfVoronoiNoiseClass, 1), 1);
@@ -19,7 +18,6 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     while min(verticesVoronoiAdded(:,:)) == 0 || min(verticesNoiseAdded(:,:)) == 0
         minValue = min(distancePoints(:));
         [rowMin, colMin] = find(distancePoints == minValue, 1);
-        
         realCol = colMin - size(centroidsOfVoronoiClass, 1);
         centroidVClass = centroidsOfVoronoiClass(rowMin, :);
         centroidVNoiseClass = centroidsOfVoronoiNoiseClass(realCol, :);
@@ -33,6 +31,7 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     
     %Check if there's useless edges (i.e. linking 2 centroids on each plane
     % several times).
+    
     edgesToRemove = [];
     edge = 1;
     totalEdges = size(minMatchingEdges, 1);
