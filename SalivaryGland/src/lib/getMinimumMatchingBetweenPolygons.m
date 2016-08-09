@@ -36,7 +36,17 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     edgesToRemove = [];
     edge = 1;
     totalEdges = size(minMatchingEdges, 1);
-    while true
+    distances = zeros(totalEdges/2, 1);
+    i = 1;
+    while i <= totalEdges
+       distances((i+1)/2) = sqrt((minMatchingEdges(i, 1) - minMatchingEdges(i+1, 1))^2 + (minMatchingEdges(i, 2) - minMatchingEdges(i+1, 2))^2);
+        i = i + 2;
+    end
+    while distances(isnan(distances(:)) == 0) > 0
+        maxDistance = max(distances(:));
+        edge = find(maxDistance == distances, 1);
+        distances(edge) = NaN;
+        edge = edge*2 - 1;
         duplicateEdges = [];
         %If it's the lower plane, we get the edge of the upper one
         if mod(edge, 2) == 1
@@ -53,19 +63,32 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
                         duplicateEdges(duplicate)
                         
                         minMatchingEdges([edge; duplicateEdges(duplicate)], :) = [];
-                        edge = 0;
-                        totalEdges = totalEdges - 2;
                         break
                     end
                 end
             end
         end
-        edge = edge + 1;
-        if edge > totalEdges
-           break 
-        end
     end
     
+    
+    %Pedro's proposal
+%         p2DuplicatedEdges = [];
+%     p0DuplicatedEdges = [];
+%     for edge = 1:size(minMatchingEdges, 1)
+%         duplicatedEdges = find(minMatchingEdges(edge, 1) == minMatchingEdges(:, 1) & minMatchingEdges(edge, 2) == minMatchingEdges(:, 2) & minMatchingEdges(edge, 3) == minMatchingEdges(:, 3));
+%         if size(duplicatedEdges, 1) > 1
+%             if mod(edge, 2) == 0 %Plane 2
+%                 p2DuplicatedEdges = [p2DuplicatedEdges; minMatchingEdges(edge,:)];
+%             else %Plane 0
+%                 p0DuplicatedEdges = [p0DuplicatedEdges; minMatchingEdges(edge,:)];
+%             end
+%         end
+%     end
+%     p2DuplicatedEdgesUnique = unique(p2DuplicatedEdges, 'rows');
+%     p0DuplicatedEdgesUnique = unique(p0DuplicatedEdges, 'rows');
+%     
+%     pdist(p2DuplicatedEdges(:, 1:2); p0DuplicatedEdges(
+%     
     
 end
 
