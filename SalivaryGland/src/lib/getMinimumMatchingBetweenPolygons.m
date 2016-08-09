@@ -67,7 +67,6 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
 %             end
 %         end
 %     end
-    ;
     
     %Pedro's proposal
     p0EdgesUnique = unique(minMatchingEdges(minMatchingEdges(:, 3) == 0, :), 'rows');
@@ -91,7 +90,8 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
         end
         
         if(size(duplicatedEdges, 1) > 0)
-            minDistances = {};
+            minDistancesEdges = {};
+            minDistances = [];
             for i = 1:size(duplicatedEdges, 1)
                 combinationsEdges = nchoosek(duplicatedEdges,i);
                 for combEdge = 1:size(combinationsEdges, 1)
@@ -100,12 +100,15 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
                     if sum(ismember(p0EdgesUnique, minMatchingEdgesAux, 'rows') == 0) == 0 && sum(ismember(p2EdgesUnique, minMatchingEdgesAux, 'rows') == 0) == 0
                         distances = distancesBetweenEdges(minMatchingEdgesAux);
                         minDistance = sum(distances);
-                        minDistances{end+1} = {minMatchingEdgesAux, minDistance};
+                        minDistancesEdges{end+1} = minMatchingEdgesAux;
+                        minDistances = [minDistances; minDistance];
                     end
                 end
             end
-            minDistances
+            numMinimum = find(minDistances == min(minDistances));
+            minMatchingEdges = minDistancesEdges{numMinimum};
         end
+        
     end
     
 end

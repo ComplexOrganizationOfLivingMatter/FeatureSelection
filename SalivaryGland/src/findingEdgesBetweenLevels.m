@@ -27,12 +27,12 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
         if size(centroidsOfVoronoiClass, 1) == size(centroidsOfVoronoiNoiseClass, 1) && size(centroidsOfVoronoiClass, 1) > 0
             if find(class == classesToVisualize, 1) > 0
                 matching = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass)
-                edgesBetweenLevels = [edgesBetweenLevels; matching]
+                edgesBetweenLevels = [edgesBetweenLevels; matching];
             end
         else
             if find(class == classesToVisualize, 1) > 0
                 matching = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass)
-                edgesBetweenLevels = [edgesBetweenLevels; matching]
+                edgesBetweenLevels = [edgesBetweenLevels; matching];
             end
 %             %calculate distance between the current point and all near him.
 %             distancePoints = pdist([centroidsOfVoronoiClass; centroidsOfVoronoiNoiseClass]);
