@@ -32,8 +32,6 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     %Check if there's useless edges (i.e. linking 2 centroids on each plane
     % several times).
     
-    edgesToRemove = [];
-    edge = 1;
     totalEdges = size(minMatchingEdges, 1);
     distances = zeros(totalEdges/2, 1);
     i = 1;
@@ -41,13 +39,14 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
        distances((i+1)/2) = sqrt((minMatchingEdges(i, 1) - minMatchingEdges(i+1, 1))^2 + (minMatchingEdges(i, 2) - minMatchingEdges(i+1, 2))^2);
         i = i + 2;
     end
+    
     while distances(isnan(distances(:)) == 0) > 0
         maxDistance = max(distances(:));
         edge = find(maxDistance == distances, 1);
-        distances(edge) = NaN;
+        distances(edge) = [];
         edge = edge*2 - 1;
         duplicateEdges = [];
-        %If it's the lower plane, we get the edge of the upper one
+        %If it's the upper plane, we get the edge of the lower one
         if mod(edge, 2) == 1
             duplicateEdges = find(minMatchingEdges(edge, 1) == minMatchingEdges(:, 1) & minMatchingEdges(edge, 2) == minMatchingEdges(:, 2) & minMatchingEdges(edge, 3) == minMatchingEdges(:, 3));
             duplicateEdges(:) = duplicateEdges(:) + 1;
