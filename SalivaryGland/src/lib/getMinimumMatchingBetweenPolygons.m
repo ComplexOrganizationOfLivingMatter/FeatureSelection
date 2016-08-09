@@ -67,10 +67,46 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
 %             end
 %         end
 %     end
-    
+    ;
     
     %Pedro's proposal
-      
+    p0EdgesUnique = unique(minMatchingEdges(minMatchingEdges(:, 3) == 0, :), 'rows');
+    p2EdgesUnique = unique(minMatchingEdges(minMatchingEdges(:, 3) == 2, :), 'rows');
+    totalEdges = size(minMatchingEdges, 1);
+    
+    
+    if totalEdges/2 > max(size(centroidsOfVoronoiClass, 1), size(centroidsOfVoronoiNoiseClass, 1))
+        duplicatedEdges = [];
+        edge = 1;
+        while edge <= totalEdges
+            edge
+            minMatchingEdgesAux = minMatchingEdges;
+            minMatchingEdgesAux([edge, edge + 1], :) = [];
+            %No vertices removed
+            if sum(ismember(p0EdgesUnique, minMatchingEdgesAux, 'rows') == 0) == 0 && sum(ismember(p2EdgesUnique, minMatchingEdgesAux, 'rows') == 0) == 0
+                duplicatedEdges = [duplicatedEdges; edge];
+            end
+            
+            edge = edge + 2;
+        end
+        
+        if(size(duplicatedEdges, 1) > 0)
+            minDistances = {};
+            for i = 1:size(duplicatedEdges, 1)
+                combinationsEdges = nchoosek(duplicatedEdges,i);
+                for combEdge = 1:size(combinationsEdges, 1)
+                    minMatchingEdgesAux = minMatchingEdges;
+                    minMatchingEdgesAux([combinationsEdges(combEdge, :), combinationsEdges(combEdge,:)+1], :) = [];
+                    if sum(ismember(p0EdgesUnique, minMatchingEdgesAux, 'rows') == 0) == 0 && sum(ismember(p2EdgesUnique, minMatchingEdgesAux, 'rows') == 0) == 0
+                        distances = distancesBetweenEdges(minMatchingEdgesAux);
+                        minDistance = sum(distances);
+                        minDistances{end+1} = {minMatchingEdgesAux, minDistance};
+                    end
+                end
+            end
+            minDistances
+        end
+    end
     
 end
 
