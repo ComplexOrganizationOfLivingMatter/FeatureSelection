@@ -29,7 +29,7 @@ classesToVisualize = validClassesOriginal.general_valid_cells;
 
 %[ edgesBetweenLevelsVerified ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
 
-t1Points = gettingT1Transitions(edgesBetweenLevels);
+[t1Points, edgesBetweenLevels] = gettingT1Transitions(edgesBetweenLevels);
 
 plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, t1Points);
 
