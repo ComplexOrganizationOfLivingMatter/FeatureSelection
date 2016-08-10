@@ -92,7 +92,10 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
         if(size(duplicatedEdges, 1) > 0)
             minDistancesEdges = {};
             minDistances = [];
-            for i = 1:size(duplicatedEdges, 1)
+            maxCombinationsEdges = 2*max(size(centroidsOfVoronoiNoiseClass, 1), size(centroidsOfVoronoiClass, 1));
+            maxCombinations = min(size(duplicatedEdges, 1), maxCombinationsEdges);
+            minCombinations = abs(size(duplicatedEdges, 1) - maxCombinations) + 1;
+            for i = minCombinations:size(duplicatedEdges, 1)
                 combinationsEdges = nchoosek(duplicatedEdges,i);
                 for combEdge = 1:size(combinationsEdges, 1)
                     minMatchingEdgesAux = minMatchingEdges;
