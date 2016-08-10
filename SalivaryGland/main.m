@@ -2,6 +2,8 @@
 %Both images have the labels and boundaries of cells
 voronoiOriginal = importdata('test\image_1_Diagram_1_Vonoroi_out.mat');
 voronoiNoiseOriginal = importdata('test\image_1_Diagram_2_Vonoroi_out.mat');
+validClassesOriginal = importdata('test\Valid_cells_image_1.mat');
+
 
 voronoiOriginal = voronoiOriginal.L_original;
 voronoiNoiseOriginal = voronoiNoiseOriginal.L_original;
@@ -20,7 +22,7 @@ voronoiNoise = voronoiNoiseOriginal(initMask:sizeMask, initMask:sizeMask);
 [verticesV, neighboursVerticesV] = getVerticesAndNeighbours(voronoiClass);
 [verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise);
 
-classesToVisualize = 1:100;
+classesToVisualize = validClassesOriginal.general_valid_cells;
 
 [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise, classesToVisualize);
 
