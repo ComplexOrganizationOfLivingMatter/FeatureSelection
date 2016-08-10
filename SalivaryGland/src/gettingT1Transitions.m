@@ -25,13 +25,16 @@ function [ t1Points ] = gettingT1Transitions( edgesBetweenLevels )
             end
             pAux = unique(edgesBetweenLevels(duplicatedEdges(:), :), 'rows');
             if sharingSameVertices > 1 && size(pAux, 1) > 1
-                p1 = unique(pointsConsulted, 'rows')
-                p2 = pAux(1, :)
-                p3 = edgesBetweenLevels(edge, :)
-                p4 = pAux(2, :)
-                
-                
-                t1Points = [t1Points; mean([p1; p2; p3; p4])];
+                if size(unique(pointsConsulted, 'rows'), 1) == 1 % check this!!
+                    for pointConsulted = 1:size(pointsConsulted, 1)
+                        p1 = unique(pointsConsulted(pointConsulted,:), 'rows')
+                        p2 = pAux(1, :);
+                        p3 = edgesBetweenLevels(edge, :);
+                        p4 = pAux(2, :);
+
+                        t1Points = [t1Points; mean([p1; p2; p3; p4])];
+                    end
+                end
             end
         end
         edge = edge + 2;
