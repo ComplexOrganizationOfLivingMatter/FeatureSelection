@@ -39,8 +39,10 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
         numRow = numRow + 2;
     end
     
+    numRow = 1;
     while numRow < size(t1Points, 1)
-        plot3(t1Points(numRow, 2), t1Points(numRow, 1), t1Points(numRow, 3));
+        plot3(t1Points(numRow, 2), t1Points(numRow, 1), t1Points(numRow, 3), 'o');
+        numRow = numRow + 1;
     end
     
 
