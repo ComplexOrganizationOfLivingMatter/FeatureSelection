@@ -23,10 +23,13 @@ voronoiNoise = voronoiNoiseOriginal(initMask:sizeMask, initMask:sizeMask);
 [verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise);
 
 classesToVisualize = validClassesOriginal.general_valid_cells;
+%classesToVisualize = [66, 67, 70, 77];
 
 [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise, classesToVisualize);
 
 %[ edgesBetweenLevelsVerified ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
 
-plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize);
+t1Points = gettingT1Transitions(edgesBetweenLevels);
+
+plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, t1Points);
 

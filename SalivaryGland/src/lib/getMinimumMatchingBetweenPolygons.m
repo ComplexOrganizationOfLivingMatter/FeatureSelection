@@ -26,7 +26,7 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
         verticesVoronoiAdded(rowMin, 1) = verticesVoronoiAdded(rowMin, 1) + 1;
         verticesNoiseAdded(realCol, 1) = verticesNoiseAdded(realCol, 1) + 1;
         
-        minMatchingEdges = [minMatchingEdges; centroidVClass, 2; centroidVNoiseClass, 0]
+        minMatchingEdges = [minMatchingEdges; centroidVClass, 6; centroidVNoiseClass, 0]
     end
     
     %Check if there's useless edges (i.e. linking 2 centroids on each plane
@@ -70,7 +70,7 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     
     %Pedro's proposal
     p0EdgesUnique = unique(minMatchingEdges(minMatchingEdges(:, 3) == 0, :), 'rows');
-    p2EdgesUnique = unique(minMatchingEdges(minMatchingEdges(:, 3) == 2, :), 'rows');
+    p2EdgesUnique = unique(minMatchingEdges(minMatchingEdges(:, 3) == 6, :), 'rows');
     totalEdges = size(minMatchingEdges, 1);
     
     

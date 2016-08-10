@@ -1,4 +1,4 @@
-function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize)
+function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, t1Points)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -9,12 +9,14 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
     for i = 1:size(classesToVisualize, 2)
     	voronoiImageToVisualize = voronoiImageToVisualize + (voronoiClass .* (classesToVisualize(i) == voronoiClass));
     end
+    
+    zAx = 6;
 
     xMaxImage = size(voronoiImageToVisualize, 1);
     yMaxImage = size(voronoiImageToVisualize, 2);
     xImage = [0 xMaxImage; 0 yMaxImage];   %# The x data for the image corners
     yImage = [0 0; xMaxImage yMaxImage];             %# The y data for the image corners
-    zImage = [2 2; 2 2];   %# The z data for the image corners
+    zImage = [zAx zAx; zAx zAx];   %# The z data for the image corners
     surf(xImage,yImage,zImage,...    %# Plot the surface
          'CData', voronoiImageToVisualize,...
          'FaceColor','texturemap');
@@ -36,6 +38,11 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
         plot3(edgesBetweenLevels(numRow:numRow+1,2), edgesBetweenLevels(numRow:numRow+1,1), edgesBetweenLevels(numRow:numRow+1,3), 'LineWidth', 5);
         numRow = numRow + 2;
     end
+    
+    while numRow < size(t1Points, 1)
+        plot3(t1Points(numRow, 2), t1Points(numRow, 1), t1Points(numRow, 3));
+    end
+    
 
 %     missingVerticesNum = find(verticesVAdded == 0);
 %     missingVertices = verticesV(missingVerticesNum, :);
