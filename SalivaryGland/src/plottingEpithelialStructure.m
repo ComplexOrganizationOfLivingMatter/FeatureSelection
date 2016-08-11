@@ -1,4 +1,4 @@
-function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, t1Points)
+function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, t1Points, edgesMidPlane)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -38,6 +38,12 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
     while numRow < size(edgesBetweenLevels,1)
         plot3(edgesBetweenLevels(numRow:numRow+1,2), edgesBetweenLevels(numRow:numRow+1,1), edgesBetweenLevels(numRow:numRow+1,3), 'LineWidth', 5);
         numRow = numRow + 2;
+    end
+    
+    numRow = 1;
+    while numRow < size(edgesMidPlane, 1)
+       plot3(edgesMidPlane(numRow:numRow+1,2), edgesMidPlane(numRow:numRow+1,1), edgesMidPlane(numRow:numRow+1,3), 'LineWidth', 2, 'color', 'black');
+       numRow = numRow + 2;
     end
     
 %     numRow = 1;
