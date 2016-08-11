@@ -23,5 +23,7 @@ classesToVisualize = validClassesOriginal.general_valid_cells;
 
 [t1Points, edgesBetweenLevels] = gettingT1Transitions(edgesBetweenLevels);
 
+midPlanePoints = getIntersectingPlane(edgesBetweenLevels);
+
 plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, t1Points);
 
