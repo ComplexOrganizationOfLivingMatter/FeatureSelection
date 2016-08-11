@@ -5,7 +5,8 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
     %plot image
     figure;
     %plot3(edgesBetweenLevels(:,1), edgesBetweenLevels(:,2), edgesBetweenLevels(:,3));xMaxImage = size(voronoiImage, 1);
-    voronoiImageToVisualize = zeros(size(voronoiClass, 1));
+    %Here we paint only the cells found in classesToVisualize
+    voronoiImageToVisualize = zeros(size(voronoiClass, 1), size(voronoiClass, 2));
     for i = 1:size(classesToVisualize, 2)
     	voronoiImageToVisualize = voronoiImageToVisualize + (voronoiClass .* (classesToVisualize(i) == voronoiClass));
     end
@@ -14,21 +15,21 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
 
     xMaxImage = size(voronoiImageToVisualize, 1);
     yMaxImage = size(voronoiImageToVisualize, 2);
-    xImage = [0 xMaxImage; 0 yMaxImage];   %# The x data for the image corners
-    yImage = [0 0; xMaxImage yMaxImage];             %# The y data for the image corners
+    xImage = [0 yMaxImage; 0 yMaxImage];   %# The x data for the image corners
+    yImage = [0 0; xMaxImage xMaxImage];             %# The y data for the image corners
     zImage = [zAx zAx; zAx zAx];   %# The z data for the image corners
     surf(xImage,yImage,zImage,...    %# Plot the surface
          'CData', voronoiImageToVisualize,...
          'FaceColor','texturemap');
     hold on;
-    voronoiNoiseToVisualize = zeros(size(voronoiNoise, 1));
+    voronoiNoiseToVisualize = zeros(size(voronoiNoise, 1), size(voronoiNoise, 2));
     for i = 1:size(classesToVisualize, 2)
     	voronoiNoiseToVisualize = voronoiNoiseToVisualize + (voronoiNoise .* (classesToVisualize(i) == voronoiNoise));
     end
-    xMaxImage = size(voronoiImageToVisualize, 1);
-    yMaxImage = size(voronoiImageToVisualize, 2);
-    xImage = [0 xMaxImage; 0 yMaxImage];   %# The x data for the image corners
-    yImage = [0 0; xMaxImage yMaxImage];             %# The y data for the image corners
+    xMaxImage = size(voronoiNoiseToVisualize, 1);
+    yMaxImage = size(voronoiNoiseToVisualize, 2);
+    xImage = [0 yMaxImage; 0 yMaxImage];   %# The x data for the image corners
+    yImage = [0 0; xMaxImage xMaxImage];             %# The y data for the image corners
     zImage = [0 0; 0 0];   %# The z data for the image corners
     surf(xImage,yImage,zImage,...    %# Plot the surface
          'CData',voronoiNoiseToVisualize,...
@@ -61,6 +62,8 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
 %     end
 
     alpha(0.3);
+    axis([513 1024 0 512])
+    colormap colorcube
 
     hold off;
 

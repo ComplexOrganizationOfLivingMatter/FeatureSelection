@@ -1,4 +1,4 @@
-function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img )
+function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img, borderCells )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -9,7 +9,7 @@ function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img )
     radio = 3;
     se = strel('square',radio);
     for row = 1:size(img, 1)
-        for col = 1:size(img, 2)
+        for col = round(1*size(img, 2)/6):round(5*size(img, 2)/6)
             if img(row, col) == 0 %border of polygons
                 imgAux = img;
                 imgAux(row, col) = maxClass;
@@ -19,9 +19,17 @@ function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img )
                 neighbours = unique(imgAux(pixels_Neigh));
                 neighbours = neighbours(neighbours ~= maxClass & neighbours ~= 0);
                 if size(neighbours, 1) > 2
-                    vertices{countVertices} = [row, col];
-                    neighbours_vertices{countVertices} = neighbours;
-                    countVertices = countVertices + 1;
+                    if col > size(img, 2)/3 && col <= 2*size(img, 2)*3
+                        vertices{countVertices} = [row, col];
+                        neighbours_vertices{countVertices} = neighbours;
+                        countVertices = countVertices + 1;
+                    else
+                        if sum(ismember(borderCells, neighbours)) > 0
+                            vertices{countVertices} = [row, col];
+                            neighbours_vertices{countVertices} = neighbours;
+                            countVertices = countVertices + 1;
+                        end
+                    end
                 end
             end
         end
