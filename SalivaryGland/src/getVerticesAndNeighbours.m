@@ -19,7 +19,7 @@ function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img, bord
                 neighbours = unique(imgAux(pixels_Neigh));
                 neighbours = neighbours(neighbours ~= maxClass & neighbours ~= 0);
                 if size(neighbours, 1) > 2
-                    if col > size(img, 2)/3 && col <= 2*size(img, 2)*3
+                    if col > size(img, 2)/3 && col <= 2*size(img, 2)/3
                         vertices{countVertices} = [row, col];
                         neighbours_vertices{countVertices} = neighbours;
                         countVertices = countVertices + 1;
