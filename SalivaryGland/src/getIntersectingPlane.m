@@ -1,6 +1,8 @@
-function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getIntersectingPlane( edgesBetweenLevels, verticesV, verticesVNoise, neighboursVerticesV, neighboursVerticesVNoise)
+function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getIntersectingPlane( edgesBetweenLevels, verticesV, verticesVNoise, neighboursVerticesV, neighboursVerticesVNoise, img)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+    endPixelX = round(5*size(img, 2)/6);
+    initPixelX = round(1*size(img, 2)/6);
     edge = 1;
     midPlanePoints = [];
     repeatedPointsWithNeighbours = {};
@@ -40,13 +42,15 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
     
     edgesMidPlane = [];
     for point = 1:size(midPlanePoints, 1)
-        if midPlanePoints(point, 2) > 512 && midPlanePoints(point, 2) <= 1024
-            pointNeighbours = neighboursMidPlanePoints{point};
-            for contigousPoint = 1:size(neighboursMidPlanePoints, 1)
-                if midPlanePoints(contigousPoint, 2) > 512 && midPlanePoints(contigousPoint, 2) <= 1024
-                    if size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) >= 2
-                        if ismember(midPlanePoints(contigousPoint, :), midPlanePoints(point, :), 'rows') == 0
-                            edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+        if midPlanePoints(point, 2) > initPixelX && midPlanePoints(point, 2) <= endPixelX %% the portion we want
+            pointNeighbours = neighboursMidPlanePoints{point}; %Neighbours of the point
+            for contigousPoint = 1:size(neighboursMidPlanePoints, 1) %%Contigous points of the point
+                if midPlanePoints(contigousPoint, 2) > initPixelX && midPlanePoints(contigousPoint, 2) <= endPixelX %%The portion we want
+                    if size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) >= 2 %if they share more than 2 classes, it is a contigous vertex
+                        if ismember(midPlanePoints(contigousPoint, :), midPlanePoints(point, :), 'rows') == 0 %% if is not the same pixel
+                            if abs(midPlanePoints(contigousPoint, 2) - midPlanePoints(point, 2)) < (endPixelX - initPixelX)/10%if it is not too far
+                                edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                            end
                         end
                     end
                 end
