@@ -26,7 +26,7 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
         verticesVoronoiAdded(rowMin, 1) = verticesVoronoiAdded(rowMin, 1) + 1;
         verticesNoiseAdded(realCol, 1) = verticesNoiseAdded(realCol, 1) + 1;
         
-        minMatchingEdges = [minMatchingEdges; centroidVClass, 6; centroidVNoiseClass, 0]
+        minMatchingEdges = [minMatchingEdges; centroidVClass, 6; centroidVNoiseClass, 0];
     end
     
     %Check if there's useless edges (i.e. linking 2 centroids on each plane
