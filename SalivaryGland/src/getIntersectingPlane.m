@@ -61,8 +61,15 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
                                     edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
                                 end
                             else %a point with an intersection
-                                if size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) >= 2 %if they share more than 2 classes, it is a contigous vertex
+                                if size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) > 2 %if they share more than 2 classes, it is a contigous vertex
                                     edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                                elseif size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) == 2 %sharing 2 classe
+                                    if min(size(pointNeighbours, 2), size(neighboursMidPlanePoints{contigousPoint}, 2)) == 3 % and one of them is a point without intersection
+                                        edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                                    else
+                                        contigousPoint
+                                        %edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                                    end
                                 end
                             end
                         end
