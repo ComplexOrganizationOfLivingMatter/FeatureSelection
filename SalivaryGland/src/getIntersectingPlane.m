@@ -28,17 +28,20 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
         end
         edge = edge + 2;
     end
-    repeatedPoints = cellfun(@(v) v(1:3), repeatedPointsWithNeighbours(1,:), 'UniformOutput', false);
-    repeatedPoints = repeatedPoints';
-    repeatedPoints = vertcat(repeatedPoints{:});
-    uniqueRepeatedPoints = unique(repeatedPoints, 'rows');
-    for point = 1:size(uniqueRepeatedPoints, 1)
-        indicesRepeats = ismember(repeatedPoints, uniqueRepeatedPoints(point, :), 'rows');
-        %It returns the neighbours and points of the indices
-        neighboursAndPoints = cellfun(@(v) v(:), repeatedPointsWithNeighbours(1,indicesRepeats), 'UniformOutput', false);
-        neighbours = cellfun(@(v) v(4:size(v,1)), neighboursAndPoints(1,:), 'UniformOutput', false);
-        neighboursMidPlanePoints{end+1} = unique(vertcat(neighbours{:}))';
-        midPlanePoints = [midPlanePoints; uniqueRepeatedPoints(point, :)];
+    
+    if size(repeatedPointsWithNeighbours, 1) > 0
+        repeatedPoints = cellfun(@(v) v(1:3), repeatedPointsWithNeighbours(1,:), 'UniformOutput', false);
+        repeatedPoints = repeatedPoints';
+        repeatedPoints = vertcat(repeatedPoints{:});
+        uniqueRepeatedPoints = unique(repeatedPoints, 'rows');
+        for point = 1:size(uniqueRepeatedPoints, 1)
+            indicesRepeats = ismember(repeatedPoints, uniqueRepeatedPoints(point, :), 'rows');
+            %It returns the neighbours and points of the indices
+            neighboursAndPoints = cellfun(@(v) v(:), repeatedPointsWithNeighbours(1,indicesRepeats), 'UniformOutput', false);
+            neighbours = cellfun(@(v) v(4:size(v,1)), neighboursAndPoints(1,:), 'UniformOutput', false);
+            neighboursMidPlanePoints{end+1} = unique(vertcat(neighbours{:}))';
+            midPlanePoints = [midPlanePoints; uniqueRepeatedPoints(point, :)];
+        end
     end
     
     midPlanePoints;
