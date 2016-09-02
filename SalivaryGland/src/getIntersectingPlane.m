@@ -45,11 +45,18 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
         if midPlanePoints(point, 2) > initPixelX && midPlanePoints(point, 2) <= endPixelX %% the portion we want
             pointNeighbours = neighboursMidPlanePoints{point}; %Neighbours of the point
             for contigousPoint = 1:size(neighboursMidPlanePoints, 1) %%Contigous points of the point
-                if midPlanePoints(contigousPoint, 2) > initPixelX && midPlanePoints(contigousPoint, 2) <= endPixelX %%The portion we want
-                    if size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) >= 2 %if they share more than 2 classes, it is a contigous vertex
-                        if ismember(midPlanePoints(contigousPoint, :), midPlanePoints(point, :), 'rows') == 0 %% if is not the same pixel
-                            if abs(midPlanePoints(contigousPoint, 2) - midPlanePoints(point, 2)) < (endPixelX - initPixelX)/10%if it is not too far
-                                edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                if ismember(midPlanePoints(contigousPoint, :), midPlanePoints(point, :), 'rows') == 0 %% if is not the same pixel
+                    if midPlanePoints(contigousPoint, 2) > initPixelX && midPlanePoints(contigousPoint, 2) <= endPixelX %%The portion we want
+                        if abs(midPlanePoints(contigousPoint, 2) - midPlanePoints(point, 2)) < (endPixelX - initPixelX)/10 %if it is not too far
+                            maxNeighbours = max(size(pointNeighbours, 2), size(neighboursMidPlanePoints{contigousPoint}, 2));
+                            if maxNeighbours == 3 % a normal point
+                                if size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) >= 2 %if they share more than 2 classes, it is a contigous vertex
+                                    edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                                end
+                            else %a point with an intersection
+                                if size(intersect(neighboursMidPlanePoints{contigousPoint}, pointNeighbours), 2) >= 2 %if they share more than 2 classes, it is a contigous vertex
+                                    edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                                end
                             end
                         end
                     end
