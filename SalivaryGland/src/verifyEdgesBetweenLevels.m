@@ -10,7 +10,7 @@ function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels )
         i = i + 2;
     end
     
-    while distances(isnan(distances(:)) == 0) > 0
+    while isempty(distances(isnan(distances(:)) == 0)) == 0
         maxDistance = max(distances(:));
         edge = find(maxDistance == distances, 1);
         distances(edge) = [];
