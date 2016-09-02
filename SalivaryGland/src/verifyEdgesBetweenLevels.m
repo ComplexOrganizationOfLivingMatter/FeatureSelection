@@ -27,8 +27,8 @@ function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels )
                 if size(consultingEdge, 1) > 1 %there's a cycle, remove the edge between the duplicates
                     %We only want real edges to erase
                     if duplicateEdges(duplicate) == edge + 1
-                        edge
-                        duplicateEdges(duplicate)
+                        %edge
+                        %duplicateEdges(duplicate)
                         
                         edgesBetweenLevels([edge; duplicateEdges(duplicate)], :) = [];
                         break
