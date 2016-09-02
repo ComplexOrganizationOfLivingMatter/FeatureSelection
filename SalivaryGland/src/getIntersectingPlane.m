@@ -20,7 +20,11 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
             neighboursPlaneV = neighboursVerticesV(ismember(verticesV, edgesBetweenLevels(edge, 1:2), 'rows'), :);
             neighboursPlaneVNoise = neighboursVerticesVNoise(ismember(verticesVNoise, edgesBetweenLevels(edge+1, 1:2), 'rows'), :);
             midPlanePoints = [midPlanePoints; round(mean(edgesBetweenLevels(edge:edge+1, :)))];
-            neighboursMidPlanePoints{end+1} = union(neighboursPlaneV, neighboursPlaneVNoise);
+            if size(neighboursPlaneV, 2) > size(neighboursPlaneVNoise, 2)
+                neighboursMidPlanePoints{end+1} = neighboursPlaneV;
+            else
+                neighboursMidPlanePoints{end+1} = neighboursPlaneVNoise;
+            end
         end
         edge = edge + 2;
     end
