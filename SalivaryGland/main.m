@@ -27,5 +27,8 @@ classesToVisualize = validClassesOriginal.general_valid_cells;
 
 edgesMidPlane = remove3Cycle(midPlanePoints, edgesMidPlane);
 
-plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane);
+midPlaneImage = paintImageMidPlane(midPlanePoints, edgesMidPlane, voronoiClass);
+
+plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane, midPlaneImage);
+
 
