@@ -27,6 +27,9 @@ function [ midPlaneImage ] = paintImageMidPlane(midPlanePoints, edgesMidPlane, v
         
         numEdge = numEdge + 2;
     end
+    
+    midPlaneImage = ~midPlaneImage;
 
+    
 end
 
