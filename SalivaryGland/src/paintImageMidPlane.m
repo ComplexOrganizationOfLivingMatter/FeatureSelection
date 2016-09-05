@@ -18,8 +18,8 @@ function [ midPlaneImage ] = paintImageMidPlane(midPlanePoints, edgesMidPlane, v
         minHeight = min(point1(1), point2(1));
         minWidth = min(point1(2), point2(2));
         
-        for i = 1:(maxHeight - minHeight)
-           for j = 1:(maxWidth - minWidth)
+        for i = 1:size(imageEdge, 1)
+           for j = 1:size(imageEdge, 2)
                midPlaneImage(i + minHeight, j + minWidth) = imageEdge(i, j) | midPlaneImage(i + minHeight, j + minWidth);
            end
         end
