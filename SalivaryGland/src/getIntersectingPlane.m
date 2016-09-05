@@ -78,6 +78,7 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
             end
         end
     end
-    %edgesMidPlane = unique(midPlanePoints, 'rows');
+    
+    
 end
 

@@ -35,21 +35,30 @@ function [ edgesMidPlane ] = remove3Cycle( midPlanePoints, edgesMidPlane )
                                 if ismember(edgesMidPlane(indexInitCycleEdge, :), edgesMidPlane(indexCycleEdge, :), 'rows') == 0 %Is not the same point
                                     if ismember(edgesMidPlane(indexInitCycleEdge, :), midPlanePoints(midPlanePoint, :), 'rows') == 1 %Closes the cycle?
                                        %Then remove the farer one
-                                       distance1 = distancesBetweenEdges([midPlanePoints(midPlanePoint, :); edgesMidPlane(indexCycleEdge, :)]);
-                                       distance2 = distancesBetweenEdges([edgesMidPlane(midCycleEdge, :); edgesMidPlane(indexCycleEdge, :)]);
-                                       distance3 = distancesBetweenEdges([edgesMidPlane(midCycleEdge, :); midPlanePoints(midPlanePoint, :)]);
+                                    
+                                       %edgesAux = find(all(bsxfun(@eq, edgesMidPlane(indexCycleEdge, :), edgesMidPlane(:, :)), 2));
+%                                        duplicatedEdges(dupl)
+%                                        midCycleEdge
+%                                        initOfCycleEdges(initEdge)
+%                                        indexInitCycleEdge
+%                                        endOfCycleEdges(cycleEdge)
+%                                        indexCycleEdge
+                                       
+                                       distance1 = distancesBetweenEdges([edgesMidPlane(duplicatedEdges(dupl), :); edgesMidPlane(midCycleEdge, :)]); %First edge
+                                       distance3 = distancesBetweenEdges([edgesMidPlane(initOfCycleEdges(initEdge), :); edgesMidPlane(indexInitCycleEdge, :)]); %Third edge
+                                       distance2 = distancesBetweenEdges([edgesMidPlane(endOfCycleEdges(cycleEdge), :); edgesMidPlane(indexCycleEdge, :)]); %Second edge
                                        
                                        if distance1 > distance2
                                            if distance1 > distance3
-                                               edgesMidPlane([indexInitCycleEdge; indexCycleEdge], :) = [];
+                                               edgesMidPlane([duplicatedEdges(dupl); midCycleEdge], :) = [];
                                            else
-                                               edgesMidPlane([midCycleEdge; indexInitCycleEdge], :) = [];
+                                               edgesMidPlane([initOfCycleEdges(initEdge); indexInitCycleEdge], :) = [];
                                            end
                                        else
                                           if distance2 > distance3
-                                              edgesMidPlane([midCycleEdge; indexCycleEdge], :) = [];
+                                              edgesMidPlane([endOfCycleEdges(cycleEdge); indexCycleEdge], :) = [];
                                           else
-                                              edgesMidPlane([midCycleEdge; indexInitCycleEdge], :) = [];
+                                              edgesMidPlane([initOfCycleEdges(initEdge); indexInitCycleEdge], :) = [];
                                           end
                                        end
                                        
