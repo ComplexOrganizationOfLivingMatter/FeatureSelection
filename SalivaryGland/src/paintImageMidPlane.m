@@ -41,11 +41,7 @@ function [ midPlaneImage ] = paintImageMidPlane(midPlanePoints, edgesMidPlane, v
     for numCentroid = 1:size(centroids, 1)
         cent = centroids(numCentroid, :);
         numClass = voronoiClass(cent(2), cent(1));
-        if numClass ~= 0 
-            midPlaneImage(midPlaneLabelled == midPlaneLabelled(cent(2), cent(1))) = numClass;
-        else
-            1
-        end
+        midPlaneImage(midPlaneLabelled == midPlaneLabelled(cent(2), cent(1))) = numClass;
     end
     midPlaneImage(midPlaneImage == 1) = 0;
 end
