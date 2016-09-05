@@ -19,11 +19,13 @@ classesToVisualize = validClassesOriginal.general_valid_cells;
 
 [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise, classesToVisualize);
 
-%[ edgesBetweenLevelsVerified ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
+[ edgesBetweenLevels ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
 
 [t1Points, edgesBetweenLevels] = gettingT1Transitions(edgesBetweenLevels);
 
 [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ]  = getIntersectingPlane(edgesBetweenLevels, verticesV, verticesVNoise, neighboursVerticesV, neighboursVerticesVNoise, voronoiClass);
+
+edgesMidPlane = remove3Cycle(midPlanePoints, edgesMidPlane);
 
 plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane);
 
