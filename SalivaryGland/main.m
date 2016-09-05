@@ -29,6 +29,21 @@ edgesMidPlane = remove3Cycle(midPlanePoints, edgesMidPlane);
 
 midPlaneImage = paintImageMidPlane(midPlanePoints, edgesMidPlane, voronoiClass);
 
+%testing
+neighboursMidPlanePoints = cell2mat(neighboursMidPlanePoints)
+figure;
+for classToVisualize = 1:size(classesToVisualize, 2)
+    
+    verticesToVisualize = paintPolyhedron( neighboursVerticesV, verticesV, classesToVisualize, classToVisualize);
+    verticesToVisualize3 = paintPolyhedron( neighboursMidPlanePoints, midPlanePoints, classesToVisualize, classToVisualize);
+    paintAlphaShape(verticesToVisualize3, verticesToVisualize);
+    
+    verticesToVisualize2 = paintPolyhedron( neighboursVerticesVNoise, verticesVNoise, classesToVisualize, classToVisualize);
+    paintAlphaShape(verticesToVisualize3, verticesToVisualize2);
+end
+
+
+
 plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane, midPlaneImage);
 
 
