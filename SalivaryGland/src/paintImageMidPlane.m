@@ -28,30 +28,25 @@ function [ midPlaneImage ] = paintImageMidPlane(midPlanePoints, edgesMidPlane, v
         numEdge = numEdge + 2;
     end
     
-    midPlaneLabelled = watershed(1 - midPlaneImage, 4);
+    midPlaneLabelled = watershed(midPlaneImage, 4);
     centroids = regionprops(midPlaneLabelled);
     centroidsDS = struct2dataset(centroids);
     centroids = centroidsDS.Centroid;
     centroids = round(centroids(:,:));
-    centroids = centroids(centroidsDS.Area > 1, :);
+    %centroids = centroids(centroidsDS.Area > 1000, :);
     centroids = centroids(centroids(:, 1) > initPixelX & centroids(:, 1) < endPixelX, :);
+    
+    %midPlaneImage = ~midPlaneImage;
     
     for numCentroid = 1:size(centroids, 1)
         cent = centroids(numCentroid, :);
         numClass = voronoiClass(cent(2), cent(1));
         if numClass ~= 0 
-            midPlaneImage(midPlaneLabelled' == midPlaneLabelled(cent(2), cent(1))') = numClass;
+            midPlaneImage(midPlaneLabelled == midPlaneLabelled(cent(2), cent(1))) = numClass;
+        else
+            1
         end
     end
-    figure
-    imshow(midPlaneImage)
-    
-    
-%     numClasses = max(voronoiClass(:));
-%     for numClass = 1:numClasses
-%         [xs, ys] = find(voronoiClass == numClass);
-%         pointsOfClass = [xs, ys, ones(size(xs, 1))*3];
-%         find(all(bsxfun(@eq, edgesMidPlane(duplicatedEdges(dupl) + 1, :), edgesMidPlane(:, :)), 2));
-%     end
+    midPlaneImage(midPlaneImage == 1) = 0;
 end
 
