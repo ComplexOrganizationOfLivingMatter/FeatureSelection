@@ -4,7 +4,7 @@ function [ midPlaneImage ] = paintImageMidPlane(midPlanePoints, edgesMidPlane, v
     endPixelX = round(5*size(voronoiClass, 2)/6);
     initPixelX = round(1*size(voronoiClass, 2)/6);
     midPlaneImage = zeros(size(voronoiClass, 1), size(voronoiClass, 2));
-    edgesMidPlane = round(edgesMidPlane(:, :));
+    
     
     numEdge = 1;
     while numEdge <= size(edgesMidPlane, 1)

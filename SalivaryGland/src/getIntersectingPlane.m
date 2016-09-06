@@ -78,7 +78,7 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
             end
         end
     end
-    
-    
+    edgesMidPlane = round(edgesMidPlane(:, :));
+    midPlanePoints = round(midPlanePoints(:, :));
 end
 
