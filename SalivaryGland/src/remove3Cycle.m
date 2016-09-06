@@ -82,6 +82,6 @@ function [ edgesMidPlane ] = remove3Cycle( midPlanePoints, edgesMidPlane )
         midPlanePoint = midPlanePoint + 1;
     end
 
-    edgesMidPlane = round(edgesMidPlane(:, :));
+    
 end
 
