@@ -34,15 +34,6 @@ function [ edgesMidPlane ] = remove3Cycle( midPlanePoints, edgesMidPlane )
                                 end
                                 if ismember(edgesMidPlane(indexInitCycleEdge, :), edgesMidPlane(indexCycleEdge, :), 'rows') == 0 %Is not the same point
                                     if ismember(edgesMidPlane(indexInitCycleEdge, :), midPlanePoints(midPlanePoint, :), 'rows') == 1 %Closes the cycle?
-                                       %Then remove the farer one
-                                    
-                                       %edgesAux = find(all(bsxfun(@eq, edgesMidPlane(indexCycleEdge, :), edgesMidPlane(:, :)), 2));
-%                                        duplicatedEdges(dupl)
-%                                        midCycleEdge
-%                                        initOfCycleEdges(initEdge)
-%                                        indexInitCycleEdge
-%                                        endOfCycleEdges(cycleEdge)
-%                                        indexCycleEdge
                                        
                                        distance1 = distancesBetweenEdges([edgesMidPlane(duplicatedEdges(dupl), :); edgesMidPlane(midCycleEdge, :)]); %First edge
                                        distance3 = distancesBetweenEdges([edgesMidPlane(initOfCycleEdges(initEdge), :); edgesMidPlane(indexInitCycleEdge, :)]); %Third edge
