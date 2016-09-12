@@ -3,9 +3,9 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
 %   Detailed explanation goes here
 
     %FinalPixel of the x axis
-    endPixelX = round(5*size(voronoiClass, 2)/6);
+    endPixelX = round(9*size(voronoiClass, 2)/12);
     %Initial Pixel of the x axis
-    initPixelX = round(1*size(voronoiClass, 2)/6);
+    initPixelX = round(3*size(voronoiClass, 2)/12);
     verticesVAdded = zeros(size(verticesV,1), 1);
     verticesVNoiseAdded = zeros(size(verticesVNoise, 1), 1);
 
@@ -33,42 +33,25 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
             
         end
         
-        %In the case they don't match all the vertices of one class to the
-        %other, one vertex (or more) should be linked to more than one
-        %vertex.
-        if size(centroidsOfVoronoiClass, 1) == size(centroidsOfVoronoiNoiseClass, 1) && size(centroidsOfVoronoiClass, 1) > 0
-            if find(class == classesToVisualize, 1) > 0
+        if find(class == classesToVisualize, 1) > 0
+            if ismember(class, borderCells)
+                %We split the class found in both borders (which will be 2
+                %polygons
+                %First border
+                centroidsOfVoronoiClass1 = centroidsOfVoronoiClass(centroidsOfVoronoiClass(:, 2) > size(voronoiClass, 2)/2, :);
+                centroidsOfVoronoiNoiseClass2 = centroidsOfVoronoiNoiseClass(centroidsOfVoronoiNoiseClass(:, 2) > size(voronoiClass, 2)/2, :);
+                matching1 = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass1, centroidsOfVoronoiNoiseClass2);
+                edgesBetweenLevels = [edgesBetweenLevels; matching1];
+                
+                %Second border
+                centroidsOfVoronoiClass1 = centroidsOfVoronoiClass(centroidsOfVoronoiClass(:, 2) <= size(voronoiClass, 2)/2, :);
+                centroidsOfVoronoiNoiseClass2 = centroidsOfVoronoiNoiseClass(centroidsOfVoronoiNoiseClass(:, 2) <= size(voronoiClass, 2)/2, :);
+                matching2 = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass1, centroidsOfVoronoiNoiseClass2);
+                edgesBetweenLevels = [edgesBetweenLevels; matching2];
+            else
                 matching = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass);
                 edgesBetweenLevels = [edgesBetweenLevels; matching];
             end
-        else
-            if find(class == classesToVisualize, 1) > 0
-                matching = getMinimumMatchingBetweenPolygons(centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass);
-                edgesBetweenLevels = [edgesBetweenLevels; matching];
-            end
-%             %calculate distance between the current point and all near him.
-%             distancePoints = pdist([centroidsOfVoronoiClass; centroidsOfVoronoiNoiseClass]);
-%             %Square form
-%             distancePoints = squareform(distancePoints);
-%             %Don't want the points with themselves
-%             %Don't want points within the same plane
-%             distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiClass,1)) = NaN;
-%             rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
-%             colsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
-%             distancePoints(rowsAux, colsAux) = NaN;
-%             
-%             for vertex = 1:max(size(centroidsOfVoronoiClass,1), size(centroidsOfVoronoiNoiseClass,1))
-%                 minimumDistance = min(distancePoints(:));
-%                 [rowMin, colMin] = find(distancePoints == minimumDistance, 1);
-%                 distancePoints(rowMin, colMin) = NaN;
-%                 distancePoints(colMin, rowMin) = NaN;
-%                 
-%                 verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) = verticesVAdded(verticesVoronoiOfClassRows(min(rowMin, colMin))) + 1;
-%                 verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) = verticesVNoiseAdded(verticesVoronoiNoiseOfClassRows(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1))) + 1;
-%                 %add to the list of edges
-%                 edgesBetweenLevels = [edgesBetweenLevels; centroidsOfVoronoiClass(min(rowMin, colMin), :), 2; centroidsOfVoronoiNoiseClass(max(rowMin, colMin)-size(centroidsOfVoronoiClass,1), :), 0];
-%             end
-%             edgesBetweenLevels;
         end
     end
 
