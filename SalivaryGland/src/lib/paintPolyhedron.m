@@ -1,5 +1,5 @@
 function [ verticesToVisualize ] = paintPolyhedron( neighboursVerticesV, verticesV, classesToVisualize, classToVisualize)
-%UNTITLED4 Summary of this function goes here
+%PAINTPOLYHEDRON Summary of this function goes here
 %   Detailed explanation goes here
     [x, ~] = find(neighboursVerticesV == classesToVisualize(classToVisualize));
     vertices = verticesV(unique(x), :);

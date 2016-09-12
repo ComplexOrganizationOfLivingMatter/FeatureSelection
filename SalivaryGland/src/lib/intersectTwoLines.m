@@ -1,5 +1,5 @@
 function [ xintersect, yintersect ] = intersectTwoLines( line1, line2 )
-%UNTITLED6 Summary of this function goes here
+%INTERSECTTWOLINES Summary of this function goes here
 %   Detailed explanation goes here
     slope = @(line) (line(2,2) - line(1,2))/(line(2,1) - line(1,1));
     m1 = slope(line1)

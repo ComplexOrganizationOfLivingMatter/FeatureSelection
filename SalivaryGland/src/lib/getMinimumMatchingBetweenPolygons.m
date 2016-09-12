@@ -1,20 +1,23 @@
 function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass )
-%UNTITLED8 Summary of this function goes here
+%GETMINIMUMMATCHINGBETWEENPOLYGONS Summary of this function goes here
 %   Detailed explanation goes here
+
     %calculate distance between the current point and all near him.
     distancePoints = pdist([centroidsOfVoronoiClass; centroidsOfVoronoiNoiseClass]);
-    %Square form
+    %Square matrix
     distancePoints = squareform(distancePoints);
+    
+    rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));
+    
     %Don't want the points with themselves
     %Don't want points within the same plane
-    
-    rowsAux = size(centroidsOfVoronoiClass,1)+1:(size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1));  
     distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiClass,1)) = NaN;
     distancePoints(rowsAux(:), :) = NaN;
     
     verticesVoronoiAdded = zeros(size(centroidsOfVoronoiClass, 1) , 1);
     verticesNoiseAdded = zeros(size(centroidsOfVoronoiNoiseClass, 1), 1);
     minMatchingEdges = [];
+    %Run until there's some vertex without a pair
     while min(verticesVoronoiAdded(:,:)) == 0 || min(verticesNoiseAdded(:,:)) == 0
         minValue = min(distancePoints(:));
         [rowMin, colMin] = find(distancePoints == minValue, 1);

@@ -1,5 +1,5 @@
 function [ Neighbour_cell, N_Neighbour_cell ] = neighboursDetection( Img )
-%UNTITLED Summary of this function goes here
+%NEIGHBOURSDETECTION Summary of this function goes here
 %   Detailed explanation goes here
 %
 %   

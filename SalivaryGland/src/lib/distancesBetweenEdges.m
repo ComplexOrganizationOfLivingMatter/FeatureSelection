@@ -1,5 +1,5 @@
 function [ distances ] = distancesBetweenEdges( edges )
-%UNTITLED Summary of this function goes here
+%DISTANCESBETWEENEDGES Summary of this function goes here
 %   Detailed explanation goes here
     distances = zeros(size(edges, 1)/2, 1);
     i = 1;

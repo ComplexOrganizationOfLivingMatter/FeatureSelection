@@ -1,5 +1,5 @@
-function [ ] = paintAlphaShape( verticesToVisualize3, verticesToVisualize)
-%UNTITLED5 Summary of this function goes here
+function [ ] = paintAlphaShape( verticesToVisualize3, verticesToVisualize, classToVisualize)
+%PAINTALPHASHAPE Summary of this function goes here
 %   Detailed explanation goes here
     p = alphaShape([verticesToVisualize3; verticesToVisualize]);
     p.Alpha

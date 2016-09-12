@@ -1,5 +1,5 @@
 function [] = paintImageAtPlaneZ(voronoiImage, zAx, classesToVisualize)
-%UNTITLED3 Summary of this function goes here
+%PAINTIMAGEATPLANEZ Summary of this function goes here
 %   Detailed explanation goes here
     
      %Here we paint only the cells found in classesToVisualize

@@ -1,5 +1,5 @@
 function [ t1Points, edgesBetweenLevelsAux ] = gettingT1Transitions( edgesBetweenLevels )
-%UNTITLED3 Summary of this function goes here
+%GETTINGT1TRANSITIONS Summary of this function goes here
 %   Detailed explanation goes here
     edge = 1;
     t1Points = [];

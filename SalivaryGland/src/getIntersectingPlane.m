@@ -1,5 +1,5 @@
 function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getIntersectingPlane( edgesBetweenLevels, verticesV, verticesVNoise, neighboursVerticesV, neighboursVerticesVNoise, img)
-%UNTITLED Summary of this function goes here
+%GETINTERSECTINGPLANE Summary of this function goes here
 %   Detailed explanation goes here
     endPixelX = round(5*size(img, 2)/6);
     initPixelX = round(1*size(img, 2)/6);

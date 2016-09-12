@@ -1,6 +1,7 @@
 function [ edgesMidPlane ] = remove3Cycle( midPlanePoints, edgesMidPlane )
-%UNTITLED Summary of this function goes here
+%REMOVE3CYCLE Summary of this function goes here
 %   Detailed explanation goes here
+
     %Removing cycles of 3 vertices
     midPlanePoint = 1;
     while midPlanePoint <= size(midPlanePoints, 1)%First edge

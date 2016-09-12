@@ -1,5 +1,5 @@
 function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img, borderCells )
-%UNTITLED2 Summary of this function goes here
+%GETVERTICESANDNEIGHBOURS Summary of this function goes here
 %   Detailed explanation goes here
 %
 %   Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez

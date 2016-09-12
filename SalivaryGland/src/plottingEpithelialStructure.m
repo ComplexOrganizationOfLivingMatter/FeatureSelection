@@ -20,11 +20,11 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
     
      
     %------------ edges and points ---------------%
-%     numRow = 1;
-%     while numRow < size(edgesBetweenLevels,1)
-%         plot3(edgesBetweenLevels(numRow:numRow+1,2), edgesBetweenLevels(numRow:numRow+1,1), edgesBetweenLevels(numRow:numRow+1,3), 'LineWidth', 5);
-%         numRow = numRow + 2;
-%     end
+    numRow = 1;
+    while numRow < size(edgesBetweenLevels,1)
+        plot3(edgesBetweenLevels(numRow:numRow+1,2), edgesBetweenLevels(numRow:numRow+1,1), edgesBetweenLevels(numRow:numRow+1,3), 'LineWidth', 2);
+        numRow = numRow + 2;
+    end
     
 %     numRow = 1;
 %     while numRow < size(edgesMidPlane, 1)
