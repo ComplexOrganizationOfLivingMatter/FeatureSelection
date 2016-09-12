@@ -9,3 +9,4 @@ SalivaryGland/docs/*
 SalivaryGland/test/*
 *.fig
 *.tif
+*.nd2
