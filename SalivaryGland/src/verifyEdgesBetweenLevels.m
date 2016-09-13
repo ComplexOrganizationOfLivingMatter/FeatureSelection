@@ -1,4 +1,4 @@
-function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, voronoiClass, neighboursVerticesV, verticesV, neighboursVerticesVNoise, verticesVNoise )
+function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, voronoiClass, neighboursVerticesV, verticesV, neighboursVerticesVNoise, verticesVNoise, classesToVisualize )
 %verifyEdgesBetweenLevels Remove cycles
 %   Detailed explanation goes here
 
@@ -25,27 +25,49 @@ function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, 
         end
     end
     
-    for numClass = 1:max(voronoiClass(:, :))
-        classesVerticesV = neighboursVerticesV(neighboursVerticesV(:, :) == numClass, :);
-        uniqueNeighboursVerticesV = unique(classesVerticesV);
-        uniqueNeighboursVerticesV = uniqueNeighboursVerticesV(uniqueNeighboursVerticesV ~= numClass);
-        
-        classesVerticesNoise = neighboursVerticesVNoise(neighboursVerticesVNoise(:, :) == numClass, :)
-        uniqueNeighboursVerticesNoise = unique(classesVerticesNoise);
-        uniqueNeighboursVerticesNoise = uniqueNeighboursVerticesNoise(uniqueNeighboursVerticesNoise ~= numClass);
-       
-        uniqueNeighbours = union(uniqueNeighboursVerticesV, uniqueNeighboursVerticesNoise);
-        
-        [numVerticesV, ~] = find(neighboursVerticesV(:, :) == numClass);
-        [numVerticesVNoise, ~] = find(neighboursVerticesVNoise(:, :) == numClass);
-        for numNeighbour = 1:size(uniqueNeighbours, 1)
-            [rowsNeighbourV, ~] = find(neighboursVerticesV(:, :) == uniqueNeighboursVerticesV(numNeighbour));
-            verticesSharingClassesV = intersect(numVerticesV, rowsNeighbourV);
-            if size(verticesSharingClassesV, 1) > 1
-                [rowsNeighbourVNoise, ~] = find(neighboursVerticesVNoise(:, :) == uniqueNeighboursVerticesNoise(numNeighbour));
-                verticesSharingClassesVNoise = intersect(numVerticesVNoise, rowsNeighbourVNoise);
-                
-                edgesBetweenLevels(verticesV(verticesSharingClassesVNoise, :), :);
+    for numClass = 1:max(voronoiClass(:))
+        if ismember(numClass, classesToVisualize)
+            [rowNeighbourV, ~] = find(neighboursVerticesV(:, :) == numClass);
+            classesVerticesV = neighboursVerticesV(rowNeighbourV, :);
+            uniqueNeighboursVerticesV = unique(classesVerticesV);
+            uniqueNeighboursVerticesV = uniqueNeighboursVerticesV(uniqueNeighboursVerticesV ~= numClass);
+
+            
+            [rowNeighbourVNoise, ~] = find(neighboursVerticesVNoise(:, :) == numClass);
+            classesVerticesNoise = neighboursVerticesVNoise(rowNeighbourVNoise, :);
+            uniqueNeighboursVerticesNoise = unique(classesVerticesNoise);
+            uniqueNeighboursVerticesNoise = uniqueNeighboursVerticesNoise(uniqueNeighboursVerticesNoise ~= numClass);
+
+            uniqueNeighbours = union(uniqueNeighboursVerticesV, uniqueNeighboursVerticesNoise);
+
+            [numVerticesV, ~] = find(neighboursVerticesV(:, :) == numClass);
+            [numVerticesVNoise, ~] = find(neighboursVerticesVNoise(:, :) == numClass);
+            for numNeighbour = 1:size(uniqueNeighbours, 1)
+                [rowsNeighbourV, ~] = find(neighboursVerticesV(:, :) == uniqueNeighbours(numNeighbour));
+                verticesSharingClassesV = intersect(numVerticesV, rowsNeighbourV);
+                if size(verticesSharingClassesV, 1) > 1
+                    [rowsNeighbourVNoise, ~] = find(neighboursVerticesVNoise(:, :) == uniqueNeighbours(numNeighbour));
+                    verticesSharingClassesVNoise = intersect(numVerticesVNoise, rowsNeighbourVNoise);
+                    if size(verticesSharingClassesV, 1) > 1
+                        verticesPlane6 = [];
+                        for numVertex = 1:size(verticesSharingClassesV, 1)
+                            vertices1 = ismember(edgesBetweenLevels(:, 1:2), verticesV(verticesSharingClassesV(numVertex), :),  'rows');
+                            verticesPlane6 = [verticesPlane6; find(vertices1)];
+                        end
+
+                        verticesPlane6 = verticesPlane6 + 1;
+                        verticesPlane0 = [];
+                        for numVertex = 1:size(verticesSharingClassesVNoise, 1)
+                            vertices2 = ismember(edgesBetweenLevels(verticesPlane6, 1:2), verticesVNoise(verticesSharingClassesVNoise(numVertex), :), 'rows');
+                            verticesPlane0 = [verticesPlane0; verticesPlane6(vertices2)];
+                        end
+                        verticesPlane6 = verticesPlane0 - 1;
+                        
+                        if size(verticesPlane6, 1) > 2
+                            
+                        end
+                    end
+                end
             end
         end
     end
