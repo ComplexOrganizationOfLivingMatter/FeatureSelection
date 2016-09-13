@@ -13,23 +13,33 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     %Don't want points within the same plane
     distancePoints(1:size(centroidsOfVoronoiClass,1), 1:size(centroidsOfVoronoiClass,1)) = NaN;
     distancePoints(rowsAux(:), :) = NaN;
+    distancePointsAux = distancePoints;
     
     verticesVoronoiAdded = zeros(size(centroidsOfVoronoiClass, 1) , 1);
     verticesNoiseAdded = zeros(size(centroidsOfVoronoiNoiseClass, 1), 1);
     minMatchingEdges = [];
     %Run until there's some vertex without a pair
-    while min(verticesVoronoiAdded(:,:)) == 0 || min(verticesNoiseAdded(:,:)) == 0
-        minValue = min(distancePoints(:));
+    numVertex = 1;
+    while numVertex <= (size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1))
+        if numVertex <= size(centroidsOfVoronoiClass,1)
+            minValue = min(distancePoints(numVertex, :));
+        else
+            minValue = min(distancePoints(:, numVertex));
+        end
         [rowMin, colMin] = find(distancePoints == minValue, 1);
         realCol = colMin - size(centroidsOfVoronoiClass, 1);
         centroidVClass = centroidsOfVoronoiClass(rowMin, :);
         centroidVNoiseClass = centroidsOfVoronoiNoiseClass(realCol, :);
-        distancePoints(rowMin, colMin) = NaN;
         
-        verticesVoronoiAdded(rowMin, 1) = verticesVoronoiAdded(rowMin, 1) + 1;
-        verticesNoiseAdded(realCol, 1) = verticesNoiseAdded(realCol, 1) + 1;
-        
-        minMatchingEdges = [minMatchingEdges; centroidVClass, 6; centroidVNoiseClass, 0];
+        if isnan(distancePointsAux(rowMin, colMin)) == 0
+            verticesVoronoiAdded(rowMin, 1) = verticesVoronoiAdded(rowMin, 1) + 1;
+            verticesNoiseAdded(realCol, 1) = verticesNoiseAdded(realCol, 1) + 1;
+
+            minMatchingEdges = [minMatchingEdges; centroidVClass, 6; centroidVNoiseClass, 0];
+            distancePointsAux(rowMin, colMin) = NaN;
+            distancePointsAux(colMin, rowMin) = NaN;
+        end
+        numVertex = numVertex + 1;
     end
     
     %Check if there's useless edges (i.e. linking 2 centroids on each plane
