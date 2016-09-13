@@ -23,10 +23,14 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
     while numVertex <= (size(centroidsOfVoronoiClass,1) + size(centroidsOfVoronoiNoiseClass,1))
         if numVertex <= size(centroidsOfVoronoiClass,1)
             minValue = min(distancePoints(numVertex, :));
+            [rowMin, colMin] = find(distancePoints(numVertex, :) == minValue, 1);
+            rowMin = numVertex;
         else
             minValue = min(distancePoints(:, numVertex));
+            [rowMin, colMin] = find(distancePoints(:, numVertex) == minValue, 1);
+            colMin = numVertex;
         end
-        [rowMin, colMin] = find(distancePoints == minValue, 1);
+        
         realCol = colMin - size(centroidsOfVoronoiClass, 1);
         centroidVClass = centroidsOfVoronoiClass(rowMin, :);
         centroidVNoiseClass = centroidsOfVoronoiNoiseClass(realCol, :);
@@ -55,7 +59,6 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
         duplicatedEdges = [];
         edge = 1;
         while edge <= totalEdges
-            edge
             minMatchingEdgesAux = minMatchingEdges;
             minMatchingEdgesAux([edge, edge + 1], :) = [];
             %No vertices removed
@@ -65,6 +68,7 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
             
             edge = edge + 2;
         end
+        (edge + 1)/2
         
         if(size(duplicatedEdges, 1) > 0)
             minDistancesEdges = {};
@@ -86,7 +90,9 @@ function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVo
                 end
             end
             numMinimum = find(minDistances == min(minDistances));
+            size(minMatchingEdges, 1)/2
             minMatchingEdges = minDistancesEdges{numMinimum};
+            size(minMatchingEdges, 1)/2
         end
         
     end    
