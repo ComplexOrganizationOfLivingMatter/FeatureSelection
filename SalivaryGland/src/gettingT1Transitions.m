@@ -3,7 +3,7 @@ function [ t1Points, edgesBetweenLevels ] = gettingT1Transitions( edgesBetweenLe
 %   Detailed explanation goes here
     edge = 1;
     t1Points = [];
-    edgesBetweenLevels = edgesBetweenLevels;
+    numEdgesToRemoveTotal = [];
     while edge <= size(edgesBetweenLevels, 1)
         %Firstly the points adjacents to the first point
         duplicatedEdges = find(edgesBetweenLevels(edge, 1) == edgesBetweenLevels(:, 1) & edgesBetweenLevels(edge, 2) == edgesBetweenLevels(:, 2) & edgesBetweenLevels(edge, 3) == edgesBetweenLevels(:, 3));
@@ -39,8 +39,9 @@ function [ t1Points, edgesBetweenLevels ] = gettingT1Transitions( edgesBetweenLe
                     p4 = uniqueFinalPoints(2, :);
                     
                     if p1(3) ~= 3 && p2(3) ~= 3 && p3(3) ~= 3 && p4(3) ~= 3
-                        t1Point = mean([p1; p2; p3; p4]);
-
+                        t1Point = (mean([p1; p2; p3; p4]));
+                        t1Point = round(t1Point);
+                        
                         %Inserting t1 points in 4 edges
                         %Plane 0
                         pointsPlane0 = edgesBetweenLevels(edgesBetweenLevels(:, 3) == 0, :);
@@ -54,12 +55,12 @@ function [ t1Points, edgesBetweenLevels ] = gettingT1Transitions( edgesBetweenLe
                         numEdgesToRemove = [numEdgesToRemove*2; numEdgesToRemove*2 - 1];
 
                         if size(numEdgesToRemove, 1) == 8 && sum(edgesBetweenLevels(numEdgesToRemove, 3) == 3) == 0
-                            edgesBetweenLevels(numEdgesToRemove, :) = [];
+                            numEdgesToRemoveTotal = [numEdgesToRemoveTotal; numEdgesToRemove];
+                            %edgesBetweenLevels(numEdgesToRemove, :) = [];
                             newEdges = [p1; t1Point; t1Point; p2; p3; t1Point; t1Point; p4];
 
-                            t1Points = [t1Points; mean([p1; p2; p3; p4])];
-                            edgesBetweenLevels = [newEdges; edgesBetweenLevels];
-                            edge = edge - 2;
+                            t1Points = [t1Points; t1Point];
+                            edgesBetweenLevels = [edgesBetweenLevels; newEdges];
                         end
                     end
                     
@@ -118,6 +119,7 @@ function [ t1Points, edgesBetweenLevels ] = gettingT1Transitions( edgesBetweenLe
         end
         edge = edge + 2;
     end
+    edgesBetweenLevels(unique(numEdgesToRemoveTotal), :) = [];
     t1Points = unique(t1Points, 'rows');
 end
 
