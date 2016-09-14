@@ -3,17 +3,17 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
 %   Detailed explanation goes here
 
     %FinalPixel of the x axis
-    endPixelX = round(9*size(voronoiClass, 2)/12);
+    endPixelX = round(5*size(voronoiClass, 2)/6);
     %Initial Pixel of the x axis
-    initPixelX = round(3*size(voronoiClass, 2)/12);
+    initPixelX = round(1*size(voronoiClass, 2)/6);
     verticesVAdded = zeros(size(verticesV,1), 1);
     verticesVNoiseAdded = zeros(size(verticesVNoise, 1), 1);
 
     edgesBetweenLevels = [];
 
-    classes = 1:max(voronoiClass(:));
+    classes = max(voronoiClass(:));
 
-    for class = 1:size(classes, 2)
+    for class = 1:classes
         class
         %Get vertices of both classes
         %Firstly, we get the rows of the class, which will correspond with
@@ -28,8 +28,8 @@ function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdg
             centroidsOfVoronoiClass = centroidsOfVoronoiClass(centroidsOfVoronoiClass(:, 2) > initPixelX & centroidsOfVoronoiClass(:, 2) <= endPixelX, :);
             centroidsOfVoronoiNoiseClass = centroidsOfVoronoiNoiseClass(centroidsOfVoronoiNoiseClass(:, 2) > initPixelX & centroidsOfVoronoiNoiseClass(:, 2) <= endPixelX, :);
         else
-            centroidsOfVoronoiClass = centroidsOfVoronoiClass(centroidsOfVoronoiClass(:, 2) > 512 & centroidsOfVoronoiClass(:, 2) <= 1024, :);
-            centroidsOfVoronoiNoiseClass = centroidsOfVoronoiNoiseClass(centroidsOfVoronoiNoiseClass(:, 2) > 512 & centroidsOfVoronoiNoiseClass(:, 2) <= 1024, :);
+            centroidsOfVoronoiClass = centroidsOfVoronoiClass(centroidsOfVoronoiClass(:, 2) > size(voronoiClass, 2)/3 & centroidsOfVoronoiClass(:, 2) <= 2*size(voronoiClass, 2)/3, :);
+            centroidsOfVoronoiNoiseClass = centroidsOfVoronoiNoiseClass(centroidsOfVoronoiNoiseClass(:, 2) > size(voronoiClass, 2)/3 & centroidsOfVoronoiNoiseClass(:, 2) <= 2*size(voronoiClass, 2)/3, :);
             
         end
         
