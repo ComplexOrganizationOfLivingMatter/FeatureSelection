@@ -68,7 +68,7 @@ function [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ] = getInters
                                         edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
                                     else
                                         contigousPoint
-                                        %edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
+                                        edgesMidPlane = [edgesMidPlane; midPlanePoints(point, :); midPlanePoints(contigousPoint, :)];
                                     end
                                 end
                             end
