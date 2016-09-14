@@ -2,28 +2,28 @@ function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, 
 %verifyEdgesBetweenLevels Remove cycles
 %   Detailed explanation goes here
 
-    %Firstly, we remove duplicated edges
-    numEdge = 1;
-    while 1
-        edge1 = edgesBetweenLevels(numEdge, :);
-        edge2 = edgesBetweenLevels(numEdge + 1, :);
-        [row, ~] = find(edge1(1) == edgesBetweenLevels(:, 1) & edge1(2) == edgesBetweenLevels(:, 2) & edge1(3) == edgesBetweenLevels(:, 3));
-        if isempty(row) == 0
-            for numRow = 1:size(row, 1)
-                realRow = row(numRow) + 1;
-                if ismember(edge2, edgesBetweenLevels(realRow, :), 'rows') && realRow ~= numEdge + 1
-                    edgesBetweenLevels(realRow, :) = [];
-                    edgesBetweenLevels(realRow - 1, :) = [];
-                    numEdge = numEdge - 2;
-                    break
-                end
-            end
-        end
-        numEdge = numEdge + 2;
-        if numEdge > size(edgesBetweenLevels, 1)
-           break 
-        end
-    end
+%     %Firstly, we remove duplicated edges
+%     numEdge = 1;
+%     while 1
+%         edge1 = edgesBetweenLevels(numEdge, :);
+%         edge2 = edgesBetweenLevels(numEdge + 1, :);
+%         [row, ~] = find(edge1(1) == edgesBetweenLevels(:, 1) & edge1(2) == edgesBetweenLevels(:, 2) & edge1(3) == edgesBetweenLevels(:, 3));
+%         if isempty(row) == 0
+%             for numRow = 1:size(row, 1)
+%                 realRow = row(numRow) + 1;
+%                 if ismember(edge2, edgesBetweenLevels(realRow, :), 'rows') && realRow ~= numEdge + 1
+%                     edgesBetweenLevels(realRow, :) = [];
+%                     edgesBetweenLevels(realRow - 1, :) = [];
+%                     numEdge = numEdge - 2;
+%                     break
+%                 end
+%             end
+%         end
+%         numEdge = numEdge + 2;
+%         if numEdge > size(edgesBetweenLevels, 1)
+%            break 
+%         end
+%     end
     
     for numClass = 1:max(voronoiClass(:))
         if ismember(numClass, classesToVisualize)
