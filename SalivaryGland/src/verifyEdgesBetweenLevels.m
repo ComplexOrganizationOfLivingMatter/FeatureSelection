@@ -1,4 +1,4 @@
-function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, voronoiClass, neighboursVerticesV, verticesV, neighboursVerticesVNoise, verticesVNoise, classesToVisualize )
+function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, voronoiClass, neighboursVerticesV, verticesV, neighboursVerticesVNoise, verticesVNoise, classesToVisualize, borderCells )
 %verifyEdgesBetweenLevels Remove cycles
 %   Detailed explanation goes here
 
@@ -62,9 +62,32 @@ function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, 
                             verticesPlane0 = [verticesPlane0; verticesPlane6(vertices2)];
                         end
                         verticesPlane6 = verticesPlane0 - 1;
-                        
-                        if size(verticesPlane6, 1) > 2
+
+                        if ismember(numClass, borderCells) == 0
+                            indicesVerticesPlane6 = edgesBetweenLevels(verticesPlane6, 2) > (size(voronoiClass, 2)/3) & edgesBetweenLevels(verticesPlane6, 2) <= (2*size(voronoiClass, 2)/3);
+                            indicesVerticesPlane0 = edgesBetweenLevels(verticesPlane0, 2) > (size(voronoiClass, 2)/3) & edgesBetweenLevels(verticesPlane0, 2) <= (2*size(voronoiClass, 2)/3);
+                            newEdges = getRightEdgesForPolyhedronFace(edgesBetweenLevels, verticesPlane6(indicesVerticesPlane6), verticesPlane0(indicesVerticesPlane0));
+                            edgesBetweenLevels([verticesPlane6(indicesVerticesPlane6); verticesPlane0(indicesVerticesPlane0)], :) = [];
+                            edgesBetweenLevels = [edgesBetweenLevels; newEdges];
+                        else %if it is a border class, we split it in two different polygons
+                            %1 border
+                            verticesPlane6Border1 = edgesBetweenLevels(verticesPlane6, 2) > (size(voronoiClass, 2)/2);
+                            verticesPlane0Border1 = edgesBetweenLevels(verticesPlane0, 2) > (size(voronoiClass, 2)/2);
+                            %The other
+                            verticesPlane6Border2 = edgesBetweenLevels(verticesPlane6, 2) <= (size(voronoiClass, 2)/2);
+                            verticesPlane0Border2 = edgesBetweenLevels(verticesPlane0, 2) <= (size(voronoiClass, 2)/2);
                             
+                            newEdges1 = getRightEdgesForPolyhedronFace(edgesBetweenLevels, verticesPlane6(verticesPlane6Border1), verticesPlane0(verticesPlane0Border1));
+                            newEdges2 = getRightEdgesForPolyhedronFace(edgesBetweenLevels, verticesPlane6(verticesPlane6Border2), verticesPlane0(verticesPlane0Border2));
+                            %Remove the old ones and the new ones
+                            if isempty(newEdges1) == 0
+                                edgesBetweenLevels([verticesPlane6Border1; verticesPlane0Border1], :) = [];
+                                edgesBetweenLevels = [edgesBetweenLevels; newEdges1];
+                            end
+                            if isempty(newEdges2) == 0
+                                edgesBetweenLevels([verticesPlane6Border2; verticesPlane0Border2], :) = [];
+                                edgesBetweenLevels = [edgesBetweenLevels; newEdges2];
+                            end
                         end
                     end
                 end
