@@ -14,21 +14,26 @@ voronoiNoise = repmat(voronoiNoiseOriginalAll.L_original_noise, 1, 3);
 [verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise, voronoiNoiseOriginalAll.border_cells_noise);
 
 %We only want to visualize the valid cells
-classesToVisualize = validClassesOriginal.general_valid_noise_inner_ratio_cells;
+%classesToVisualize = validClassesOriginal.general_valid_noise_inner_ratio_cells;
+classesToVisualize = validClassesOriginal.general_valid_noise_whole_cells;
 %You have to delete the first number
 borderCells = union(voronoiOriginalAll.border_cells(2:end), voronoiNoiseOriginalAll.border_cells_noise(2:end));
-%classesToVisualize = [66, 67, 70, 77];
+%classesToVisualize = [63, 55];
 
 disp('Vertices found')
 
 %Create an edge between both voronoi images: VoronoiClass and VoronoiNoise
 [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded ] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise, classesToVisualize, borderCells);
 
+disp('Edges between levels... Verifying')
+
 %Remove unwanted (not good) vertices between planes(or levels)
-[ edgesBetweenLevels ] = verifyEdgesBetweenLevels(edgesBetweenLevels);
+[ edgesBetweenLevels ] = verifyEdgesBetweenLevels(edgesBetweenLevels, voronoiClass, neighboursVerticesV, verticesV, neighboursVerticesVNoise, verticesVNoise, classesToVisualize, borderCells);
 
 %Find the points that create an X in the mid plane, i.e. the so call T1 transitions
 [t1Points, edgesBetweenLevels] = gettingT1Transitions(edgesBetweenLevels);
+
+disp('Mid plane...')
 
 %Get all the points of the mid plane, which will be the middle of the edges between labels.
 [ midPlanePoints, neighboursMidPlanePoints, edgesMidPlane ]  = getIntersectingPlane(edgesBetweenLevels, verticesV, verticesVNoise, neighboursVerticesV, neighboursVerticesVNoise, voronoiClass);
