@@ -62,8 +62,8 @@ function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, 
                             vertices2 = ismember(edgesBetweenLevels(verticesPlane6, 1:2), verticesVNoise(verticesSharingClassesVNoise(numVertex), :), 'rows');
                             verticesPlane0 = [verticesPlane0; verticesPlane6(vertices2)];
                         end
-                        verticesPlane6Aux = edgesBetweenLevels(verticesPlane0, 3) == 0;
-                        verticesPlane6 = verticesPlane6(verticesPlane6Aux) - 1;
+                        verticesPlane6Aux = find(edgesBetweenLevels(verticesPlane0, 3) == 0);
+                        verticesPlane6 = verticesPlane0(verticesPlane6Aux) - 1;
 
                         if ismember(numClass, borderCells) == 0
                             indicesVerticesPlane6 = edgesBetweenLevels(verticesPlane6, 2) > (size(voronoiClass, 2)/3) & edgesBetweenLevels(verticesPlane6, 2) <= (2*size(voronoiClass, 2)/3);
