@@ -8,6 +8,18 @@ function [ newEdges ] = getRightEdgesForPolyhedronFace( edgesBetweenLevels, vert
     verticesWeWantToVerifyPlane6 = unique(edgesBetweenLevels(verticesPlane6, :), 'rows');
     verticesWeWantToVerifyPlane0 = unique(edgesBetweenLevels(verticesPlane0, :), 'rows');
     
+    edgesToRemovePlane6 = ismember(edgesBetweenLevels(edgesBetweenLevels(:, 3) == 6, :), verticesWeWantToVerifyPlane6, 'rows');
+    edgesToRemovePlane0 = ismember(edgesBetweenLevels(edgesBetweenLevels(:, 3) == 0, :), verticesWeWantToVerifyPlane0, 'rows');
+    %We find the consecutive rows.
+    edgesToRemove = edgesToRemovePlane6 & edgesToRemovePlane0;
+    
+    verticesWeWantToVerifyPlane0 = edgesBetweenLevels(edgesBetweenLevels(:, 3) == 0, :);
+    verticesWeWantToVerifyPlane0 = unique(verticesWeWantToVerifyPlane0(edgesToRemove, :), 'rows');
+    
+    verticesWeWantToVerifyPlane6 = edgesBetweenLevels(edgesBetweenLevels(:, 3) == 6, :);
+    verticesWeWantToVerifyPlane6 = unique(verticesWeWantToVerifyPlane6(edgesToRemove, :), 'rows');
+    
+    
     if (size(verticesWeWantToVerifyPlane6, 1) > 1 && size(verticesWeWantToVerifyPlane0, 1) > 1)
         distanceVertices = pdist([verticesWeWantToVerifyPlane6; verticesWeWantToVerifyPlane0]);
         distanceVertices = squareform(distanceVertices);
