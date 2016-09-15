@@ -84,14 +84,19 @@ function [ edgesBetweenLevels ] = verifyEdgesBetweenLevels( edgesBetweenLevels, 
                             newEdges1 = getRightEdgesForPolyhedronFace(edgesBetweenLevels, verticesPlane6(verticesPlane6Border1), verticesPlane0(verticesPlane0Border1));
                             newEdges2 = getRightEdgesForPolyhedronFace(edgesBetweenLevels, verticesPlane6(verticesPlane6Border2), verticesPlane0(verticesPlane0Border2));
                             %Remove the old ones and the new ones
+                            edgesToRemove = [];
+                            newEdges = [];
                             if isempty(newEdges1) == 0
-                                edgesBetweenLevels([verticesPlane6Border1; verticesPlane0Border1], :) = [];
-                                edgesBetweenLevels = [edgesBetweenLevels; newEdges1];
+                                edgesToRemove = [edgesToRemove; verticesPlane6(verticesPlane6Border1); verticesPlane0(verticesPlane0Border1)];
+                                newEdges = [newEdges; newEdges1];
                             end
                             if isempty(newEdges2) == 0
-                                edgesBetweenLevels([verticesPlane6Border2; verticesPlane0Border2], :) = [];
-                                edgesBetweenLevels = [edgesBetweenLevels; newEdges2];
+                                edgesToRemove = [edgesToRemove; verticesPlane6(verticesPlane6Border2); verticesPlane0(verticesPlane0Border2)];
+                                newEdges = [newEdges; newEdges2];
                             end
+                            
+                            edgesBetweenLevels(edgesToRemove, :) = [];
+                            edgesBetweenLevels = [edgesBetweenLevels; newEdges];
                         end
                     end
                 end
