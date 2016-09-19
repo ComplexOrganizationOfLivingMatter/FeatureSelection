@@ -8,7 +8,7 @@ function [ t1Points, edgesBetweenLevels ] = gettingT1Transitions( edgesBetweenLe
         %Firstly the points adjacents to the first point
         duplicatedEdges = find(edgesBetweenLevels(edge, 1) == edgesBetweenLevels(:, 1) & edgesBetweenLevels(edge, 2) == edgesBetweenLevels(:, 2) & edgesBetweenLevels(edge, 3) == edgesBetweenLevels(:, 3));
         
-        %If there are more than 1. It could appear the transition.
+        %If there are more than 1. It could contain the transition.
         if size(duplicatedEdges, 1) > 1
             pointsConsulted = [];
             pointsDuplicatedConsulted = [];
