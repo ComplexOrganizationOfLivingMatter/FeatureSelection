@@ -36,6 +36,6 @@ function [ vertices, neighbours_vertices ] = getVerticesAndNeighbours( img, bord
     end
     vertices = vertices';
     vertices = vertcat(vertices{:});
-    neighbours_vertices = horzcat(neighbours_vertices{:});
+    neighbours_vertices = padcat(neighbours_vertices{:});
     neighbours_vertices = neighbours_vertices';
 end
