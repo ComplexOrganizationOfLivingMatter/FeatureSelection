@@ -26,6 +26,9 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_inner_ratio_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
+    outputFigFileName = strcat('results\Inside ratio\', sharedName, '.fig');
+    savefig(outputFigFileName);
+    close all
     
     %-------- Outside Ratio --------%
     myPathRatio = 'data\Inner cylindrical voronoi noise\Outside ratio\';
@@ -40,6 +43,9 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_outside_ratio_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
+    outputFigFileName = strcat('results\Inside ratio\', sharedName, '.fig');
+    savefig(outputFigFileName);
+    close all
     
     %-------- Whole cell Ratio --------%
     myPathRatio = 'data\Inner cylindrical voronoi noise\Whole cell\';
@@ -54,6 +60,9 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_whole_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
+	outputFigFileName = strcat('results\Inside ratio\', sharedName, '.fig');
+    savefig(outputFigFileName);
+    close all
 end
 
 

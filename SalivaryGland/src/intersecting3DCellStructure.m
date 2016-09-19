@@ -38,6 +38,6 @@ function [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = interse
     midPlaneImage = paintImageMidPlane(midPlanePoints, edgesMidPlane, voronoiClass);
     %Plot all the information
     disp('Plotting...')
-    %plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane, midPlaneImage);
+    plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane, midPlaneImage);
 end
 
