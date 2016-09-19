@@ -4,6 +4,9 @@
 mypath = 'data\External cylindrical voronoi\';
 filesVoronoi = dir(strcat(mypath, '*.mat'));
 
+%%% open figures from this script:
+% openfig('E:\Pablo\PhD-miscelanious\SalivaryGland\results\Whole cell\Image_1_Diagram_10.fig', 'visible')
+
 for numFileVoronoi = 1:size(filesVoronoi,1)
     %Both images have the labels and boundaries of cells
     voronoiOriginalAll = importdata(strcat(mypath, filesVoronoi(numFileVoronoi).name));
@@ -18,51 +21,55 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     filesVoronoiNoise = dir(strcat(myPathRatio, '*', sharedName , '*.mat'));
     myPathValidCellsRatio = 'data\Valid cells\Inside ratio\';
     filesValidCellsVoronoiNoise = dir(strcat(myPathValidCellsRatio, '*', nameImage , '*.mat'));
-    outputFileName = strcat('results\Inside ratio\', sharedName, '.mat');
-    
-    voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
-    validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
-    disp('Data loaded')
-    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_inner_ratio_cells);
-    %Save relevant data
-    save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
-    outputFigFileName = strcat('results\Inside ratio\', sharedName, '.fig');
-    savefig(outputFigFileName);
-    close all
+    outputFileName = strcat('results\Inside ratio\', sharedName, '.mat')
+    if exist(outputFileName, 'file') ~= 2 
+        voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
+        validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
+        disp('Data loaded')
+        [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_inner_ratio_cells);
+        %Save relevant data
+        save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
+        outputFigFileName = strcat('results\Inside ratio\', sharedName, '.fig');
+        savefig(outputFigFileName);
+        close all
+    end
     
     %-------- Outside Ratio --------%
     myPathRatio = 'data\Inner cylindrical voronoi noise\Outside ratio\';
     filesVoronoiNoise = dir(strcat(myPathRatio, '*', sharedName , '*.mat'));
     myPathValidCellsRatio = 'data\Valid cells\Outside ratio\';
     filesValidCellsVoronoiNoise = dir(strcat(myPathValidCellsRatio, '*', nameImage , '*.mat'));
-    outputFileName = strcat('results\Outside ratio\', sharedName, '.mat');
-    
-    voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
-    validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
-    disp('Data loaded')
-    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_outside_ratio_cells);
-    %Save relevant data
-    save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
-    outputFigFileName = strcat('results\Outside ratio\', sharedName, '.fig');
-    savefig(outputFigFileName);
-    close all
+    outputFileName = strcat('results\Outside ratio\', sharedName, '.mat')
+    if exist(outputFileName, 'file') ~= 2 
+        voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
+        validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
+        disp('Data loaded')
+        [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_outside_ratio_cells);
+        %Save relevant data
+        save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
+        outputFigFileName = strcat('results\Outside ratio\', sharedName, '.fig');
+        savefig(outputFigFileName);
+        close all
+    end
     
     %-------- Whole cell Ratio --------%
     myPathRatio = 'data\Inner cylindrical voronoi noise\Whole cell\';
     filesVoronoiNoise = dir(strcat(myPathRatio, '*', sharedName , '*.mat'));
     myPathValidCellsRatio = 'data\Valid cells\Whole cell\';
     filesValidCellsVoronoiNoise = dir(strcat(myPathValidCellsRatio, '*', nameImage , '*.mat'));
-    outputFileName = strcat('results\Whole cell\', sharedName, '.mat');
+    outputFileName = strcat('results\Whole cell\', sharedName, '.mat')
     
-    voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
-    validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
-    disp('Data loaded')
-    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_whole_cells);
-    %Save relevant data
-    save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
-	outputFigFileName = strcat('results\Whole cell\', sharedName, '.fig');
-    savefig(outputFigFileName);
-    close all
+    if exist(outputFileName, 'file') ~= 2 
+        voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
+        validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
+        disp('Data loaded')
+        [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_whole_cells);
+        %Save relevant data
+        save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
+        outputFigFileName = strcat('results\Whole cell\', sharedName, '.fig');
+        savefig(outputFigFileName);
+        close all
+    end
 end
 
 
