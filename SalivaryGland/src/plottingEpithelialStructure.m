@@ -2,8 +2,10 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
+    ax = figure(1); 
+    set(ax, 'visible', 'off')
     %-------------- Image 1 -------------------%
-    figure;
+%     
     zAx = 6;
     paintImageAtPlaneZ(voronoiClass, zAx, classesToVisualize);
     
@@ -26,12 +28,12 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
         numRow = numRow + 2;
     end
     
-%     numRow = 1;
-%     while numRow < size(edgesMidPlane, 1)
-%        plot3(edgesMidPlane(numRow:numRow+1,2), edgesMidPlane(numRow:numRow+1,1), edgesMidPlane(numRow:numRow+1,3), 'LineWidth', 2, 'color', 'black');
-%        numRow = numRow + 2;
-%     end
-%     
+    numRow = 1;
+    while numRow < size(edgesMidPlane, 1)
+       plot3(edgesMidPlane(numRow:numRow+1,2), edgesMidPlane(numRow:numRow+1,1), edgesMidPlane(numRow:numRow+1,3), 'LineWidth', 2, 'color', 'black');
+       numRow = numRow + 2;
+    end
+    
 %     numRow = 1;
 %     while numRow < size(t1Points, 1)
 %         plot3(t1Points(numRow, 2), t1Points(numRow, 1), t1Points(numRow, 3), 'o');
@@ -43,7 +45,7 @@ function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, vertices
 %     missingVertices = verticesV(missingVerticesNum, :);
 % 
 %     for i = 1:size(missingVertices, 1)
-%         plot3(missingVertices(i, 2), missingVertices(i, 1), 2, 'r*');
+%         plot3(missingVertices(i, 2), missingVertices(i, 1), 6, 'r*');
 %     end
 % 
 %     missingVerticesNum = find(verticesVNoiseAdded == 0);
