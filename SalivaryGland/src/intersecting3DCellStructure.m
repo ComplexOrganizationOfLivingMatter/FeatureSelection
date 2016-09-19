@@ -1,4 +1,4 @@
-function [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal)
+function [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, classesToVisualize)
 %INTERSECTING3DCELLSTRUCTURE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -9,9 +9,6 @@ function [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = interse
     [verticesV, neighboursVerticesV] = getVerticesAndNeighbours(voronoiClass, voronoiOriginalAll.border_cells);
     [verticesVNoise, neighboursVerticesVNoise] = getVerticesAndNeighbours(voronoiNoise, voronoiNoiseOriginalAll.border_cells_noise);
 
-    %We only want to visualize the valid cells
-    %classesToVisualize = validClassesOriginal.general_valid_noise_inner_ratio_cells;
-    classesToVisualize = validClassesOriginal.general_valid_noise_inner_ratio_cells;
     %You have to delete the first number
     borderCells = union(voronoiOriginalAll.border_cells(2:end), voronoiNoiseOriginalAll.border_cells_noise(2:end));
     %classesToVisualize = [15, 30, 31, 23];
@@ -41,6 +38,6 @@ function [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = interse
     midPlaneImage = paintImageMidPlane(midPlanePoints, edgesMidPlane, voronoiClass);
     %Plot all the information
     disp('Plotting...')
-    plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane, midPlaneImage);
+    %plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, midPlanePoints, edgesMidPlane, midPlaneImage);
 end
 

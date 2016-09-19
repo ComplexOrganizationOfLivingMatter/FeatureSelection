@@ -23,7 +23,7 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
     validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
     disp('Data loaded')
-    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal);
+    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_inner_ratio_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
     
@@ -37,7 +37,7 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
     validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
     disp('Data loaded')
-    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal);
+    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_outside_ratio_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
     
@@ -51,7 +51,7 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
     validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
     disp('Data loaded')
-    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal);
+    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_whole_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
 end
