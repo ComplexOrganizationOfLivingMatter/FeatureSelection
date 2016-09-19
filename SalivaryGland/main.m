@@ -9,15 +9,51 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     voronoiOriginalAll = importdata(strcat(mypath, filesVoronoi(numFileVoronoi).name));
     nameFileSplitted = strsplit(filesVoronoi(numFileVoronoi).name, '_');
     sharedName = strcat(nameFileSplitted(1:4));
-    sharedName = strcat(sharedName{:})
+    sharedName = strjoin(sharedName, '_')
+    nameImage = strcat(nameFileSplitted(1:2));
+    nameImage = strjoin(nameImage, '_');
     
+    %-------- Inner Ratio --------%
+    myPathRatio = 'data\Inner cylindrical voronoi noise\Inside ratio\';
+    filesVoronoiNoise = dir(strcat(myPathRatio, '*', sharedName , '*.mat'));
+    myPathValidCellsRatio = 'data\Valid cells\Inside ratio\';
+    filesValidCellsVoronoiNoise = dir(strcat(myPathValidCellsRatio, '*', nameImage , '*.mat'));
+    outputFileName = strcat('results\Inside ratio\', sharedName, '.mat');
     
-    voronoiNoiseOriginalAll = importdata('data\Inner cylindrical voronoi noise\Inside ratio\Image_1_Diagram_6_Vonoroi_noise.mat');
-    validClassesOriginal = importdata('data\Valid cells\Inside ratio\Valid_cells_image_1.mat');
-
+    voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
+    validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
     disp('Data loaded')
+    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal);
+    %Save relevant data
+    save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
     
-    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal)
+    %-------- Outside Ratio --------%
+    myPathRatio = 'data\Inner cylindrical voronoi noise\Outside ratio\';
+    filesVoronoiNoise = dir(strcat(myPathRatio, '*', sharedName , '*.mat'));
+    myPathValidCellsRatio = 'data\Valid cells\Outside ratio\';
+    filesValidCellsVoronoiNoise = dir(strcat(myPathValidCellsRatio, '*', nameImage , '*.mat'));
+    outputFileName = strcat('results\Outside ratio\', sharedName, '.mat');
+    
+    voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
+    validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
+    disp('Data loaded')
+    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal);
+    %Save relevant data
+    save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
+    
+    %-------- Whole cell Ratio --------%
+    myPathRatio = 'data\Inner cylindrical voronoi noise\Whole cell\';
+    filesVoronoiNoise = dir(strcat(myPathRatio, '*', sharedName , '*.mat'));
+    myPathValidCellsRatio = 'data\Valid cells\Whole cell\';
+    filesValidCellsVoronoiNoise = dir(strcat(myPathValidCellsRatio, '*', nameImage , '*.mat'));
+    outputFileName = strcat('results\Whole cell\', sharedName, '.mat');
+    
+    voronoiNoiseOriginalAll = importdata(strcat(myPathRatio, filesVoronoiNoise(1).name));
+    validClassesOriginal = importdata(strcat(myPathValidCellsRatio, filesValidCellsVoronoiNoise(1).name));
+    disp('Data loaded')
+    [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal);
+    %Save relevant data
+    save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
 end
 
 
