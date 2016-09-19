@@ -43,7 +43,7 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_outside_ratio_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
-    outputFigFileName = strcat('results\Inside ratio\', sharedName, '.fig');
+    outputFigFileName = strcat('results\Outside ratio\', sharedName, '.fig');
     savefig(outputFigFileName);
     close all
     
@@ -60,7 +60,7 @@ for numFileVoronoi = 1:size(filesVoronoi,1)
     [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, validClassesOriginal.general_valid_noise_whole_cells);
     %Save relevant data
     save(outputFileName, 'edgesBetweenLevels', 't1Points', 'edgesMidPlane', 'midPlaneImage');
-	outputFigFileName = strcat('results\Inside ratio\', sharedName, '.fig');
+	outputFigFileName = strcat('results\Whole cell\', sharedName, '.fig');
     savefig(outputFigFileName);
     close all
 end
