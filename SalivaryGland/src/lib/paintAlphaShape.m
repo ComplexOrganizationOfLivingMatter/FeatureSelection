@@ -1,6 +1,8 @@
 function [ ] = paintAlphaShape( verticesToVisualize3, verticesToVisualize, classToVisualize)
 %PAINTALPHASHAPE Summary of this function goes here
 %   Detailed explanation goes here
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez
     p = alphaShape([verticesToVisualize3; verticesToVisualize]);
     p.Alpha
     p.Alpha = 350;

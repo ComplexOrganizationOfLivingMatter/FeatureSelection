@@ -1,6 +1,8 @@
 function [] = paintImageAtPlaneZ(voronoiImage, zAx, classesToVisualize)
 %PAINTIMAGEATPLANEZ Summary of this function goes here
 %   Detailed explanation goes here
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez
     
      %Here we paint only the cells found in classesToVisualize
     voronoiImageToVisualize = zeros(size(voronoiImage, 1), size(voronoiImage, 2));

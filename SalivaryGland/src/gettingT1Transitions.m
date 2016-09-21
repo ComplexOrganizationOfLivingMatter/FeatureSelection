@@ -1,6 +1,8 @@
 function [ t1Points, edgesBetweenLevels ] = gettingT1Transitions( edgesBetweenLevels )
 %GETTINGT1TRANSITIONS Summary of this function goes here
 %   Detailed explanation goes here
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez
     edge = 1;
     t1Points = [];
     numEdgesToRemoveTotal = [];

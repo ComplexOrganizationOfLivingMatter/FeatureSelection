@@ -1,6 +1,11 @@
 function [ midPlaneImage ] = paintImageMidPlane(midPlanePoints, edgesMidPlane, voronoiClass)
-%PAINTIMAGEMIDPLANE Summary of this function goes here
-%   Detailed explanation goes here
+%PAINTIMAGEMIDPLANE Create the voronoi image of the middle plain
+%   Create a hexagonal cell plane which will be the intersecting plane between
+%   exterior plane of the salivary gland and the interior of it.
+%   This will result in a plane like the voronoiImage and voronoi noise, having
+%   as hexagonish polygons the cells of each plane.
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gómez-Gálvez
 
     %FinalPixel of the x axis
     endPixelX = round(5*size(voronoiClass, 2)/6);

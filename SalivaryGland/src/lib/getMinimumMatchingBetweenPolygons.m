@@ -1,6 +1,8 @@
 function [ minMatchingEdges ] = getMinimumMatchingBetweenPolygons( centroidsOfVoronoiClass, centroidsOfVoronoiNoiseClass )
 %GETMINIMUMMATCHINGBETWEENPOLYGONS Summary of this function goes here
 %   Detailed explanation goes here
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez
 
     %calculate distance between the current point and all near him.
     distancePoints = pdist([centroidsOfVoronoiClass; centroidsOfVoronoiNoiseClass]);

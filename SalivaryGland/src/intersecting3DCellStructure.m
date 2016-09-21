@@ -1,6 +1,8 @@
 function [ edgesBetweenLevels, t1Points, edgesMidPlane, midPlaneImage] = intersecting3DCellStructure(voronoiOriginalAll, voronoiNoiseOriginalAll, classesToVisualize)
-%INTERSECTING3DCELLSTRUCTURE Summary of this function goes here
-%   Detailed explanation goes here
+%INTERSECTING3DCELLSTRUCTURE Pipeline to get and show two voronoi planes interescting in a 3D space
+%   
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gómez-Gálvez
 
     voronoiClass = repmat(voronoiOriginalAll.L_original, 1, 3);
     voronoiNoise = repmat(voronoiNoiseOriginalAll.L_original_noise, 1, 3);

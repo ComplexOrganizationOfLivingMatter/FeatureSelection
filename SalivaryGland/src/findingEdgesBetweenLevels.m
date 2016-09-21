@@ -1,6 +1,8 @@
 function [ edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded] = findingEdgesBetweenLevels(voronoiClass, verticesV, neighboursVerticesV, verticesVNoise, neighboursVerticesVNoise, classesToVisualize, borderCells)
 %FINDINGEDGESBETWEENLEVELS Summary of this function goes here
 %   Detailed explanation goes here
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez
 
     %FinalPixel of the x axis
     endPixelX = round(5*size(voronoiClass, 2)/6);

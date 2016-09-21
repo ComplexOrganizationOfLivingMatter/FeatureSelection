@@ -1,6 +1,13 @@
 function [ ] = plottingEpithelialStructure( voronoiClass, voronoiNoise, verticesV, verticesVNoise, edgesBetweenLevels, verticesVAdded, verticesVNoiseAdded, classesToVisualize, t1Points, edgesMidPlane, midPlaneImage)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+%PLOTTINGEPITHELIALSTRUCTURE Plot in a figure how a voronoi and a voronoi noise form a 3D structure
+%   We plot in a 3 dimensional space: the voronoi image at plane z = 6 and the voronoi noise at plane z = 0. 
+%   Also, we paint the auto-generated middle plane from these two planes. We could paint the edges between the planes
+%   ,as well as, vertices of the polygons of each plane.
+%   The plot will be exported into a .fig file.
+%   To open this file, you should run something like:
+%       openfig('image.fig', 'visible')
+%
+%   Developed by Pablo Vicente-Munuera and Pedro Gómez-Gálvez
 
     ax = figure(1); 
     set(ax, 'visible', 'off')
