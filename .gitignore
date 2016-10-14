@@ -8,6 +8,7 @@ DNA-Damage/Useful_Dani
 SalivaryGland/docs/*
 SalivaryGland/test/*
 SalivaryGland/results/*
+voronoiNetworks/results/*
 *.fig
 *.tif
 *.nd2
