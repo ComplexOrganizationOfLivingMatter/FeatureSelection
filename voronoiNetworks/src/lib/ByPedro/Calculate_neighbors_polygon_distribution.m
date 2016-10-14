@@ -12,8 +12,17 @@ function Calculate_neighbors_polygon_distribution(currentPath)
         diagramName = diagramName{1};
 
         %Check which files we want.
-        if size(strfind(lower(diagramName), '.png'), 1) >= 1
-            
+        if (size(strfind(lower(diagramName), '.png'), 1) >= 1 || size(strfind(lower(diagramName), '.bmp'), 1) >= 1 || size(strfind(lower(diagramName), '.jpg'), 1) >= 1)
+            fullPathFile
+            image = imread(fullPathFile);
+            image = im2bw(image(:,:,1), 0.2);
+            if sum(image(:) == 255) > sum(image(:) == 0) || sum(image(:) == 1) > sum(image(:) == 0)
+                Img_L = bwlabel(image);
+            else
+                image = image == 0;
+                Img_L = bwlabel(image);
+            end
+			
             ratio=4;
             se = strel('disk',ratio);
             cells=sort(unique(Img_L));
@@ -30,7 +39,7 @@ function Calculate_neighbors_polygon_distribution(currentPath)
             end
             
             nameWithoutExtension = strsplit(diagramName, '.');
-            outputFile = strcat(fullPathSplited(1:end-2),'\data\' ,nameWithoutExtension, '.mat');
+            outputFile = strcat(strjoin(fullPathSplitted(1:end-2), '\'), '\data\', nameWithoutExtension{1}, '_data.mat');
             load(outputFile);
             
             vecinos = neighbours;
