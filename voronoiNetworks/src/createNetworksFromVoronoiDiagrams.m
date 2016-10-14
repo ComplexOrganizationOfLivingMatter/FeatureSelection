@@ -1,7 +1,7 @@
-function [ ] = createNetworksFromVoronoiDiagrams( )
+function [ ] = createNetworksFromVoronoiDiagrams(currentPath)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-    dataFiles = getAllFiles('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\');
+    dataFiles = getAllFiles(currentPath);
     for numFile = 1:size(dataFiles,1)
         fullPathFile = dataFiles(numFile);
         fullPathFile = fullPathFile{:};
@@ -11,19 +11,21 @@ function [ ] = createNetworksFromVoronoiDiagrams( )
 
         %Check which files we want.
         if size(strfind(lower(diagramName), '.mat'), 1) >= 1
+            fullPathFile
             load(fullPathFile);
-            
-            %celulas_validas = validCells
-            validCellNeighbours = Vecinos(celulas_validas);
-            adjacencyMatrix = zeros(size(Vecinos, 2));
-            for numCell = 1:size(validCellNeighbours, 2)
-                neighbours = validCellNeighbours(numCell);
-                adjacencyMatrix(celulas_validas(numCell), neighbours{1}) = 1;
-            end
             outputFile = strcat('results\networks\adjacencyMatrix', diagramName);
-            save(outputFile, 'adjacencyMatrix');
+            if exist(outputFile, 'file') ~= 2
             
-            generateLEDAFromAdjacencyMatrix
+                %celulas_validas = validCells
+                validCellNeighbours = vecinos(celulas_validas');
+                adjacencyMatrix = zeros(size(vecinos, 2));
+                for numCell = 1:size(validCellNeighbours, 2)
+                    neighbours = validCellNeighbours(numCell);
+                    adjacencyMatrix(celulas_validas(numCell), neighbours{1}) = 1;
+                end
+
+                save(outputFile, 'adjacencyMatrix');
+            end
         end
     end
 
