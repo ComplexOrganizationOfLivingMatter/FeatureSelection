@@ -13,3 +13,7 @@ Calculate_neighbors_polygon_distribution('E:\Pablo\PhD-miscelanious\voronoiNetwo
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\biologicalImages\');
 cd 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
 calculateLEDAFilesFromDirectory();
+
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\');
+
+easyHeatmap(distanceMatrixMean, namesSortedOut, 'heatmap', 'data')
