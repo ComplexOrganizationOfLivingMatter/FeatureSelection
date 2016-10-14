@@ -11,3 +11,4 @@ SalivaryGland/results/*
 *.fig
 *.tif
 *.nd2
+*.txt
