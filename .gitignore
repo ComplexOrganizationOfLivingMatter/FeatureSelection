@@ -9,6 +9,8 @@ SalivaryGland/docs/*
 SalivaryGland/test/*
 SalivaryGland/results/*
 voronoiNetworks/results/*
+voronoiNetworks/test/*
+voronoiNetworks/data/*
 *.fig
 *.tif
 *.nd2
