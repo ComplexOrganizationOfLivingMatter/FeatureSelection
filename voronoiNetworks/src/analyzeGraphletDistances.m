@@ -11,20 +11,26 @@ function [ ] = analyzeGraphletDistances(currentPath)
     names = importfileNames(fullPathGraphlet);
     
     
-    
-    
-    algorithmsFilter = cellfun(@(x) size(strfind(x, 'BetweenPairs'), 1) > 0, names);
+    distanceMatrixImages = {};
+    sortingNamesImages = {};
+    numImages = 20;
+    distanceMatrixMean = zeros(numImages);
+    for numImage = 1:numImages
+        imageFilter = cellfun(@(x) size(strfind(x, strcat('imagen_', num2str(numImage), '_')), 1) > 0, names);
 
-    sortingAlgorithm = distanceMatrix(algorithmsFilter == 0, algorithmsFilter == 0);
-    sortingNames = names(algorithmsFilter == 0);
-    sortingControlFilter = cellfun(@(x) size(strfind(x, 'Control'), 1) > 0, sortingNames);
-    sortingWTNames = sortingNames(sortingControlFilter == 0);
-    sortingWT = sortingAlgorithm(sortingControlFilter == 0, sortingControlFilter);
-    sortingWTMean = mean(sortingWT, 2)';
-    differenceGraphletsSorting = zeros(size(sortingWTMean, 2) - 1, 1);
-
-    for i = 1:size(differenceGraphletsSorting, 1)
-        differenceGraphletsSorting(i) = sortingWTMean(i + 1) - sortingWTMean(i);
+        distanceMatrixImages(end+1) = {distanceMatrix(imageFilter, imageFilter)};
+        sortingNamesImages(end+1) = {names(imageFilter)};
+        distanceMatrixMean = distanceMatrixMean + distanceMatrix(imageFilter, imageFilter);
     end
+    
+    distanceMatrixMean = distanceMatrixMean / numImages;
+    save(strcat(currentPath, 'distanceMatrixMean.mat'), 'distanceMatrixMean');
+    
+    
+%     differenceGraphletsSorting = zeros(size(sortingWTMean, 2) - 1, 1);
+%     
+%     for i = 1:size(differenceGraphletsSorting, 1)
+%         differenceGraphletsSorting(i) = sortingWTMean(i + 1) - sortingWTMean(i);
+%     end
 end
 
