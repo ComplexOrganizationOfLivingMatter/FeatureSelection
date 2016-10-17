@@ -2,9 +2,9 @@ function [ output_args ] = easyHeatmap( distanceMatrix, names, outputFile, filte
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     
-    names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
-    names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
-    names
+%     names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
+%     names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
+%     names
     sortedNumbers = [1, 12, 14, 15, 16, 17, 18, 19, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13];
     %names = names';
     %[newNamesSorted, indices] = sort(names);
@@ -23,8 +23,8 @@ function [ output_args ] = easyHeatmap( distanceMatrix, names, outputFile, filte
     colorbar
     
     title(outputFile);
-    names = cellfun(@(x) x(16:end-5), names, 'UniformOutput', false);
-    set(gca,'YTick', [1:size(names,1)], 'YTickLabel', names, 'FontSize', 6);
+    %names = cellfun(@(x) x(16:end-5), names, 'UniformOutput', false);
+    set(gca,'YTick', [1:size(names,2)], 'YTickLabel', names);
     set(gca,'XTick', [1:size(sortedNumbers,2)], 'XTickLabel', 1:20);
 
     namefile = strcat('heatmapGraphlets_', outputFile);
