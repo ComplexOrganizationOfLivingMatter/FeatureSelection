@@ -11,6 +11,7 @@ SalivaryGland/results/*
 voronoiNetworks/results/*
 voronoiNetworks/test/*
 voronoiNetworks/data/*
+voronoiNetworks/src/lib/export_fig-master/*
 *.fig
 *.tif
 *.nd2
