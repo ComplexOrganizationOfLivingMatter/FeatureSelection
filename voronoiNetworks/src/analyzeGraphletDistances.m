@@ -12,28 +12,7 @@ function [ ] = analyzeGraphletDistances(currentPath)
     [names, it] = sort(names);
     distanceMatrix = distanceMatrix(it, it);
     
-    distanceMatrixImages = {};
-    sortingNamesImages = {};
-    numImages = 20;
-    biologicalImages = cellfun(@(x) size(strfind(x, 'imagen_'), 1) == 0, names);
-    distanceMatrixMean = zeros(sum(biologicalImages), numImages);
-    
-    for numImage = 1:numImages
-        imageFilter = cellfun(@(x) size(strfind(x, strcat('imagen_', num2str(numImage), '_')), 1) > 0, names);
 
-        distanceMatrixImages(end+1) = {distanceMatrix(biologicalImages, imageFilter)};
-        
-        distanceMatrixMean = distanceMatrixMean + distanceMatrix(biologicalImages, imageFilter);
-    end
-    
-    distanceMatrixMean = distanceMatrixMean / numImages;
-    namesSortedOut = names(biologicalImages);
-    save(strcat(currentPath, 'distanceMatrixMean.mat'), 'distanceMatrixMean', 'namesSortedOut');
-    
-%     differenceGraphletsSorting = zeros(size(sortingWTMean, 2) - 1, 1);
-%     
-%     for i = 1:size(differenceGraphletsSorting, 1)
-%         differenceGraphletsSorting(i) = sortingWTMean(i + 1) - sortingWTMean(i);
-%     end
+    save(strcat(currentPath, 'distanceMatrixMeanGCD73.mat'), 'distanceMatrix', 'names');
 end
 
