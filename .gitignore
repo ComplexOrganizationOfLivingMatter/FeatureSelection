@@ -16,3 +16,6 @@ voronoiNetworks/src/lib/export_fig-master/*
 *.tif
 *.nd2
 *.txt
+*.ndump2
+*.gw
+*.png
