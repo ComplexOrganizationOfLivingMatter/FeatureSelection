@@ -16,33 +16,34 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
         %Check which files we want.
         if size(strfind(lower(diagramName), '.mat'), 1) >= 1
             fullPathFile
-            load(fullPathFile);
-            load(); %load valid cells and neighbours
+            load(fullPathFile);%load valid cells and neighbours
+            
 
             validCells = celulas_validas;
             neighbours = vecinos;
             maxCellLabel = max(cellfun(@(x) max(x), vecinos));
             noValidCells = setxor(1:maxCellLabel, celulas_validas);
 
-            if size(vecinos, 2) == (size(noValidCells, 2) + size(validCells, 2))
+            if size(vecinos, 2) ~= (size(noValidCells, 2) + size(validCells, 2))
                 error('Incorrect number of no valid cells'); 
             end
 
             finalValidCells = [];
             for numCell = 1:size(neighbours, 2)
                 neighboursInMaxPathLength = [];
-                antNeighbours = neighbours(numCell);
+                antNeighbours = neighbours{numCell};
                 noValidCellsInPath = intersect(noValidCells, antNeighbours);
-                neighboursInMaxPathLength = unique(neighboursInMaxPathLength, antNeighbours);
+                neighboursInMaxPathLength = unique(horzcat(neighboursInMaxPathLength, antNeighbours'));
 
                 if isempty(noValidCellsInPath) == 0
                     continue %it is a no valid cell
                 end
-
+                pathLengthActual = 2;
                 while pathLengthActual <= maxPathLength
-                    actualNeighbours = neighbours(antNeighbours);
-                    neighboursInMaxPathLength = unique(neighboursInMaxPathLength, actualNeighbours);
+                    actualNeighbours = neighbours{antNeighbours};
+                    neighboursInMaxPathLength = unique(horzcat(neighboursInMaxPathLength, actualNeighbours'));
                     antNeighbours = actualNeighbours;
+                    pathLengthActual = pathLengthActual + 1;
                 end
 
                 noValidCellsInPath = intersect(noValidCells, neighboursInMaxPathLength);
@@ -50,6 +51,8 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
                     finalValidCells(end+1) = numCell;
                 end
             end
+            outputFile = strcat('results\validCellsMaxPathLength\maxLength', num2str(maxPathLength), diagramName);
+            save(outputFile, 'finalValidCells', 'celulas_validas', 'vecinos');
         end
     end
 end

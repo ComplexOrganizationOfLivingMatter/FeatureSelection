@@ -147,3 +147,8 @@ calculateLEDAFilesFromDirectory();
 
 filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
 
+%---------------------%
+%Valid cells from a fixed path length, which will lead to 
+%a circular ROI of valid cells.
+
+[ finalValidCells ] = getValidCellsFromROI('D:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\', 4);
