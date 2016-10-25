@@ -151,4 +151,28 @@ filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphl
 %Valid cells from a fixed path length, which will lead to 
 %a circular ROI of valid cells.
 
-[ finalValidCells ] = getValidCellsFromROI('D:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\', 4);
+[ finalValidCells ] = getValidCellsFromROI('D:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 5);
+
+[ finalValidCells ] = getValidCellsFromROI('D:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 4);
+
+image = imagen_3_Diagrama_01;
+image = im2bw(image(:,:,1), 0.2);
+if sum(image(:) == 255) > sum(image(:) == 0) || sum(image(:) == 1) > sum(image(:) == 0)
+    Img_L = bwlabel(image);
+else
+    image = image == 0;
+    Img_L = bwlabel(image);
+end
+
+figure;
+imshow(Img_L, colorcube(max(Img_L(:))));
+
+figure;
+maxCellLabel = max(cellfun(@(x) max(x), vecinos));
+noValidCells = setxor(1:maxCellLabel, celulas_validas);
+Img_L_Show = ismember(Img_L, celulas_validas);
+imshow(Img_L_Show, colorcube)
+
+figure;
+Img_L_Show = ismember(Img_L, finalValidCells) .* Img_L;
+imshow(Img_L_Show, colorcube(max(Img_L(:))));
