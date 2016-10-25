@@ -39,7 +39,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
                 if isempty(noValidCellsInPath) == 0
                     continue %it is a no valid cell
                 end
-                pathLengthActual = 2;
+                pathLengthActual = 3;
                 while pathLengthActual <= maxPathLength
                     actualNeighbours = vertcat(neighbours{antNeighbours});
                     neighboursInMaxPathLength = unique(horzcat(neighboursInMaxPathLength, actualNeighbours'));
