@@ -155,7 +155,7 @@ filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphl
 
 [ finalValidCells ] = getValidCellsFromROI('D:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 4);
 
-image = imagen_3_Diagrama_01;
+image = BC062b_adaptated;
 image = im2bw(image(:,:,1), 0.2);
 if sum(image(:) == 255) > sum(image(:) == 0) || sum(image(:) == 1) > sum(image(:) == 0)
     Img_L = bwlabel(image);
@@ -177,5 +177,63 @@ figure;
 Img_L_Show = ismember(Img_L, finalValidCells) .* Img_L;
 imshow(Img_L_Show, colorcube(max(Img_L(:))));
 
-createNetworksFromVoronoiDiagrams('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\validCellsMaxPathLength\maxLength4\');
-createNetworksFromVoronoiDiagrams('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\validCellsMaxPathLength\maxLength5\');
+filterByNonValidCells( 'D:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
+
+%---- max path length 4 ------%
+analyzeGraphletDistances('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\');
+
+load('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\distanceMatrixMeanGCD11.mat')
+easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength4GCD11', 'voronoi', max(distanceMatrix(:)))
+
+distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
+namesEmboData = names(1:5);
+easyHeatmap(distanceMatrixEmboData, namesEmboData, 'EmboData_MaxPathLength4GCD11', '', max(distanceMatrix(:)))
+
+indicesDS1 = [2 5 6 7];
+distanceMatrixDS1 = distanceMatrix(indicesDS1, indicesDS1);
+namesDS1 = names(indicesDS1);
+easyHeatmap(distanceMatrixDS1, namesDS1, 'v1-v2-Eye-cNT_MaxPathLength4GCD11', '', max(distanceMatrix(:)))
+
+indicesDS2 = [1 3 4 9 10 11];
+distanceMatrixDS2 = distanceMatrix(indicesDS2, indicesDS2);
+namesDS2 = names(indicesDS2);
+easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength4GCD11', '', max(distanceMatrix(:)))
+
+%---- maxPath length 5 ---%
+
+analyzeGraphletDistances('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\');
+
+load('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD11.mat')
+easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength5GCD11', 'voronoi', max(distanceMatrix(:)))
+
+distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
+namesEmboData = names(1:5);
+easyHeatmap(distanceMatrixEmboData, namesEmboData, 'EmboData_MaxPathLength5GCD11', '', max(distanceMatrix(:)))
+
+indicesDS1 = [2 5 6 7];
+distanceMatrixDS1 = distanceMatrix(indicesDS1, indicesDS1);
+namesDS1 = names(indicesDS1);
+easyHeatmap(distanceMatrixDS1, namesDS1, 'v1-v2-Eye-cNT_MaxPathLength5GCD11', '', max(distanceMatrix(:)))
+
+indicesDS2 = [1 3 4 9 10 11];
+distanceMatrixDS2 = distanceMatrix(indicesDS2, indicesDS2);
+namesDS2 = names(indicesDS2);
+easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength5GCD11', '', max(distanceMatrix(:)))
+
+
+load('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD73.mat')
+easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength5GCD73', 'voronoi', max(distanceMatrix(:)))
+
+distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
+namesEmboData = names(1:5);
+easyHeatmap(distanceMatrixEmboData, namesEmboData, 'EmboData_MaxPathLength5GCD73', '', max(distanceMatrix(:)))
+
+indicesDS1 = [2 5 6 7];
+distanceMatrixDS1 = distanceMatrix(indicesDS1, indicesDS1);
+namesDS1 = names(indicesDS1);
+easyHeatmap(distanceMatrixDS1, namesDS1, 'v1-v2-Eye-cNT_MaxPathLength5GCD73', '', max(distanceMatrix(:)))
+
+indicesDS2 = [1 3 4 9 10 11];
+distanceMatrixDS2 = distanceMatrix(indicesDS2, indicesDS2);
+namesDS2 = names(indicesDS2);
+easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength5GCD73', '', max(distanceMatrix(:)))
