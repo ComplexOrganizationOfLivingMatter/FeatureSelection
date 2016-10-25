@@ -142,7 +142,7 @@ for i = 1:20
 end
 
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\data');
-cd 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
+cd 'D:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
 calculateLEDAFilesFromDirectory();
 
 filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
@@ -176,3 +176,6 @@ imshow(Img_L_Show, colorcube)
 figure;
 Img_L_Show = ismember(Img_L, finalValidCells) .* Img_L;
 imshow(Img_L_Show, colorcube(max(Img_L(:))));
+
+createNetworksFromVoronoiDiagrams('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\validCellsMaxPathLength\maxLength4\');
+createNetworksFromVoronoiDiagrams('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\validCellsMaxPathLength\maxLength5\');
