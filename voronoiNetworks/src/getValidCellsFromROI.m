@@ -1,0 +1,56 @@
+function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
+%UNTITLED Summary of this function goes here
+%   We get the valid cells with no valid cells in all the paths 
+%   of a max length (maxPathLength)
+%
+%   Developed by Pablo Vicente-Munuera
+
+    dataFiles = getAllFiles(currentPath);
+    for numFile = 1:size(dataFiles,1)
+        fullPathFile = dataFiles(numFile);
+        fullPathFile = fullPathFile{:};
+        diagramName = strsplit(fullPathFile, '\');
+        diagramName = diagramName(end);
+        diagramName = diagramName{1};
+
+        %Check which files we want.
+        if size(strfind(lower(diagramName), '.mat'), 1) >= 1
+            fullPathFile
+            load(fullPathFile);
+            load(); %load valid cells and neighbours
+
+            validCells = celulas_validas;
+            neighbours = vecinos;
+            maxCellLabel = max(cellfun(@(x) max(x), vecinos));
+            noValidCells = setxor(1:maxCellLabel, celulas_validas);
+
+            if size(vecinos, 2) == (size(noValidCells, 2) + size(validCells, 2))
+                error('Incorrect number of no valid cells'); 
+            end
+
+            finalValidCells = [];
+            for numCell = 1:size(neighbours, 2)
+                neighboursInMaxPathLength = [];
+                antNeighbours = neighbours(numCell);
+                noValidCellsInPath = intersect(noValidCells, antNeighbours);
+                neighboursInMaxPathLength = unique(neighboursInMaxPathLength, antNeighbours);
+
+                if isempty(noValidCellsInPath) == 0
+                    continue %it is a no valid cell
+                end
+
+                while pathLengthActual <= maxPathLength
+                    actualNeighbours = neighbours(antNeighbours);
+                    neighboursInMaxPathLength = unique(neighboursInMaxPathLength, actualNeighbours);
+                    antNeighbours = actualNeighbours;
+                end
+
+                noValidCellsInPath = intersect(noValidCells, neighboursInMaxPathLength);
+                if isempty(noValidCellsInPath)
+                    finalValidCells(end+1) = numCell;
+                end
+            end
+        end
+    end
+end
+
