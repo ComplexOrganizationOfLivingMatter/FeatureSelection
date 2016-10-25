@@ -13,8 +13,9 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
         diagramName = diagramName(end);
         diagramName = diagramName{1};
 
+        outputFile = strcat('results\validCellsMaxPathLength\maxLength', num2str(maxPathLength), '_', diagramName);
         %Check which files we want.
-        if size(strfind(lower(diagramName), '.mat'), 1) >= 1
+        if size(strfind(lower(diagramName), '.mat'), 1) >= 1 && exist(outputFile, 'file') ~= 2
             fullPathFile
             load(fullPathFile);%load valid cells and neighbours
             
@@ -31,7 +32,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
             finalValidCells = [];
             for numCell = 1:size(neighbours, 2)
                 neighboursInMaxPathLength = [];
-                antNeighbours = neighbours{numCell};
+                antNeighbours = [neighbours{numCell}];
                 noValidCellsInPath = intersect(noValidCells, antNeighbours);
                 neighboursInMaxPathLength = unique(horzcat(neighboursInMaxPathLength, antNeighbours'));
 
@@ -40,7 +41,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
                 end
                 pathLengthActual = 2;
                 while pathLengthActual <= maxPathLength
-                    actualNeighbours = neighbours{antNeighbours};
+                    actualNeighbours = vertcat(neighbours{antNeighbours});
                     neighboursInMaxPathLength = unique(horzcat(neighboursInMaxPathLength, actualNeighbours'));
                     antNeighbours = actualNeighbours;
                     pathLengthActual = pathLengthActual + 1;
@@ -51,7 +52,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
                     finalValidCells(end+1) = numCell;
                 end
             end
-            outputFile = strcat('results\validCellsMaxPathLength\maxLength', num2str(maxPathLength), diagramName);
+            
             save(outputFile, 'finalValidCells', 'celulas_validas', 'vecinos');
         end
     end
