@@ -142,7 +142,7 @@ for i = 1:20
 end
 
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\data');
-cd 'D:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
+cd 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
 calculateLEDAFilesFromDirectory();
 
 filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
@@ -151,9 +151,9 @@ filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphl
 %Valid cells from a fixed path length, which will lead to 
 %a circular ROI of valid cells.
 
-[ finalValidCells ] = getValidCellsFromROI('D:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 5);
+[ finalValidCells ] = getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 5);
 
-[ finalValidCells ] = getValidCellsFromROI('D:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 4);
+[ finalValidCells ] = getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 4);
 
 image = BC062b_adaptated;
 image = im2bw(image(:,:,1), 0.2);
@@ -177,12 +177,12 @@ figure;
 Img_L_Show = ismember(Img_L, finalValidCells) .* Img_L;
 imshow(Img_L_Show, colorcube(max(Img_L(:))));
 
-filterByNonValidCells( 'D:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
 
 %---- max path length 4 ------%
-analyzeGraphletDistances('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\');
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\');
 
-load('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\distanceMatrixMeanGCD11.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\distanceMatrixMeanGCD11.mat')
 easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength4GCD11', 'voronoi', max(distanceMatrix(:)))
 
 distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
@@ -201,9 +201,9 @@ easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength4GCD
 
 %---- maxPath length 5 ---%
 
-analyzeGraphletDistances('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\');
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\');
 
-load('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD11.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD11.mat')
 easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength5GCD11', 'voronoi', max(distanceMatrix(:)))
 
 distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
@@ -221,7 +221,7 @@ namesDS2 = names(indicesDS2);
 easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength5GCD11', '', max(distanceMatrix(:)))
 
 
-load('D:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD73.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD73.mat')
 easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength5GCD73', 'voronoi', max(distanceMatrix(:)))
 
 distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
@@ -237,5 +237,14 @@ indicesDS2 = [1 3 4 9 10 11];
 distanceMatrixDS2 = distanceMatrix(indicesDS2, indicesDS2);
 namesDS2 = names(indicesDS2);
 easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength5GCD73', '', max(distanceMatrix(:)))
+
+
+load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\distanceMatrixMeanGCD11.mat')
+tableInfo = readtable('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsTotal\numNodesOriginal.csv');
+
+names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
+names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
+
+indicesSorted = zeros(size(tableInfo, 1), 1);
 
 
