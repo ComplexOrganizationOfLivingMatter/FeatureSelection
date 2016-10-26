@@ -237,3 +237,5 @@ indicesDS2 = [1 3 4 9 10 11];
 distanceMatrixDS2 = distanceMatrix(indicesDS2, indicesDS2);
 namesDS2 = names(indicesDS2);
 easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength5GCD73', '', max(distanceMatrix(:)))
+
+
