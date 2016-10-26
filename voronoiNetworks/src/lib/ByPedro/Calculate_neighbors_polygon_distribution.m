@@ -14,6 +14,8 @@ function Calculate_neighbors_polygon_distribution(currentPath)
         %Check which files we want.
         if (size(strfind(lower(diagramName), '.png'), 1) >= 1 || size(strfind(lower(diagramName), '.bmp'), 1) >= 1 || size(strfind(lower(diagramName), '.jpg'), 1) >= 1)
             fullPathFile
+            numIncorrectAreas = 0;
+            borderIncorrect = 0;
             image = imread(fullPathFile);
             image = im2bw(image(:,:,1), 0.2);
             if sum(image(:) == 255) > sum(image(:) == 0) || sum(image(:) == 1) > sum(image(:) == 0)
@@ -21,6 +23,27 @@ function Calculate_neighbors_polygon_distribution(currentPath)
             else
                 image = image == 0;
                 Img_L = bwlabel(image);
+            end
+            
+            areas = regionprops(Img_L, 'Area');
+            areas = [areas.Area];
+            areasMean = mean(areas);
+            incorrectAreas = areas > areasMean*50;
+            if sum(incorrectAreas)> 0
+                disp('There are some incorrect cell areas. Trying to autofix it...')
+                image(1, :) = 0;
+                image(:, 1) = 0;
+                image(size(image, 1), :) = 0;
+                image(:, size(image, 2)) = 0;
+                Img_L = bwlabel(image);
+                areas = regionprops(Img_L, 'Area');
+                areas = [areas.Area];
+                areasMean = mode(areas);
+                incorrectAreas = areas > areasMean*50;
+                numIncorrectAreas = find(incorrectAreas);
+                if sum(incorrectAreas)> 0
+                    borderIncorrect = 1;
+                end
             end
 			
             ratio=4;
@@ -54,17 +77,20 @@ function Calculate_neighbors_polygon_distribution(currentPath)
             borderCells=[];
             noBorderCells=[];
             
-            %-- OMM files (eye) --%
-%             borderCells = [1, neighbours{1}'];
-%             allCells = 1:max(Img_L(:));
-%             noBorderCells = ismember(allCells, borderCells);
-%             noBorderCells = allCells(noBorderCells == 0);
-            %--Not OMM (eye) files --%
-            for cell=2:max(Img_L(:))
-                if unique(Img_det_bord(Img_L == cell))~=1
-                    noBorderCells = [noBorderCells, cell];
-                else
-                    borderCells = [borderCells, cell];
+            %-- files with a white frame (not cells at that frame) --%
+            if borderIncorrect
+                borderCells = [numIncorrectAreas, cat(1, neighbours{numIncorrectAreas})'];
+                allCells = 1:max(Img_L(:));
+                noBorderCells = ismember(allCells, borderCells);
+                noBorderCells = allCells(noBorderCells == 0);
+            else
+               %-- files with cells partial images at boundaries --%
+                for cell=2:max(Img_L(:))
+                    if unique(Img_det_bord(Img_L == cell))~=1
+                        noBorderCells = [noBorderCells, cell];
+                    else
+                        borderCells = [borderCells, cell];
+                    end
                 end
             end
             
