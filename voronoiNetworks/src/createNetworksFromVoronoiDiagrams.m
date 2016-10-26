@@ -13,6 +13,7 @@ function [ ] = createNetworksFromVoronoiDiagrams(currentPath)
         if size(strfind(lower(diagramName), '.mat'), 1) >= 1
             fullPathFile
             load(fullPathFile);
+            celulas_validas = finalValidCells;
             outputFile = strcat('results\networks\adjacencyMatrix', diagramName);
             if exist(outputFile, 'file') ~= 2
             
