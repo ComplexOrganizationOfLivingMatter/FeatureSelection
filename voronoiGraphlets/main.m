@@ -1,35 +1,35 @@
 %Developed by Pablo Vicente-Munuera
 
-createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\');
+createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\');
 
-cd 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
+cd 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks';
 calculateLEDAFilesFromDirectory();
 
-analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\');
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\');
 
 %-------------------- biologicalImages ---------------------%
-Calculate_neighbors_polygon_distribution('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\biologicalImages\cNT\');
+Calculate_neighbors_polygon_distribution('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\biologicalImages\cNT\');
 
 % for i = 1:20
-%     fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\imagen_', num2str(i), '_Diagrama_', num2str(1), '.mat');
+%     fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\imagen_', num2str(i), '_Diagrama_', num2str(1), '.mat');
 %     load(fileName);
 %     celulas_validas_Final = celulas_validas;
 %     for j = 2:20
-%         fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\imagen_', num2str(i), '_Diagrama_', num2str(j), '.mat');
+%         fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\imagen_', num2str(i), '_Diagrama_', num2str(j), '.mat');
 %         load(fileName);
 %         celulas_validas_Final = intersect(celulas_validas, 
 %     end
 % end
 
-createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\biologicalImages\');
-cd 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
+createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\biologicalImages\');
+cd 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks';
 calculateLEDAFilesFromDirectory();
 
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults' );
 
-analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\');
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\');
 
-load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\distanceMatrixMeanGCD73.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\distanceMatrixMeanGCD73.mat')
 easyHeatmap(distanceMatrix, names, 'voronoiIterations', 'voronoi', max(distanceMatrix(:)))
 
 distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
@@ -137,23 +137,23 @@ easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA', '', max(distanc
 %--------- generate again voronoi diagrams ----------%
 
 for i = 1:20
-    fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\imagen_', num2str(i));
+    fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\imagen_', num2str(i));
     generateVoronoi( 20, 1024, 500, fileName );
 end
 
-createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\voronoiDiagrams\data');
-cd 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\networks';
+createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\data');
+cd 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks';
 calculateLEDAFilesFromDirectory();
 
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults' );
 
 %---------------------%
 %Valid cells from a fixed path length, which will lead to 
 %a circular ROI of valid cells.
 
-[ finalValidCells ] = getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 5);
+[ finalValidCells ] = getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\', 5);
 
-[ finalValidCells ] = getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiNetworks\data\', 4);
+[ finalValidCells ] = getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\', 4);
 
 image = BC062b_adaptated;
 image = im2bw(image(:,:,1), 0.2);
@@ -177,12 +177,12 @@ figure;
 Img_L_Show = ismember(Img_L, finalValidCells) .* Img_L;
 imshow(Img_L_Show, colorcube(max(Img_L(:))));
 
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiNetworks\results\graphletResults' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults' );
 
 %---- max path length 4 ------%
-analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\');
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\maxLength4\');
 
-load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\distanceMatrixMeanGCD11.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\maxLength4\distanceMatrixMeanGCD11.mat')
 easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength4GCD11', 'voronoi', max(distanceMatrix(:)))
 
 distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
@@ -201,9 +201,9 @@ easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength4GCD
 
 %---- maxPath length 5 ---%
 
-analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\');
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\maxLength5\');
 
-load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD11.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD11.mat')
 easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength5GCD11', 'voronoi', max(distanceMatrix(:)))
 
 distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
@@ -221,7 +221,7 @@ namesDS2 = names(indicesDS2);
 easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength5GCD11', '', max(distanceMatrix(:)))
 
 
-load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD73.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD73.mat')
 easyHeatmap(distanceMatrix, names, 'voronoiIterations_MaxPathLength5GCD73', 'voronoi', max(distanceMatrix(:)))
 
 distanceMatrixEmboData = distanceMatrix(1:5, 6:end);
@@ -239,12 +239,29 @@ namesDS2 = names(indicesDS2);
 easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA_MaxPathLength5GCD73', '', max(distanceMatrix(:)))
 
 
-load('E:\Pablo\PhD-miscelanious\voronoiNetworks\results\distanceMatrix\maxLength4\distanceMatrixMeanGCD11.mat')
-tableInfo = readtable('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsTotal\numNodesOriginal.csv');
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\maxLength5\distanceMatrixMeanGCD73.mat')
+tableInfo = readtable('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsTotal\maxLength5\numNodesOriginal.csv');
 
 names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
 names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
 
 indicesSorted = zeros(size(tableInfo, 1), 1);
+for numNameTable = 1:size(tableInfo, 1)
+    date = tableInfo(numNameTable, 2).File;
+    isAtInfoTable = cellfun(@(x) isempty(strfind(date{:}, x)) == 0, names);
+    
+    if sum(isAtInfoTable) > 0
+        indicesSorted(numNameTable, 1) = find(isAtInfoTable == 1);
+    end
+end
+distanceMatrixSorted = distanceMatrix(indicesSorted, indicesSorted);
+numNodos = tableInfo.NumNodos;
+differenceNumNodes = pdist(numNodos);
+distanceVector = squareform(distanceMatrixSorted);
+%csvwrite('correlation.csv', [distanceVector', differenceNumNodes']);
+[r, p] = corr([distanceVector', differenceNumNodes']);
+
+
+easyHeatmap(squareform(differenceNumNodes), names, 'numNodes', '', max(differenceNumNodes(:)))
 
 
