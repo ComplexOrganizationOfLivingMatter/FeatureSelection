@@ -10,7 +10,7 @@ function [ ] = createNetworksFromVoronoiDiagrams(currentPath)
         diagramName = diagramName{1};
 
         %Check which files we want.
-        if size(strfind(lower(diagramName), '.mat'), 1) >= 1
+        if isempty(strfind(lower(diagramName), '.mat')) == 0
             fullPathFile
             load(fullPathFile);
             celulas_validas = finalValidCells;

@@ -285,3 +285,10 @@ getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS B
 getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\1000\', 5);
 
 
+createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\voronoiWeighted\');
+cd 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks';
+calculateLEDAFilesFromDirectory();
+
+
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults' );
+
