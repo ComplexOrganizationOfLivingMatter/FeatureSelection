@@ -19,17 +19,22 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength)
         %Check which files we want.
         if size(strfind(lower(diagramName), '.mat'), 1) >= 1 && exist(outputFile, 'file') ~= 2
             fullPathFile
+            clear vecinos Vecinos celulas_validas
             load(fullPathFile);%load valid cells and neighbours
             
             if exist('vecinos', 'var') == 1
                 neighbours = vecinos;
+                clear vecinos
             elseif exist('Vecinos', 'var') == 1
                 neighbours = Vecinos;
+                clear Vecinos
             else
                 error('No neighbours variable');
             end
             validCells = celulas_validas;
-            maxCellLabel = max(cellfun(@(x) max(x), neighbours));
+            clear celulas_validas
+            neighboursEmpty = cellfun(@(x) isempty(x), neighbours);
+            maxCellLabel = max(cellfun(@(x) max(x), neighbours(neighboursEmpty == 0)));
             noValidCells = setxor(1:maxCellLabel, validCells);
 
             if size(neighbours, 2) ~= (size(noValidCells, 2) + size(validCells, 2))
@@ -63,6 +68,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength)
             vecinos = neighbours;
             celulas_validas = validCells;
             save(outputFile, 'finalValidCells', 'celulas_validas', 'vecinos');
+            clear vecinos celulas_validas
         end
     end
 end

@@ -266,6 +266,7 @@ easyHeatmap(squareform(differenceNumNodes), names, 'numNodes', '', max(differenc
 
 %% ------------------ Cancer cells ----------------- %%
 
+clear all
     %columns
 getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\1000\', 5);
 getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\2000\', 5);
@@ -284,11 +285,29 @@ getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS B
 getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\800\', 5);
 getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\1000\', 5);
 
+    %columns
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\1000\', 4);
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\2000\', 4);
+
+    %disk
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\500_1000_2000\', 4);
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\1000\', 4);
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\2000\', 4);
+
+    %half
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\half\1000\', 4);
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\half\2000\', 4);
+
+    %square
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\600\', 4);
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\800\', 4);
+getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\1000\', 4);
+
 
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\voronoiWeighted\');
 cd 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks';
 calculateLEDAFilesFromDirectory();
 
 
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\' );
 
