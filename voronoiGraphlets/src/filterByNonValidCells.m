@@ -16,7 +16,7 @@ function [ ] = filterByNonValidCells( currentPath )
         dataFileName = allFilesData(dataFile);
         load(dataFileName{1});
         finalMatrixFiltered = matrixToFilter(finalValidCells, :);
-        outputFile = strcat(strjoin(fullPathImageSplitted(1:end-2), '\'), '\graphletResultsFiltered\', imageName);
+        outputFile = strcat(strjoin(fullPathImageSplitted(1:end-3), '\'), '\graphletResultsFiltered\', imageName);
         dlmwrite(outputFile, finalMatrixFiltered, ' ');
     end
 
