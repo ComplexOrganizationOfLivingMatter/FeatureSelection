@@ -1,4 +1,4 @@
-function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
+function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength)
 %UNTITLED Summary of this function goes here
 %   We get the valid cells with no valid cells in all the paths 
 %   of a max length (maxPathLength)
@@ -9,23 +9,30 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
     for numFile = 1:size(dataFiles,1)
         fullPathFile = dataFiles(numFile);
         fullPathFile = fullPathFile{:};
-        diagramName = strsplit(fullPathFile, '\');
-        diagramName = diagramName(end);
+        diagramNameSplitted = strsplit(fullPathFile, '\');
+        diagramName = diagramNameSplitted(end);
         diagramName = diagramName{1};
 
-        outputFile = strcat('results\validCellsMaxPathLength\maxLength', num2str(maxPathLength), '_', diagramName);
+        typeName = diagramNameSplitted(end - 2);
+        typeName = typeName{1};
+        outputFile = strcat('results\validCellsMaxPathLength\voronoiWeighted\maxLength', num2str(maxPathLength), '_', typeName ,'_', diagramName);
         %Check which files we want.
         if size(strfind(lower(diagramName), '.mat'), 1) >= 1 && exist(outputFile, 'file') ~= 2
             fullPathFile
             load(fullPathFile);%load valid cells and neighbours
             
-
+            if exist('vecinos', 'var') == 1
+                neighbours = vecinos;
+            elseif exist('Vecinos', 'var') == 1
+                neighbours = Vecinos;
+            else
+                error('No neighbours variable');
+            end
             validCells = celulas_validas;
-            neighbours = vecinos;
-            maxCellLabel = max(cellfun(@(x) max(x), vecinos));
-            noValidCells = setxor(1:maxCellLabel, celulas_validas);
+            maxCellLabel = max(cellfun(@(x) max(x), neighbours));
+            noValidCells = setxor(1:maxCellLabel, validCells);
 
-            if size(vecinos, 2) ~= (size(noValidCells, 2) + size(validCells, 2))
+            if size(neighbours, 2) ~= (size(noValidCells, 2) + size(validCells, 2))
                 error('Incorrect number of no valid cells'); 
             end
 
@@ -53,6 +60,8 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength )
                 end
             end
             
+            vecinos = neighbours;
+            celulas_validas = validCells;
             save(outputFile, 'finalValidCells', 'celulas_validas', 'vecinos');
         end
     end
