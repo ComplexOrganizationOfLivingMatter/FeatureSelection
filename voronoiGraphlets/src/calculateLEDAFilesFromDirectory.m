@@ -13,7 +13,7 @@ function [ ] = calculateLEDAFilesFromDirectory(PathCurrent )
             outputLEDAFileName = strcat('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletVectors\', inNameFile(1), '.gw')
             outputLEDAFileNameExists = strcat('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletVectors\Done\', inNameFile(1), '.gw')
             if exist(outputLEDAFileNameExists{:}, 'file') ~= 2
-                load(lee_matrices(imK).name);
+                load(strcat(PathCurrent, lee_matrices(imK).name));
                 if exist('adjacencyMatrix', 'var') == 1
                     adjacencyMatrix(adjacencyMatrix > 0) = 1;
                     try

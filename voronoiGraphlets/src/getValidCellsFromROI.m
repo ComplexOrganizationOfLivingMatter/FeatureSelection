@@ -17,7 +17,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength)
         typeName = typeName{1};
         outputFile = strcat('results\validCellsMaxPathLength\voronoiWeighted\maxLength', num2str(maxPathLength), '_', typeName ,'_', diagramName);
         %Check which files we want.
-        if size(strfind(lower(diagramName), '.mat'), 1) >= 1 && exist(outputFile, 'file') ~= 2
+        if isempty(strfind(lower(diagramName), '.mat')) == 0 && exist(outputFile, 'file') ~= 2
             fullPathFile
             clear vecinos Vecinos celulas_validas
             load(fullPathFile);%load valid cells and neighbours

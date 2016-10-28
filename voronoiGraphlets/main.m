@@ -142,10 +142,9 @@ for i = 1:20
 end
 
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\data');
-cd 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks';
-calculateLEDAFilesFromDirectory();
+calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\Original\');
 
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\temp\graphletResults\' );
 
 %% ---------------------%
 %Valid cells from a fixed path length, which will lead to 
@@ -291,6 +290,15 @@ end
 
 %all
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\voronoiWeighted\');
-calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks');
+calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\');
 filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\voronoiWeighted\' );
 
+%% Comparing with regular hexagons
+clear all
+Calculate_neighbors_polygon_distribution('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\RegularHexagons\')
+getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\RegularHexagons\', 4);
+getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\RegularHexagons\', 5);
+
+createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\regularHexagons\');
+calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\regularHexagons\');
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\regularHexagons\' );

@@ -11,7 +11,7 @@ function [ output_args ] = easyHeatmap( distanceMatrix, names, outputFile, filte
     %[newNamesSorted, indices] = sort(names);
     
     if isequal(filter, '') == 0
-        filteredRows = cellfun(@(x) size(strfind(x, filter), 1) > 1, names);
+        filteredRows = cellfun(@(x) isempty(strfind(x, filter)) == 0, names);
         names = {names(filteredRows)};
         names = names{1};
         heatmap = (distanceMatrix(filteredRows, filteredRows)/realMax)*64;
