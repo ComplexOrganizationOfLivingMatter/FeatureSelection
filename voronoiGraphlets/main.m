@@ -176,7 +176,7 @@ figure;
 Img_L_Show = ismember(Img_L, finalValidCells) .* Img_L;
 imshow(Img_L_Show, colorcube(max(Img_L(:))));
 
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\Original\' );
 
 %% ---- max path length 4 ------%
 analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\maxLength4\');
@@ -302,3 +302,71 @@ getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\RegularHex
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\regularHexagons\');
 calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\regularHexagons\');
 filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\regularHexagons\');
+
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\maxLength5\');
+
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\maxLength5\distanceMatrixMeanGCD11.mat')
+
+differenceWithRegularHexagon = distanceMatrix(6,:);
+differenceWithRegularHexagon = differenceWithRegularHexagon(differenceWithRegularHexagon > 0);
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\Original\distanceMatrixMeanGCD11.mat')
+save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
+
+totalGraphlets = getAllFiles('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsTotal\Original\');
+
+percentageOfHexagons = [];
+nameFiles = {};
+for numFile = 1:size(totalGraphlets, 1)
+    fullPathFile = totalGraphlets(numFile);
+    fullPathFile = fullPathFile{:};
+    diagramName = strsplit(fullPathFile, '\');
+    diagramName = diagramName(end);
+    diagramName = diagramName{1};
+    
+    %Check which files we want.
+    if isempty(strfind(lower(diagramName), '.ndump2')) == 0
+        matrixGraphlets = csvread(fullPathFile);
+        percentageOfHexagons(end+1) = sum(matrixGraphlets(:, 1) == 6) / size(matrixGraphlets, 1)*100;
+        nameFiles{end+1} = fullPathFile;
+    end
+    
+    
+end
+
+percentageOfHexagons
+nameFiles
+
+save('percentageOfHexagons.mat', 'percentageOfHexagons', 'nameFiles');
+
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\differenceWithRegularHexagon.mat')
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\percentageOfHexagons.mat')
+
+names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
+names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
+names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
+names = cellfun(@(x) x(1:end-15), names, 'UniformOutput', false);
+
+
+ nameOfTypes = 6;
+colors = hsv(nameOfTypes);
+h1 = figure;
+h = zeros(size(nameOfTypes, 1));
+hold on;
+for i = 1:size(names, 1)
+    if i >= nameOfTypes
+        h(nameOfTypes, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(6, :));
+        t1 = text(differenceWithRegularHexagon(:, i),percentageOfHexagons(:, i), num2str(i - nameOfTypes + 1));
+        t1.FontSize = 8;
+        t1.HorizontalAlignment = 'center';
+        t1.VerticalAlignment = 'bottom';
+    else
+        h(i, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(i, :), 'MarkerFaceColor', colors(i, :));
+    end
+end
+newNames = {names{1:nameOfTypes-1}};
+newNames{end+1} = 'Voronoi';
+hlegend1 = legend(h(:,1), newNames');
+title('Percentage of hexagons against graphlets difference with hexagonal tesselation');
+xlabel('Graphlets value comparison');
+ylabel('Percentage of hexagons')
+export_fig(h1, 'differenceGraphletsHexagonalTesselation', '-png', '-a4', '-m1.5');
