@@ -144,7 +144,7 @@ end
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\data');
 calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\Original\');
 
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\temp\graphletResults\' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\test\' );
 
 %% ---------------------%
 %Valid cells from a fixed path length, which will lead to 
@@ -154,7 +154,7 @@ getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\', 5);
 
 getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\', 4);
 
-image = L_original;
+image = Hexagons1Pixel;
 image = im2bw(image(:,:,1), 0.2);
 if sum(image(:) == 255) > sum(image(:) == 0) || sum(image(:) == 1) > sum(image(:) == 0)
     Img_L = bwlabel(image);
@@ -289,8 +289,8 @@ parfor i = 4:5
 end
 
 %all
-createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\voronoiWeighted\');
-calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\');
+createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\voronoiWeighted\maxLength4\');
+calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\voronoiWeighted\');
 filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\voronoiWeighted\' );
 
 %% Comparing with regular hexagons
@@ -301,4 +301,4 @@ getValidCellsFromROI('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\RegularHex
 
 createNetworksFromVoronoiDiagrams('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\regularHexagons\');
 calculateLEDAFilesFromDirectory('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\networks\regularHexagons\');
-filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\regularHexagons\' );
+filterByNonValidCells( 'E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResults\regularHexagons\');
