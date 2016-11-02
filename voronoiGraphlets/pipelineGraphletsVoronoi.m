@@ -8,6 +8,8 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
 
     dataDir = strcat('data\', typeOfData);
     %Firstly, we calculate neighbours and valid cells
+    
+    disp('Calculating neighbours and valid cells');
     Calculate_neighbors_polygon_distribution(dataDir);
     validCellsDir = strcat('results\validCellsMaxPathLength\', typeOfData);
     if exist(validCellsDir, 'dir') ~= 7
@@ -16,15 +18,20 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
         mkdir(validCellsDir, 'maxLength5');
     end
     %ValidCells of max path length 4 and 5.
-    getValidCellsFromROI(dataDir, 4, validCellsDir);
+    disp('Valid cells from ROI');
+    %getValidCellsFromROI(dataDir, 4, validCellsDir);
     getValidCellsFromROI(dataDir, 5, validCellsDir);
     
     networksDir = strcat('results\networks\', typeOfData);
     if exist(networksDir, 'dir') ~= 7
         mkdir(networksDir);
     end
-    createNetworksFromVoronoiDiagrams(dataDir, networksDir);
     
+    disp('Creating network');
+    createNetworksFromVoronoiDiagrams(strcat(validCellsDir, 'maxLength5\'), networksDir);
+    
+    
+    disp('Leda files...');
     calculateLEDAFilesFromDirectory(networksDir);
     graphletResultsDir = strcat('results\graphletResults\', typeOfData);
     if exist(graphletResultsDir, 'dir') ~= 7

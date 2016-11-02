@@ -10,17 +10,41 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
         imageName = fullPathImageSplitted{end};
         imageNameReal = imageName(16:end-7);
         
-        dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
-        matrixToFilter = csvread(fullPathImage);
-        dataFileName = allFilesData(dataFile);
-        load(dataFileName{1});
-        finalMatrixFiltered = matrixToFilter(finalValidCells, :);
-        if size(finalMatrixFiltered, 1) > 6
-            outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
-            outputFile = strcat(outputFile, imageName);
-            dlmwrite(outputFile, finalMatrixFiltered, ' ');
-        else
-            disp('Not enough nodes');
+        outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
+        outputFile = strcat(outputFile, imageName);
+        if isempty(strfind(outputFile, 'Weighted')) == 0
+            outputFileCancer = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
+            outputFileCancer = strcat(outputFileCancer, 'CancerCellsAndNeighbours\', imageName);
+            if exist(outputFileCancer, 'file') ~= 2
+                dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
+                matrixToFilter = csvread(fullPathImage);
+                dataFileName = allFilesData(dataFile);
+                load(dataFileName{1});
+                
+                %finalMatrixFiltered = matrixToFilter(intersect(finalValidCells, , :);
+
+                if size(finalMatrixFiltered, 1) > 6
+                    dlmwrite(outputFile, finalMatrixFiltered, ' ');
+                else
+                    fullpathImage
+                    disp('Not enough nodes');
+                end
+            end
+        end
+        if exist(outputFile, 'file') ~= 2
+            dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
+            matrixToFilter = csvread(fullPathImage);
+            dataFileName = allFilesData(dataFile);
+            load(dataFileName{1});
+
+            finalMatrixFiltered = matrixToFilter(finalValidCells, :);
+
+            if size(finalMatrixFiltered, 1) > 6
+                dlmwrite(outputFile, finalMatrixFiltered, ' ');
+            else
+                fullpathImage
+                disp('Not enough nodes');
+            end
         end
     end
 

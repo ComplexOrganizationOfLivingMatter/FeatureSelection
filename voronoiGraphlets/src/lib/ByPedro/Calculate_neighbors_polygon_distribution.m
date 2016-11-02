@@ -15,7 +15,11 @@ function Calculate_neighbors_polygon_distribution(currentPath)
         if (size(strfind(lower(diagramName), '.png'), 1) >= 1 || size(strfind(lower(diagramName), '.bmp'), 1) >= 1 || size(strfind(lower(diagramName), '.jpg'), 1) >= 1)
             fullPathFile
             nameWithoutExtension = strsplit(diagramName, '.');
-            outputFile = strcat(strjoin(fullPathSplitted(1:end-2), '\'), '\data\', nameWithoutExtension{1}, '_data.mat');
+            if isempty(strfind(fullPathFile, 'Weighted'))
+                outputFile = strcat(strjoin(fullPathSplitted(1:end-2), '\'), '\data\', nameWithoutExtension{1}, '_data.mat');
+            else
+                outputFile = strcat(strjoin(fullPathSplitted(1:end-4), '\'), '\data\', strjoin(fullPathSplitted(end-2:end-1), '\'), '\' ,nameWithoutExtension{1}, '_data.mat');
+            end
             if exist(outputFile, 'file') ~= 2
                 numIncorrectAreas = 0;
                 borderIncorrect = 0;
