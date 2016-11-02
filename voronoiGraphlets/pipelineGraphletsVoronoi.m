@@ -23,19 +23,21 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     if exist(networksDir, 'dir') ~= 7
         mkdir(networksDir);
     end
-    createNetworksFromVoronoiDiagrams(validCellsDir, networksDir);
+    createNetworksFromVoronoiDiagrams(dataDir, networksDir);
     
     calculateLEDAFilesFromDirectory(networksDir);
-    %Now, we have to wait until .ndump2 are created
-    answer = 'n';
-    while answer ~= 'y'
-        answer = input('Are .ndump2 created? ');
-    end
-    %After that, 
     graphletResultsDir = strcat('results\graphletResults\', typeOfData);
     if exist(graphletResultsDir, 'dir') ~= 7
         mkdir(graphletResultsDir);
     end
+    
+    %Now, we have to wait until .ndump2 are created
+    answer = 'n';
+    while answer ~= 'y'
+        answer = input('Are .ndump2 created? [y/n] ');
+    end
+    %After that, 
+    
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4'));
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5'));
     

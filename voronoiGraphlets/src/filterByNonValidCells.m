@@ -10,7 +10,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
         imageName = fullPathImageSplitted{end};
         imageNameReal = imageName(16:end-7);
         
-        
+        allFilesData = cellfun(@(x) strerep(x, '-', ' '), allFilesData);
         dataFile = cellfun(@(x) size(strfind(x, imageNameReal), 1) > 0, allFilesData);
         matrixToFilter = csvread(fullPathImage);
         dataFileName = allFilesData(dataFile);

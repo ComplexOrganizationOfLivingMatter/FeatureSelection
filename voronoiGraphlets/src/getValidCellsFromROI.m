@@ -15,7 +15,11 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength, 
 
         typeName = diagramNameSplitted(end - 2);
         typeName = typeName{1};
-        outputFile = strcat(outputPath, 'maxLength', num2str(maxPathLength), '_', typeName ,'_', diagramName);
+        if isempty(strfind(diagramName, typeName))
+            outputFile = strcat(outputPath, 'maxLength', num2str(maxPathLength), '\', 'maxLength', num2str(maxPathLength), '_', typeName ,'_', diagramName);
+        else
+            outputFile = strcat(outputPath, 'maxLength', num2str(maxPathLength), '\', 'maxLength', num2str(maxPathLength) ,'_', diagramName);
+        end
         %Check which files we want.
         if isempty(strfind(lower(diagramName), '.mat')) == 0 && exist(outputFile, 'file') ~= 2
             fullPathFile
