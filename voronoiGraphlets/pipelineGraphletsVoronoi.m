@@ -1,5 +1,5 @@
 function [  ] = pipelineGraphletsVoronoi( typeOfData )
-%UNTITLED6 Summary of this function goes here
+%pipelineGraphletsVoronoi Summary of this function goes here
 %   Detailed explanation goes here
 %
 %   Developed by Pablo Vicente-Munuera
@@ -27,7 +27,10 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     
     calculateLEDAFilesFromDirectory('results\graphletVectors\');
     %Now, we have to wait until .ndump2 are created
-    
+    answer = 'n';
+    while answer ~= 'y'
+        answer = input('Are .ndump2 created? ');
+    end
     %After that, 
     graphletResultsDir = strcat('results\graphletResults\', typeOfData);
     if exist(graphletResultsDir, 'dir') ~= 7
@@ -36,7 +39,25 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4'));
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5'));
     
+    distanceDir = strcat('results\distanceMatrix\', typeOfData);
+    if exist(distanceDir, 'dir') ~= 7
+        mkdir(distanceDir);
+        mkdir(distanceDir, 'maxLength4');
+        mkdir(distanceDir, 'maxLength5');
+    end
+    answer = 'n';
+    while lower(answer) ~= 'y'
+        answer = input('Are distances calculated? [y/n] ');
+    end
+    
     %Calculate distance
-    analyzeGraphletDistances
+    analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\'), 'gdda');
+    analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gdda');
+%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\'), 'gcd11');
+%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd11');
+%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd73');
+    
+    load(strcat(distanceDir, 'maxLength5\distanceMatrixMeanGDDA.txt')); 
+    easyHeatmap(distanceMatrix, names, typeOfData, '', max(distanceMatrix(:)))
 end
 
