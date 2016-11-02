@@ -37,9 +37,14 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
         answer = input('Are .ndump2 created? [y/n] ');
     end
     %After that, 
-    
-    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4'));
-    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5'));
+    graphletResultsFilteredDir = strcat('results\graphletResultsFiltered\', typeOfData);
+    if exist(graphletResultsFilteredDir, 'dir') ~= 7
+        mkdir(graphletResultsFilteredDir);
+        mkdir(graphletResultsFilteredDir, 'maxLength4');
+        mkdir(graphletResultsFilteredDir, 'maxLength5');
+    end
+    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4\'));
+    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'));
     
     distanceDir = strcat('results\distanceMatrix\', typeOfData);
     if exist(distanceDir, 'dir') ~= 7

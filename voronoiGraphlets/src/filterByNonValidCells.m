@@ -10,14 +10,14 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
         imageName = fullPathImageSplitted{end};
         imageNameReal = imageName(16:end-7);
         
-        allFilesData = cellfun(@(x) strerep(x, '-', ' '), allFilesData);
-        dataFile = cellfun(@(x) size(strfind(x, imageNameReal), 1) > 0, allFilesData);
+        dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
         matrixToFilter = csvread(fullPathImage);
         dataFileName = allFilesData(dataFile);
         load(dataFileName{1});
         finalMatrixFiltered = matrixToFilter(finalValidCells, :);
         if size(finalMatrixFiltered, 1) > 6
-            outputFile = strcat(strjoin(fullPathImageSplitted(1:end-3), '\'), '\graphletResultsFiltered\', imageName);
+            outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
+            outputFile = strcat(outputFile, imageName);
             dlmwrite(outputFile, finalMatrixFiltered, ' ');
         else
             disp('Not enough nodes');
