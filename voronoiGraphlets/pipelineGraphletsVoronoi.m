@@ -3,7 +3,7 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
 %   Detailed explanation goes here
 %
 %   Developed by Pablo Vicente-Munuera
-    clear
+    clearvars -except typeOfData
     cd E:\Pablo\PhD-miscelanious\voronoiGraphlets\
 
     dataDir = strcat('data\', typeOfData);
