@@ -1,8 +1,8 @@
-function [ ] = filterByNonValidCells( currentPath )
+function [ ] = filterByNonValidCells( currentPath, neighboursPath )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     allFilesImages = getAllFiles(currentPath);
-    allFilesData = getAllFiles('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\validCellsMaxPathLength\regularHexagons\maxLength5\');
+    allFilesData = getAllFiles(neighboursPath);
     for numFile = 1:size(allFilesImages,1)
         fullPathImage = allFilesImages(numFile);
         fullPathImage = fullPathImage{:};
