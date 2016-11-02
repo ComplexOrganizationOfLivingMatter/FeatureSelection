@@ -16,8 +16,12 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
         dataFileName = allFilesData(dataFile);
         load(dataFileName{1});
         finalMatrixFiltered = matrixToFilter(finalValidCells, :);
-        outputFile = strcat(strjoin(fullPathImageSplitted(1:end-3), '\'), '\graphletResultsFiltered\', imageName);
-        dlmwrite(outputFile, finalMatrixFiltered, ' ');
+        if size(finalMatrixFiltered, 1) > 6
+            outputFile = strcat(strjoin(fullPathImageSplitted(1:end-3), '\'), '\graphletResultsFiltered\', imageName);
+            dlmwrite(outputFile, finalMatrixFiltered, ' ');
+        else
+            disp('Not enough nodes');
+        end
     end
 
 end
