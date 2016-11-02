@@ -26,58 +26,63 @@
 # ls | grep Diagrama_19_data.ndump2 | while read f; do echo "$f"; cat "$f" >> voronoi_19_totalGraphlets.ndump2; done;
 #------------------- Cancer ----------------------#
 #Columns
+# for i in {1..9}
+# do
+# 	ls | grep _columns_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_0"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _columns_ | grep Diagrama_0"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_0"$i"_weight_2000_totalGraphlets.ndump2; done;
+# done
+
+# for i in {10..80}
+# do
+# 	ls | grep _columns_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _columns_ | grep Diagrama_"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_"$i"_weight_2000_totalGraphlets.ndump2; done;
+# done
+
+
+# #Disk
+# for i in {1..9}
+# do
+# 	ls | grep _disk_ | grep Diagrama_0"$i"_v3_weight_500_1000_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_0"$i"_weight_500_1000_2000_totalGraphlets.ndump2; done;
+# 	ls | grep _disk_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_0"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _disk_ | grep Diagrama_0"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_0"$i"_weight_2000_totalGraphlets.ndump2; done;
+# done
+
+# for i in {10..80}
+# do
+# 	ls | grep _disk_ | grep Diagrama_"$i"_v3_weight_500_1000_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_"$i"_weight_500_1000_2000_totalGraphlets.ndump2; done;
+# 	ls | grep _disk_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _disk_ | grep Diagrama_"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_"$i"_weight_2000_totalGraphlets.ndump2; done;
+# done
+
+# #Half
+# for i in {1..9}
+# do
+# 	ls | grep _half_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_0"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _half_ | grep Diagrama_0"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_0"$i"_weight_2000_totalGraphlets.ndump2; done;
+# done
+
+# for i in {10..80}
+# do
+# 	ls | grep _half_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _half_ | grep Diagrama_"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_"$i"_weight_2000_totalGraphlets.ndump2; done;
+# done
+
+# #Square
+# for i in {1..9}
+# do
+# 	ls | grep _square_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_square_0"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _square_ | grep Diagrama_0"$i"_v3_weight_600 | while read f; do echo "$f"; cat "$f" >> voronoi_square_0"$i"_weight_600_totalGraphlets.ndump2; done;
+# 	ls | grep _square_ | grep Diagrama_0"$i"_v3_weight_800 | while read f; do echo "$f"; cat "$f" >> voronoi_square_0"$i"_weight_800_totalGraphlets.ndump2; done;
+# done
+
+# for i in {10..20}
+# do
+# 	ls | grep _square_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_square_"$i"_weight_1000_totalGraphlets.ndump2; done;
+# 	ls | grep _square_ | grep Diagrama_"$i"_v3_weight_600 | while read f; do echo "$f"; cat "$f" >> voronoi_square_"$i"_weight_600_totalGraphlets.ndump2; done;
+# 	ls | grep _square_ | grep Diagrama_"$i"_v3_weight_800 | while read f; do echo "$f"; cat "$f" >> voronoi_square_"$i"_weight_800_totalGraphlets.ndump2; done;
+# done
+
 for i in {1..9}
 do
-	ls | grep _columns_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_0"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _columns_ | grep Diagrama_0"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_0"$i"_weight_2000_totalGraphlets.ndump2; done;
-done
-
-for i in {10..80}
-do
-	ls | grep _columns_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _columns_ | grep Diagrama_"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_columns_"$i"_weight_2000_totalGraphlets.ndump2; done;
-done
-
-
-#Disk
-for i in {1..9}
-do
-	ls | grep _disk_ | grep Diagrama_0"$i"_v3_weight_500_1000_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_0"$i"_weight_500_1000_2000_totalGraphlets.ndump2; done;
-	ls | grep _disk_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_0"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _disk_ | grep Diagrama_0"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_0"$i"_weight_2000_totalGraphlets.ndump2; done;
-done
-
-for i in {10..80}
-do
-	ls | grep _disk_ | grep Diagrama_"$i"_v3_weight_500_1000_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_"$i"_weight_500_1000_2000_totalGraphlets.ndump2; done;
-	ls | grep _disk_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _disk_ | grep Diagrama_"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_disk_"$i"_weight_2000_totalGraphlets.ndump2; done;
-done
-
-#Half
-for i in {1..9}
-do
-	ls | grep _half_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_0"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _half_ | grep Diagrama_0"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_0"$i"_weight_2000_totalGraphlets.ndump2; done;
-done
-
-for i in {10..80}
-do
-	ls | grep _half_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _half_ | grep Diagrama_"$i"_v3_weight_2000 | while read f; do echo "$f"; cat "$f" >> voronoi_half_"$i"_weight_2000_totalGraphlets.ndump2; done;
-done
-
-#Square
-for i in {1..9}
-do
-	ls | grep _square_ | grep Diagrama_0"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_square_0"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _square_ | grep Diagrama_0"$i"_v3_weight_600 | while read f; do echo "$f"; cat "$f" >> voronoi_square_0"$i"_weight_600_totalGraphlets.ndump2; done;
-	ls | grep _square_ | grep Diagrama_0"$i"_v3_weight_800 | while read f; do echo "$f"; cat "$f" >> voronoi_square_0"$i"_weight_800_totalGraphlets.ndump2; done;
-done
-
-for i in {10..20}
-do
-	ls | grep _square_ | grep Diagrama_"$i"_v3_weight_1000 | while read f; do echo "$f"; cat "$f" >> voronoi_square_"$i"_weight_1000_totalGraphlets.ndump2; done;
-	ls | grep _square_ | grep Diagrama_"$i"_v3_weight_600 | while read f; do echo "$f"; cat "$f" >> voronoi_square_"$i"_weight_600_totalGraphlets.ndump2; done;
-	ls | grep _square_ | grep Diagrama_"$i"_v3_weight_800 | while read f; do echo "$f"; cat "$f" >> voronoi_square_"$i"_weight_800_totalGraphlets.ndump2; done;
+	ls | grep _"$i".00_ | while read f; do mv "$f" GoodOnes/"$f"; done;
 done
