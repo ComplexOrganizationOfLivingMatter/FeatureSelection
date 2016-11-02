@@ -312,31 +312,8 @@ differenceWithRegularHexagon = differenceWithRegularHexagon(differenceWithRegula
 load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\Original\distanceMatrixMeanGCD11.mat')
 save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
 
-totalGraphlets = getAllFiles('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsTotal\Original\');
 
-percentageOfHexagons = [];
-nameFiles = {};
-for numFile = 1:size(totalGraphlets, 1)
-    fullPathFile = totalGraphlets(numFile);
-    fullPathFile = fullPathFile{:};
-    diagramName = strsplit(fullPathFile, '\');
-    diagramName = diagramName(end);
-    diagramName = diagramName{1};
-    
-    %Check which files we want.
-    if isempty(strfind(lower(diagramName), '.ndump2')) == 0
-        matrixGraphlets = csvread(fullPathFile);
-        percentageOfHexagons(end+1) = sum(matrixGraphlets(:, 1) == 6) / size(matrixGraphlets, 1)*100;
-        nameFiles{end+1} = fullPathFile;
-    end
-    
-    
-end
-
-percentageOfHexagons
-nameFiles
-
-save('percentageOfHexagons.mat', 'percentageOfHexagons', 'nameFiles');
+getPercentageOfHexagons('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsTotal\Original\');
 
 load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\differenceWithRegularHexagon.mat')
 load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\percentageOfHexagons.mat')
@@ -370,3 +347,60 @@ title('Percentage of hexagons against graphlets difference with hexagonal tessel
 xlabel('Graphlets value comparison');
 ylabel('Percentage of hexagons')
 export_fig(h1, 'differenceGraphletsHexagonalTesselation', '-png', '-a4', '-m1.5');
+
+%% Every file
+analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\Original\maxLength5\EachFileDistance\');
+load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\distanceMatrix\RegularHexagon\Original\maxLength5\EachFileDistance\distanceMatrixMeanGCDDA.mat');
+differenceWithRegularHexagon = distanceMatrix(22,:);
+differenceWithRegularHexagon = differenceWithRegularHexagon(differenceWithRegularHexagon > 0);
+names = {names(distanceMatrix(22, :) ~= distanceMatrix(22, 22))};
+names = names{1};
+save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
+getPercentageOfHexagons('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsFiltered\Original\');
+
+
+names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
+names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
+names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
+names = cellfun(@(x) x(16:end-5), names, 'UniformOutput', false);
+
+nameOfTypes = 6;
+colors = hsv(nameOfTypes);
+colors(1, :) = [0.0 0.2 0.0]; %BCA
+colors(2, :) = [1.0 0.4 0.0]; %Eye
+colors(3, :) = [0.0 0.4 0.8]; %cNT
+colors(4, :) = [0.0 0.6 0.0]; %dWL
+colors(5, :) = [0.8 0.0 0.0]; %dWP
+colors(6, :) = [0.8 0.8 0.8]; %voronoi
+h1 = figure;
+h = zeros(size(nameOfTypes, 1));
+hold on;
+for i = 1:size(names, 1)
+    if isempty(strfind(names{i}, 'BC')) == 0
+        h(1, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(1, :), 'MarkerFaceColor', colors(1, :));
+    elseif isempty(strfind(names{i}, 'omm')) == 0
+        h(2, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(2, :), 'MarkerFaceColor', colors(2, :));
+    elseif isempty(strfind(names{i}, 'cNT')) == 0
+        h(3, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(3, :), 'MarkerFaceColor', colors(3, :));
+    elseif isempty(strfind(names{i}, 'dWL')) == 0
+        h(4, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(4, :), 'MarkerFaceColor', colors(4, :));
+    elseif isempty(strfind(names{i}, 'Diagrama')) == 0
+        h(nameOfTypes, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(6, :));
+        nameDiagram = strsplit(names{i}, '-');
+        t1 = text(differenceWithRegularHexagon(:, i),percentageOfHexagons(:, i), nameDiagram(end));
+        t1.FontSize = 5;
+        t1.HorizontalAlignment = 'center';
+        t1.VerticalAlignment = 'bottom';
+    elseif isempty(strfind(names{i}, 'dWP')) == 0
+        h(5, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(5, :), 'MarkerFaceColor', colors(5, :));
+    end
+end
+
+newNames = {'BCA', 'Eye', 'cNT', 'dWL', 'dWP'};
+newNames{end+1} = 'Voronoi';
+hlegend1 = legend(h(:,1), newNames');
+title('Percentage of hexagons against graphlets difference with hexagonal tesselation');
+xlabel('Graphlets value comparison');
+ylabel('Percentage of hexagons');
+
+export_fig(h1, 'differenceGraphletsHexagonalTesselationAllFiles', '-png', '-a4', '-m1.5');
