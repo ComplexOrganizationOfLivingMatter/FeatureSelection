@@ -25,7 +25,7 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     end
     createNetworksFromVoronoiDiagrams(validCellsDir, networksDir);
     
-    calculateLEDAFilesFromDirectory('results\graphletVectors\');
+    calculateLEDAFilesFromDirectory(networksDir);
     %Now, we have to wait until .ndump2 are created
     answer = 'n';
     while answer ~= 'y'
