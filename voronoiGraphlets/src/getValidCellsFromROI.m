@@ -1,4 +1,4 @@
-function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength)
+function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength, outputPath)
 %UNTITLED Summary of this function goes here
 %   We get the valid cells with no valid cells in all the paths 
 %   of a max length (maxPathLength)
@@ -15,7 +15,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength)
 
         typeName = diagramNameSplitted(end - 2);
         typeName = typeName{1};
-        outputFile = strcat('results\validCellsMaxPathLength\voronoiWeighted\maxLength', num2str(maxPathLength), '_', typeName ,'_', diagramName);
+        outputFile = strcat(outputPath, 'maxLength', num2str(maxPathLength), '_', typeName ,'_', diagramName);
         %Check which files we want.
         if isempty(strfind(lower(diagramName), '.mat')) == 0 && exist(outputFile, 'file') ~= 2
             fullPathFile
