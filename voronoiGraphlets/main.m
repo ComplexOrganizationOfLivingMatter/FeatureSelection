@@ -136,8 +136,8 @@ easyHeatmap(distanceMatrixDS2, namesDS2, 'v4-v5-v6-dWP-dWL-BCA', '', max(distanc
 
 %% --------- generate again voronoi diagrams ----------%
 
-for i = 1:20
-    fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\imagen_', num2str(i));
+for numName = 1:20
+    fileName = strcat('E:\Pablo\PhD-miscelanious\voronoiGraphlets\data\voronoiDiagrams\imagen_', num2str(numName));
     generateVoronoi( 20, 1024, 500, fileName );
 end
 
@@ -266,24 +266,24 @@ easyHeatmap(squareform(differenceNumNodes), names, 'numNodes', '', max(differenc
 %% ------------------ Cancer cells ----------------- %%
 
 clear all    
-parfor i = 4:5
+parfor numName = 4:5
     %columns
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\1000\', i);
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\2000\', i);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\1000\', numName);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\columns\2000\', numName);
 
         %disk
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\500_1000_2000\', i);
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\1000\', i);
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\2000\', i);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\500_1000_2000\', numName);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\1000\', numName);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\disk\2000\', numName);
 
         %half
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\half\1000\', i);
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\half\2000\', i);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\half\1000\', numName);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\half\2000\', numName);
 
         %square
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\600\', i);
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\800\', i);
-    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\1000\', i);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\600\', numName);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\800\', numName);
+    getValidCellsFromROI('E:\Pablo\OneDrive\SharePoint\Luis M. Escudero\INGENIEROS BIOLOGOS\Pruebas_simulacion_cancer\Datos imagenes\square\1000\', numName);
     
     
 end
@@ -329,15 +329,15 @@ colors = hsv(nameOfTypes);
 h1 = figure;
 h = zeros(size(nameOfTypes, 1));
 hold on;
-for i = 1:size(names, 1)
-    if i >= nameOfTypes
-        h(nameOfTypes, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(6, :));
-        t1 = text(differenceWithRegularHexagon(:, i),percentageOfHexagons(:, i), num2str(i - nameOfTypes + 1));
+for numName = 1:size(names, 1)
+    if numName >= nameOfTypes
+        h(nameOfTypes, :) = plot(differenceWithRegularHexagon(:, numName), percentageOfHexagons(:, numName), 'o', 'color', colors(6, :));
+        t1 = text(differenceWithRegularHexagon(:, numName),percentageOfHexagons(:, numName), num2str(numName - nameOfTypes + 1));
         t1.FontSize = 8;
         t1.HorizontalAlignment = 'center';
         t1.VerticalAlignment = 'bottom';
     else
-        h(i, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(i, :), 'MarkerFaceColor', colors(i, :));
+        h(numName, :) = plot(differenceWithRegularHexagon(:, numName), percentageOfHexagons(:, numName), 'o', 'color', colors(numName, :), 'MarkerFaceColor', colors(numName, :));
     end
 end
 newNames = {names{1:nameOfTypes-1}};
@@ -349,8 +349,52 @@ ylabel('Percentage of hexagons')
 export_fig(h1, 'differenceGraphletsHexagonalTesselation', '-png', '-a4', '-m1.5');
 
 %% Every file
+percentageOfHexagons = percentageOfHexagons(rightPercentages>0);
 
+nameOfTypes = 6;
+colors = hsv(nameOfTypes);
+colors(1, :) = [0.0 0.2 0.0]; %BCA
+colors(2, :) = [1.0 0.4 0.0]; %Eye
+colors(3, :) = [0.0 0.4 0.8]; %cNT
+colors(4, :) = [0.0 0.6 0.0]; %dWL
+colors(5, :) = [0.8 0.0 0.0]; %dWP
+colors(6, :) = [0.8 0.8 0.8]; %voronoi
+h1 = figure;
+h = zeros(size(nameOfTypes, 1));
+hold on;
+increased = 0;
+for i = 1:size(names, 1)
+    numName = i;
+    if numName ~= 22
+        if isempty(strfind(names{numName}, 'BC')) == 0
+            h(1, :) = plot(differenceWithRegularHexagon(:, numName - increased), percentageOfHexagons(:, numName - increased), 'o', 'color', colors(1, :), 'MarkerFaceColor', colors(1, :));
+        elseif isempty(strfind(names{numName}, 'omm')) == 0
+            h(2, :) = plot(differenceWithRegularHexagon(:, numName - increased), percentageOfHexagons(:, numName - increased), 'o', 'color', colors(2, :), 'MarkerFaceColor', colors(2, :));
+        elseif isempty(strfind(names{numName}, 'cNT')) == 0
+            h(3, :) = plot(differenceWithRegularHexagon(:, numName - increased), percentageOfHexagons(:, numName - increased), 'o', 'color', colors(3, :), 'MarkerFaceColor', colors(3, :));
+        elseif isempty(strfind(names{numName}, 'dWL')) == 0
+            h(4, :) = plot(differenceWithRegularHexagon(:, numName - increased), percentageOfHexagons(:, numName - increased), 'o', 'color', colors(4, :), 'MarkerFaceColor', colors(4, :));
+        elseif isempty(strfind(names{numName}, 'Diagrama')) == 0
+            h(nameOfTypes, :) = plot(differenceWithRegularHexagon(:, numName - increased), percentageOfHexagons(:, numName - increased), 'o', 'color', colors(6, :));
+            nameDiagram = strsplit(names{numName}, '-');
+            t1 = text(differenceWithRegularHexagon(:, numName - increased),percentageOfHexagons(:, numName - increased), nameDiagram(end));
+            t1.FontSize = 5;
+            t1.HorizontalAlignment = 'center';
+            t1.VerticalAlignment = 'bottom';
+        elseif isempty(strfind(names{numName}, 'dWP')) == 0
+            h(5, :) = plot(differenceWithRegularHexagon(:, numName - increased), percentageOfHexagons(:, numName - increased), 'o', 'color', colors(5, :), 'MarkerFaceColor', colors(5, :));
+        end
+    else
+        increased = 1;
+    end
+end
 
+newNames = {'BCA', 'Eye', 'cNT', 'dWL', 'dWP'};
+newNames{end+1} = 'Voronoi';
+hlegend1 = legend(h(:,1), newNames');
+title('Percentage of hexagons against graphlets difference with hexagonal tesselation');
+xlabel('Graphlets value comparison');
+ylabel('Percentage of hexagons');
 %% Pipelines of different tissues
 
 pipelineGraphletsVoronoi('SickEpitheliums\');
