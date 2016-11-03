@@ -13,11 +13,12 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
         imageNameReal = imageName(16:end-7);
         
         outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
-        outputFile = strcat(outputFile, imageName);
+        outputFile = strcat(outputFile, imageNameReal(1:end-5), '.ndump2');
         if isempty(strfind(outputFile, 'Weighted')) == 0
             outputFileCancer = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
-            outputFileCancer = strcat(outputFileCancer, 'CancerCellsAndNeighbours\', imageName);
+            outputFileCancer = strcat(outputFileCancer, 'CancerCellsAndNeighbours\', imageNameReal(1:end-5), '_OnlyWeightedCellsAndNeighbours.ndump2');
             if exist(outputFileCancer, 'file') ~= 2
+                imageName
                 dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
                 matrixToFilter = csvread(fullPathImage);
                 dataFileName = allFilesData(dataFile);

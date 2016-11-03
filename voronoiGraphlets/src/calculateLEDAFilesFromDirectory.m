@@ -8,12 +8,13 @@ function [ ] = calculateLEDAFilesFromDirectory(PathCurrent, typeOfData )
     lee_matrices = lee_matrices(3:size(lee_matrices,1));
     for imK = 1:size(lee_matrices,1)
         if (lee_matrices(imK).isdir == 0)
-            lee_matrices(imK).name
+            lee_matrices(imK).name;
             inNameFile = strsplit(lee_matrices(imK).name, '.');
             
-            outputLEDAFileName = strcat('results\graphletVectors\', strrep(inNameFile(1), ' ', '-'), '.gw')
-            outputLEDAFileNameExists = strcat('results\graphletVectors\Done\', typeOfData, strrep(inNameFile(1), ' ', '-'), '.gw')
+            outputLEDAFileName = strcat('results\graphletVectors\', strrep(inNameFile(1), ' ', '-'), '.gw');
+            outputLEDAFileNameExists = strcat('results\graphletVectors\Done\', typeOfData, strrep(inNameFile(1), ' ', '-'), '.gw');
             if exist(outputLEDAFileNameExists{:}, 'file') ~= 2
+                lee_matrices(imK).name
                 load(strcat(PathCurrent, lee_matrices(imK).name));
                 if exist('adjacencyMatrix', 'var') == 1
                     adjacencyMatrix(adjacencyMatrix > 0) = 1;

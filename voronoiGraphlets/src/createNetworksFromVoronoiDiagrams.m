@@ -11,7 +11,7 @@ function [ ] = createNetworksFromVoronoiDiagrams(currentPath, outputPath)
 
         %Check which files we want.
         if isempty(strfind(lower(diagramName), '.mat')) == 0
-            fullPathFile
+            
             load(fullPathFile);
             if isempty(strfind(fullPathFile, 'Weighted'))
                 outputFile = strcat(outputPath, 'adjacencyMatrix', diagramName(12:end));
@@ -19,7 +19,7 @@ function [ ] = createNetworksFromVoronoiDiagrams(currentPath, outputPath)
                 outputFile = strcat(outputPath, 'adjacencyMatrix_', diagramName(12:end));
             end
             if exist(outputFile, 'file') ~= 2
-            
+                fullPathFile
                 %celulas_validas = validCells
                 validCellNeighbours = vecinos(celulas_validas');
                 adjacencyMatrix = zeros(size(vecinos, 2));
