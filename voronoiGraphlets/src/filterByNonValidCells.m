@@ -3,6 +3,8 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
 %   Detailed explanation goes here
     allFilesImages = getAllFiles(currentPath);
     allFilesData = getAllFiles(neighboursPath);
+    pathSplitted = strsplit(currentPath, '\');
+    typeOfData = pathSplitted{end-1};
     for numFile = 1:size(allFilesImages,1)
         fullPathImage = allFilesImages(numFile);
         fullPathImage = fullPathImage{:};
@@ -21,7 +23,13 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
                 dataFileName = allFilesData(dataFile);
                 load(dataFileName{1});
                 
-                %finalMatrixFiltered = matrixToFilter(intersect(finalValidCells, , :);
+                %load weights
+                imageNameSplitted = strsplit(imageNameReal, '_');
+                weightsFileName = strcat('data\', typeOfData, '\data\', imageNameSplitted{2}, '\', imageNameSplitted{9}, '\', strjoin(imageNameSplitted(3:end), '_'), '.mat');
+                load(weightsFileName);
+                weightedCellsAndNeighbours = union(vertcat(vecinos{wts>0}), find(wts>0)); %and neighbours
+                weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
+                finalMatrixFiltered = matrixToFilter(weightedAndNeighboursValidCells, :); 
 
                 if size(finalMatrixFiltered, 1) > 6
                     dlmwrite(outputFile, finalMatrixFiltered, ' ');
