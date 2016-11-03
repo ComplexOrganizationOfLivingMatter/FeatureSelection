@@ -25,7 +25,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
                 
                 %load weights
                 imageNameSplitted = strsplit(imageNameReal, '_');
-                weightsFileName = strcat('data\', typeOfData, '\data\', imageNameSplitted{2}, '\', imageNameSplitted{9}, '\', strjoin(imageNameSplitted(3:end), '_'), '.mat');
+                weightsFileName = strcat('data\', typeOfData, '\data\', imageNameSplitted{2}, '\', strjoin(imageNameSplitted(9:end-1), '_'), '\', strjoin(imageNameSplitted(3:end), '_'), '.mat');
                 load(weightsFileName);
                 weightedCellsAndNeighbours = union(vertcat(vecinos{wts>0}), find(wts>0)); %and neighbours
                 weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
@@ -50,7 +50,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
             if size(finalMatrixFiltered, 1) > 6
                 dlmwrite(outputFile, finalMatrixFiltered, ' ');
             else
-                fullpathImage
+                fullPathImage
                 disp('Not enough nodes');
             end
         end
