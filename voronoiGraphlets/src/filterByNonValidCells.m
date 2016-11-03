@@ -32,7 +32,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
                 finalMatrixFiltered = matrixToFilter(weightedAndNeighboursValidCells, :); 
 
                 if size(finalMatrixFiltered, 1) > 6
-                    dlmwrite(outputFile, finalMatrixFiltered, ' ');
+                    dlmwrite(outputFileCancer, finalMatrixFiltered, ' ');
                 else
                     fullpathImage
                     disp('Not enough nodes');
