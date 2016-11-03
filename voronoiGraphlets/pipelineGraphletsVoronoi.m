@@ -19,7 +19,7 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     end
     %ValidCells of max path length 4 and 5.
     disp('Valid cells from ROI');
-    %getValidCellsFromROI(dataDir, 4, validCellsDir);
+    getValidCellsFromROI(dataDir, 4, validCellsDir);
     getValidCellsFromROI(dataDir, 5, validCellsDir);
     
     networksDir = strcat('results\networks\', typeOfData);
@@ -32,7 +32,7 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     
     
     disp('Leda files...');
-    calculateLEDAFilesFromDirectory(networksDir);
+    calculateLEDAFilesFromDirectory(networksDir, typeOfData);
     graphletResultsDir = strcat('results\graphletResults\', typeOfData);
     if exist(graphletResultsDir, 'dir') ~= 7
         mkdir(graphletResultsDir);
