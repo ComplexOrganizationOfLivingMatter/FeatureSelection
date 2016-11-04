@@ -12,13 +12,15 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     names = distances.names;
     differenceWithRegularHexagon = cellfun(@(x) str2num(strrep(x, ',', '.')), distances.distance);
     getPercentageOfHexagons('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsFiltered\allOriginal\');
-
+    load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\percentageOfHexagons.mat')
     names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
     names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
-    namesToCompare = cellfun(@(x) x(16:end-5), names, 'UniformOutput', false);
+    names = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names, 'UniformOutput', false);
+    names = cellfun(@(x) strrep(x, '-data', ''), names, 'UniformOutput', false);
+    names = cellfun(@(x) x(1:end-1), names, 'UniformOutput', false);
     
-    namesToCompare = cellfun(@(x) strrep(x, '-', '_'), namesToCompare, 'UniformOutput', false);
+    namesToCompare = cellfun(@(x) strrep(x, '-', '_'), names, 'UniformOutput', false);
     rightPercentages = zeros(1, size(nameFiles, 2));
     for numName = 1:size(nameFiles, 2)
         rightPercentages(1, numName) = find(cellfun(@(x) isempty(strfind(nameFiles{numName}, x )) == 0, namesToCompare, 'UniformOutput', true) == 1);

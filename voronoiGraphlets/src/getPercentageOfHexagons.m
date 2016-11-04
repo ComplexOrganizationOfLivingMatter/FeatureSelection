@@ -18,12 +18,10 @@ function [  ] = getPercentageOfHexagons( currentPath )
             percentageOfHexagons(end+1) = sum(matrixGraphlets(:, 1) == 6) / size(matrixGraphlets, 1)*100;
             nameFiles{end+1} = fullPathFile;
         end
-
-
     end
 
-    percentageOfHexagons
-    nameFiles
+    percentageOfHexagons;
+    nameFiles;
 
     save('percentageOfHexagons.mat', 'percentageOfHexagons', 'nameFiles');
 
