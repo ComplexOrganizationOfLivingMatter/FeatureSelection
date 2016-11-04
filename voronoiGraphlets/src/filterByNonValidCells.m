@@ -12,8 +12,12 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
         imageName = fullPathImageSplitted{end};
         imageNameReal = imageName(16:end-7);
         
-        outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
-        outputFile = strcat(outputFile, imageNameReal(1:end-5), '.ndump2');
+        if isequal(kindOfValidCells, 'finalValidCells')
+            outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
+            outputFile = strcat(outputFile, imageNameReal(1:end-5), '.ndump2');
+        else
+            outputFile = strcat('results\graphletResultsFiltered\allOriginal\', imageNameReal(1:end-5), '.ndump2');
+        end
         if isempty(strfind(outputFile, 'Weighted')) == 0
             outputFileCancer = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
             outputFileCancer = strcat(outputFileCancer, 'CancerCellsAndNeighbours\', imageNameReal(1:end-5), '_OnlyWeightedCellsAndNeighbours.ndump2');
@@ -29,11 +33,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
                 weightsFileName = strcat('data\', typeOfData, '\data\', imageNameSplitted{2}, '\', strjoin(imageNameSplitted(9:end-1), '_'), '\', strjoin(imageNameSplitted(3:end), '_'), '.mat');
                 load(weightsFileName);
                 weightedCellsAndNeighbours = union(vertcat(vecinos{wts>0}), find(wts>0)); %and neighbours
-                if isequal(kindOfValidCells, 'finalValidCells')
-                    weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
-                else
-                    weightedAndNeighboursValidCells = intersect(validCells, weightedCellsAndNeighbours);
-                end
+                weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
                 finalMatrixFiltered = matrixToFilter(weightedAndNeighboursValidCells, :); 
 
                 if size(finalMatrixFiltered, 1) > 6
@@ -53,7 +53,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
             if isequal(kindOfValidCells, 'finalValidCells')
                 finalMatrixFiltered = matrixToFilter(finalValidCells, :);
             else
-                finalMatrixFiltered = matrixToFilter(validCells, :);
+                finalMatrixFiltered = matrixToFilter(celulas_validas, :);
             end
 
             if size(finalMatrixFiltered, 1) > 6
