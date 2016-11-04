@@ -8,6 +8,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
 %     names = {names(distanceMatrix(22, :) ~= distanceMatrix(22, 22))};
 %     names = names{1};
 %     save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
+    clear
     distances = readtable('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5\distancesCorrect.csv', 'Delimiter', ';');
     names = distances.names;
     differenceWithRegularHexagon = cellfun(@(x) str2num(strrep(x, ',', '.')), distances.distance);
@@ -26,15 +27,15 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     nameFiles = cellfun(@(x) x(1:end-7), nameFiles, 'UniformOutput', false);
     nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
     
-    rightPercentages = zeros(1, size(nameFiles, 2));
+    rightPercentages = zeros(1, size(names, 2));
     for numName = 1:size(nameFiles, 2)
         numFound = find(cellfun(@(x) isequal(nameFiles{numName}, x ), names, 'UniformOutput', true) == 1);
         if isempty(numFound) == 0
             nameFiles{numName};
-            rightPercentages(1, numName) = numFound;
+            rightPercentages(1, numFound) = percentageOfHexagons(numName);
         end
     end
-    percentageOfHexagons = percentageOfHexagons(rightPercentages(rightPercentages>0));
+    percentageOfHexagons = rightPercentages;
     if size(percentageOfHexagons, 2) ~= size(differenceWithRegularHexagon, 1)
         error('No matrix coincidence on size');
     end
@@ -61,7 +62,6 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     h = zeros(numberOfTypes);
     hold on;
     for i = 1:size(names, 1)
-        
         if isempty(strfind(names{i}, 'BC')) == 0
             h(1, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(1, :), 'MarkerFaceColor', colors(1, :));
         elseif isempty(strfind(names{i}, 'omm')) == 0
@@ -90,16 +90,17 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             h(14, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(14, :), 'MarkerFaceColor', colors(14, :));
         elseif isempty(strfind(names{i}, 'Control-Sim-Prol')) == 0
             h(15, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(15, :), 'MarkerFaceColor', colors(15, :));
-        elseif isempty(strfind(names{i}, 'Control-Sim-No-Prol')) == 0
+        elseif isempty(strfind(names{i}, 'Control-Sim-no-Prol')) == 0
             h(16, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(16, :), 'MarkerFaceColor', colors(16, :));
         elseif isempty(strfind(names{i}, 'image')) == 0
-            names{i}
             h(6, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(6, :));
             nameDiagram = strsplit(names{i}, '-');
             t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(end));
             t1.FontSize = 5;
             t1.HorizontalAlignment = 'center';
             t1.VerticalAlignment = 'bottom';
+        else
+            names{i}
         end
     end
 
