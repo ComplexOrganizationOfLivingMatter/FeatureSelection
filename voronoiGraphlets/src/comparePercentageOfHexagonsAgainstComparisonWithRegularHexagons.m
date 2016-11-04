@@ -61,6 +61,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     h = zeros(numberOfTypes);
     hold on;
     for i = 1:size(names, 1)
+        names{i};
         if isempty(strfind(names{i}, 'BC')) == 0
             h(1, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(1, :), 'MarkerFaceColor', colors(1, :));
         elseif isempty(strfind(names{i}, 'omm')) == 0
@@ -77,19 +78,19 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             h(8, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
         elseif isempty(strfind(names{i}, 'BNA')) == 0
             h(9, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(9, :), 'MarkerFaceColor', colors(9, :));
-        elseif isempty(strfind(names{i}, 'Case II')) == 0
+        elseif isempty(strfind(names{i}, 'Case-II')) == 0
             h(10, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(10, :), 'MarkerFaceColor', colors(10, :));
-        elseif isempty(strfind(names{i}, 'Case III')) == 0
+        elseif isempty(strfind(names{i}, 'Case-III')) == 0
             h(11, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(11, :), 'MarkerFaceColor', colors(11, :));
-        elseif isempty(strfind(names{i}, 'Case IV')) == 0
+        elseif isempty(strfind(names{i}, 'Case-IV')) == 0
             h(12, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(12, :), 'MarkerFaceColor', colors(12, :));
         elseif isempty(strfind(names{i}, 'dMWP')) == 0
             h(13, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(13, :), 'MarkerFaceColor', colors(13, :));
-        elseif isempty(strfind(names{i}, 'Atrophy Sim')) == 0
+        elseif isempty(strfind(names{i}, 'Atrophy-Sim')) == 0
             h(14, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(14, :), 'MarkerFaceColor', colors(14, :));
-        elseif isempty(strfind(names{i}, 'Control Sim Prol')) == 0
+        elseif isempty(strfind(names{i}, 'Control-Sim-Prol')) == 0
             h(15, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(15, :));
-        elseif isempty(strfind(names{i}, 'Control Sim No Prol')) == 0
+        elseif isempty(strfind(names{i}, 'Control-Sim-No-Prol')) == 0
             h(16, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(16, :));
         elseif isempty(strfind(names{i}, 'Diagrama')) == 0
             h(6, :) = plot(differenceWithRegularHexagon(:, i), percentageOfHexagons(:, i), 'o', 'color', colors(6, :));
