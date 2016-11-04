@@ -1,14 +1,17 @@
 function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons(  )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-    analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5');
-    load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5\distanceMatrixMeanGCDDA.mat');
-    differenceWithRegularHexagon = distanceMatrix(22,:);
-    differenceWithRegularHexagon = differenceWithRegularHexagon(differenceWithRegularHexagon > 0);
-    names = {names(distanceMatrix(22, :) ~= distanceMatrix(22, 22))};
-    names = names{1};
-    save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
-    getPercentageOfHexagons('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsFiltered\Original\');
+%     analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5');
+%     load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5\distanceMatrixMeanGCDDA.mat');
+%     differenceWithRegularHexagon = distanceMatrix(22,:);
+%     differenceWithRegularHexagon = differenceWithRegularHexagon(differenceWithRegularHexagon > 0);
+%     names = {names(distanceMatrix(22, :) ~= distanceMatrix(22, 22))};
+%     names = names{1};
+%     save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
+    distances = readtable('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5\distancesCorrect.csv', 'Delimiter', ';');
+    names = distances.names;
+    differenceWithRegularHexagon = cellfun(@(x) str2num(strrep(x, ',', '.')), distances.distance);
+    getPercentageOfHexagons('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsFiltered\allOriginal\');
 
     names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
     names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
@@ -18,7 +21,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     namesToCompare = cellfun(@(x) strrep(x, '-', '_'), namesToCompare, 'UniformOutput', false);
     rightPercentages = zeros(1, size(nameFiles, 2));
     for numName = 1:size(nameFiles, 2)
-        rightPercentages(1, numName) = sum(cellfun(@(x) isempty(strfind(nameFiles{numName}, x )) == 0, namesToCompare, 'UniformOutput', true)) > 0;
+        rightPercentages(1, numName) = find(cellfun(@(x) isempty(strfind(nameFiles{numName}, x )) == 0, namesToCompare, 'UniformOutput', true) == 1);
     end
 
     numberOfTypes = 16;
