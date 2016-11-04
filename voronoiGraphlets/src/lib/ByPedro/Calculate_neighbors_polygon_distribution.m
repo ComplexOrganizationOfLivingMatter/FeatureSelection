@@ -47,7 +47,7 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                     Img_L = bwlabel(image);
                     areas = regionprops(Img_L, 'Area');
                     areas = [areas.Area];
-                    areasMean = mode(areas);
+                    areasMean = mean(areas);
                     incorrectAreas = areas > areasMean*50;
                     numIncorrectAreas = find(incorrectAreas);
                     if sum(incorrectAreas)> 0
@@ -128,6 +128,9 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                     noValidCells=celulas_no_validas_previa;
                 end
 
+                if size(validCells, 1) == 0
+                    error('No valid cells!');
+                end
                 vecinos = neighbours;
                 celulas_validas = validCells;
                 save(outputFile, 'vecinos', 'celulas_validas');
