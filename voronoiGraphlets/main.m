@@ -402,4 +402,5 @@ pipelineGraphletsVoronoi('voronoiNoise\');
 pipelineGraphletsVoronoi('voronoiWeighted\');
 
 %% Comparisons between different tissues
-
+analyzeGraphletDistances(strcat('results\graphletResultsFiltered\SickEpitheliums\', 'maxLength5\'), 'gdda');
+getPercentageOfHexagons('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsFiltered\allOriginal\');

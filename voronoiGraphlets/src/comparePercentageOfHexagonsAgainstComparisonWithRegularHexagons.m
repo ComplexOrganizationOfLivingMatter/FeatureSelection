@@ -58,7 +58,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     colors(14, :) = [0.0 0.0 0.0]; %Control Sim Prol
     colors(15, :) = [0.4 0.0 0.0]; %Control Sim No Prol
     %colors(16, :) = [0.2 0.4 0.6]; %BNA
-    h1 = figure;
+    h1 = figure('units','normalized','outerposition',[0 0 1 1]);
     h = zeros(numberOfTypes);
     hold on;
     for i = 1:size(names, 1)
@@ -74,8 +74,18 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             h(5, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(5, :), 'MarkerFaceColor', colors(5, :));
         elseif isempty(strfind(names{i}, 'disk')) == 0 %voronoiWeighted
             h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :), 'MarkerFaceColor', colors(7, :));
+            nameDiagram = strsplit(names{i}, '-');
+            t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(6));
+            t1.FontSize = 5;
+            t1.HorizontalAlignment = 'center';
+            t1.VerticalAlignment = 'middle';
         elseif isempty(strfind(names{i}, 'voronoiNoise')) == 0
             h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
+            nameDiagram = strsplit(names{i}, '-');
+            t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(5));
+            t1.FontSize = 5;
+            t1.HorizontalAlignment = 'center';
+            t1.VerticalAlignment = 'middle';
         elseif isempty(strfind(names{i}, 'Case-III')) == 0
             h(10, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(10, :), 'MarkerFaceColor', colors(10, :));
         elseif isempty(strfind(names{i}, 'Case-II')) == 0
@@ -96,7 +106,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(end));
             t1.FontSize = 5;
             t1.HorizontalAlignment = 'center';
-            t1.VerticalAlignment = 'bottom';
+            t1.VerticalAlignment = 'middle';
 %         elseif isempty(strfind(names{i}, 'BNA')) == 0
 %             h(16, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(16, :), 'MarkerFaceColor', colors(16, :));
             else
@@ -111,7 +121,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     xlabel('Graphlets value comparison');
     ylabel('Percentage of hexagons');
 
-    export_fig(h1, 'differenceGraphlets', '-png', '-a4', '-m1.5');
+    export_fig(h1, 'differenceGraphlets', '-tiff', '-a4');
 
 end
 
