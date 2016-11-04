@@ -1,4 +1,4 @@
-function [ ] = filterByNonValidCells( currentPath, neighboursPath )
+function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCells)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     allFilesImages = getAllFiles(currentPath);
@@ -29,7 +29,11 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
                 weightsFileName = strcat('data\', typeOfData, '\data\', imageNameSplitted{2}, '\', strjoin(imageNameSplitted(9:end-1), '_'), '\', strjoin(imageNameSplitted(3:end), '_'), '.mat');
                 load(weightsFileName);
                 weightedCellsAndNeighbours = union(vertcat(vecinos{wts>0}), find(wts>0)); %and neighbours
-                weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
+                if isequal(kindOfValidCells, 'finalValidCells')
+                    weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
+                else
+                    weightedAndNeighboursValidCells = intersect(validCells, weightedCellsAndNeighbours);
+                end
                 finalMatrixFiltered = matrixToFilter(weightedAndNeighboursValidCells, :); 
 
                 if size(finalMatrixFiltered, 1) > 6
@@ -45,8 +49,12 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath )
             matrixToFilter = csvread(fullPathImage);
             dataFileName = allFilesData(dataFile);
             load(dataFileName{1});
-
-            finalMatrixFiltered = matrixToFilter(finalValidCells, :);
+            
+            if isequal(kindOfValidCells, 'finalValidCells')
+                finalMatrixFiltered = matrixToFilter(finalValidCells, :);
+            else
+                finalMatrixFiltered = matrixToFilter(validCells, :);
+            end
 
             if size(finalMatrixFiltered, 1) > 6
                 dlmwrite(outputFile, finalMatrixFiltered, ' ');

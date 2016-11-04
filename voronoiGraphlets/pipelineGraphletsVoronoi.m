@@ -50,8 +50,9 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
         mkdir(graphletResultsFilteredDir, 'maxLength4');
         mkdir(graphletResultsFilteredDir, 'maxLength5');
     end
-    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4\'));
-    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'));
+    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4\'), 'finalValidCells');
+    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'finalValidCells');
+    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'validCells');
     
     distanceDir = strcat('results\distanceMatrix\', typeOfData);
     if exist(distanceDir, 'dir') ~= 7
