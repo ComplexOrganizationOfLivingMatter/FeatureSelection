@@ -105,6 +105,28 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                 % Removing cells isolated from the valid cells
                 noValidCells = unique(borderCells);
                 validCells = unique(noBorderCells);
+                vecinos_real = neighbours;
+
+                celulas_validas_previa = validCells;
+                celulas_no_validas_previa = noValidCells;
+                flag = 0;
+                for j=1:length(celulas_validas_previa) % Bucle que recorre todas celulas validas para comprobar
+                    j;
+                    vec_cel_ind_j=vecinos_real{celulas_validas_previa(j)};
+                    no_coincidencia=[];
+                    for x=1:length(vec_cel_ind_j)% Bucle que recorre todos los vecinos de la celula bajo estudio
+                        no_coincidencia(x)=isempty(find(vec_cel_ind_j(x)==celulas_no_validas_previa)); %Variable que vale 1 si no existe coincidencia de la celula j con alguna de las celulas no validas
+                    end
+                    if sum(no_coincidencia)==0
+                        validCells=validCells(validCells~=celulas_validas_previa(j));
+                        noValidCells=sort([celulas_validas_previa(j),celulas_no_validas_previa]);
+                        flag=1;
+                    end
+                end
+                if (flag==0)
+                    validCells=celulas_validas_previa;                                        %%VARIABLE A GUARDAR
+                    noValidCells=celulas_no_validas_previa;
+                end
 
                 if size(validCells, 1) == 0
                     error('No valid cells!');
