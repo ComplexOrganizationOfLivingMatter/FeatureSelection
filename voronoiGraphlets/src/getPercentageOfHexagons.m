@@ -1,6 +1,14 @@
 function [  ] = getPercentageOfHexagons( currentPath )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%GETPERCENTAGEOFHEXAGONS Get the percentage of hexagons of a tesselation.
+%   Calculate the number of nodes surrounded by 6 neighbours.
+%   This number will be divided by the total number of nodes, 
+%   giving the percentage.
+%   From this purpose we only want the first column of
+%   each row. If it is a 6, then we add it.
+%
+%   currentPath: where the information is.
+%
+%   Developed by Pablo Vicente-Munuera
     totalGraphlets = getAllFiles(currentPath);
 
     percentageOfHexagons = [];

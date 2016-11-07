@@ -1,6 +1,9 @@
 function [  ] = pipelineGraphletsVoronoi( typeOfData )
-%pipelineGraphletsVoronoi Summary of this function goes here
-%   Detailed explanation goes here
+%PIPELINEGRAPHLETSVORONOI Pipeline of the project
+%   From the start to the beggining, all should be done here
+%   or, at least, the main functionalities.
+%   
+%   typeOfData: name of the directory we're using
 %
 %   Developed by Pablo Vicente-Munuera
     clearvars -except typeOfData

@@ -1,7 +1,12 @@
 function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength, outputPath)
-%UNTITLED Summary of this function goes here
+%GETVALIDCELLSFROMROI Get valid cells' in a given range (4 or 5)
 %   We get the valid cells with no valid cells in all the paths 
 %   of a max length (maxPathLength)
+%
+%   currentPath: actual path
+%   maxPathLenth: the max length of the path where you won't find
+%   no valid cells.
+%   outputPath: path of the output
 %
 %   Developed by Pablo Vicente-Munuera
 
