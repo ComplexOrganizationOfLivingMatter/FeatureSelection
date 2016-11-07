@@ -400,6 +400,7 @@ ylabel('Percentage of hexagons');
 pipelineGraphletsVoronoi('SickEpitheliums\');
 pipelineGraphletsVoronoi('voronoiNoise\');
 pipelineGraphletsVoronoi('voronoiWeighted\');
+pipelineGraphletsVoronoi('biologicalImagesAndVoronoi\');
 
 %% Comparisons between different tissues
 analyzeGraphletDistances(strcat('results\graphletResultsFiltered\SickEpitheliums\', 'maxLength5\'), 'gdda');
