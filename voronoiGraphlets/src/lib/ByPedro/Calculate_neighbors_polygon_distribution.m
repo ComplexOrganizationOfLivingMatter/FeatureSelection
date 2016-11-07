@@ -27,10 +27,10 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                 image = imread(fullPathFile);
                 image = im2bw(image(:,:,1), 0.2);
                 if sum(image(:) == 255) > sum(image(:) == 0) || sum(image(:) == 1) > sum(image(:) == 0)
-                    Img_L = bwlabel(image);
+                    Img_L = watershed(1 - image, 8);
                 else
                     image = image == 0;
-                    Img_L = bwlabel(image);
+                    Img_L = watershed(1 - image, 8);
                 end
 
                 areas = regionprops(Img_L, 'Area');
@@ -44,7 +44,7 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                     image(min(zerosXs):max(zerosXs), min(zerosYs)) = 0;
                     image(max(zerosXs), min(zerosYs):max(zerosYs)) = 0;
                     image(min(zerosXs):max(zerosXs), max(zerosYs)) = 0;
-                    Img_L = bwlabel(image);
+                    Img_L = watershed(1 - image, 8);
                     areas = regionprops(Img_L, 'Area');
                     areas = [areas.Area];
                     areasMean = mean(areas);
@@ -54,7 +54,8 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                         borderIncorrect = 1;
                     end
                 end
-
+                
+                
                 ratio=4;
                 se = strel('disk',ratio);
                 cells=sort(unique(Img_L));
@@ -76,7 +77,7 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                 %Removing borderCells
                 H = size(image, 1);
                 W = size(image, 2);
-                Img_det_bord=bwlabel(image,8);
+                Img_det_bord=watershed(1 - image,8);
                 Img_det_bord(1,1:W)=1;
                 Img_det_bord(H,1:W)=1;
                 Img_det_bord(1:H,1)=1;
