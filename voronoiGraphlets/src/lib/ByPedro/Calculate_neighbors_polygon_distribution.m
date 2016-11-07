@@ -75,13 +75,12 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                 %load(outputFile);
 
                 %Removing borderCells
-                H = size(image, 1);
-                W = size(image, 2);
                 Img_det_bord=watershed(1 - image,8);
-                Img_det_bord(1,1:W)=1;
-                Img_det_bord(H,1:W)=1;
-                Img_det_bord(1:H,1)=1;
-                Img_det_bord(1:H,W)=1;
+                [zerosXs, zerosYs] = find(Img_det_bord == 0);
+                Img_det_bord(min(zerosXs), min(zerosYs):max(zerosYs))=1;
+                Img_det_bord(max(zerosXs), min(zerosYs):max(zerosYs))=1;
+                Img_det_bord(min(zerosXs):max(zerosXs), min(zerosYs))=1;
+                Img_det_bord(min(zerosXs):max(zerosXs), max(zerosYs))=1;
                 Img_det_bord = bwlabel(Img_det_bord,8);
                 borderCells=[];
                 noBorderCells=[];

@@ -20,7 +20,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength, 
 
         typeName = diagramNameSplitted(end - 2);
         typeName = typeName{1};
-        if isempty(strfind(diagramName, typeName))
+        if isempty(strfind(diagramName, typeName)) && isempty(strfind(currentPath, 'biological'))
             outputFile = strcat(outputPath, 'maxLength', num2str(maxPathLength), '\', 'maxLength', num2str(maxPathLength), '_', typeName ,'_', diagramName);
         else
             outputFile = strcat(outputPath, 'maxLength', num2str(maxPathLength), '\', 'maxLength', num2str(maxPathLength) ,'_', diagramName);
