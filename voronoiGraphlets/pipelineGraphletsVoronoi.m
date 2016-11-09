@@ -60,8 +60,8 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     distanceDir = strcat('results\distanceMatrix\', typeOfData);
     if exist(distanceDir, 'dir') ~= 7
         mkdir(distanceDir);
-        mkdir(distanceDir, 'maxLength4');
-        mkdir(distanceDir, 'maxLength5');
+        mkdir(distanceDir, 'maxLength4\EveryFile');
+        mkdir(distanceDir, 'maxLength5\EveryFile');
     end
     answer = 'n';
     while lower(answer) ~= 'y'
@@ -69,13 +69,40 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     end
     
     %Calculate distance
-    analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\'), 'gdda');
-    analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gdda');
+    analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\EveryFile\'), 'gdda');
+    analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\EveryFile\'), 'gdda');
 %     analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\'), 'gcd11');
 %     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd11');
 %     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd73');
     
-    load(strcat(distanceDir, 'maxLength5\distanceMatrixMeanGDDA.txt')); 
-    easyHeatmap(distanceMatrix, names, typeOfData, '', max(distanceMatrix(:)))
+    comparisonFiles = getAllFiles('results\comparisons\EveryFile\maxLength5\');
+    differenceWithRegularHexagon = [];
+    namesFinal = {};
+    for numFile = 1:size(comparisonFiles,1)
+        fullPathImage = comparisonFiles(numFile);
+        fullPathImage = fullPathImage{:};
+        fullPathImageSplitted = strsplit(fullPathImage, '\');
+        imageName = fullPathImageSplitted{end};
+
+        if isequal(imageName, 'distanceMatrixGDDA.mat')
+            load(fullPathImage);
+            differenceWithRegularHexagon = [differenceWithRegularHexagon, distanceMatrix(1, 2:end)];
+            if isempty(namesFinal) == 0
+                if size(namesFinal, 1) ~= size(names, 1)
+                    names = names';
+                end
+                namesFinal = [namesFinal, names{2:end}];
+            else
+                if size(names, 2) == 1
+                    names = names';
+                end
+                namesFinal = names(2:end);
+            end
+        end
+    end
+
+    save('results\comparisons\EveryFile\maxLength5\allDifferences.mat', 'differenceWithRegularHexagon', 'namesFinal');
+    getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\');
+    comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons();
 end
 
