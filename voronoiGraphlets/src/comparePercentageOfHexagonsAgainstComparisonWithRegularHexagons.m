@@ -9,17 +9,16 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
 %     names = names{1};
 %     save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
     clear
-    distances = readtable('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5\distancesCorrect.csv', 'Delimiter', ';');
-    names = distances.names;
-    differenceWithRegularHexagon = cellfun(@(x) str2num(strrep(x, ',', '.')), distances.distance);
-    
-    load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\percentageOfHexagons.mat')
-    names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
+    load('results\comparisons\EveryFile\maxLength5\allDifferences.mat');
+    %differenceWithRegularHexagon = cellfun(@(x) str2num(strrep(x, ',', '.')), distances.distance);
+    differenceWithRegularHexagon = differenceWithRegularHexagon';
+    load('results\comparisons\EveryFile\percentageOfHexagons.mat')
+    names = cellfun(@(x) strsplit(x, '/'), namesFinal, 'UniformOutput', false);
     names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, '-data', ''), names, 'UniformOutput', false);
-    names = cellfun(@(x) x(1:end-1), names, 'UniformOutput', false);
+    names = cellfun(@(x) x(1:end), names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, '-OnlyWeightedCellsAndNeighbours', ''), names, 'UniformOutput', false);
     
     nameFiles = cellfun(@(x) strsplit(x, '\'), nameFiles, 'UniformOutput', false);
@@ -30,6 +29,9 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     rightPercentages = zeros(1, size(names, 2));
     for numName = 1:size(nameFiles, 2)
         numFound = find(cellfun(@(x) isequal(nameFiles{numName}, x ), names, 'UniformOutput', true) == 1);
+        if size(numFound, 1) > 1
+            error('MEEEEC');
+        end
         if isempty(numFound) == 0
             nameFiles{numName};
             rightPercentages(1, numFound) = percentageOfHexagons(numName);
@@ -38,6 +40,9 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     percentageOfHexagons = rightPercentages;
     if size(percentageOfHexagons, 2) ~= size(differenceWithRegularHexagon, 1)
         error('No matrix coincidence on size');
+    end
+    if sum(percentageOfHexagons == 0) > 0
+        error('Wrong percentages');
     end
 
     numberOfTypes = 15;
@@ -61,7 +66,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     h1 = figure('units','normalized','outerposition',[0 0 1 1]);
     h = zeros(numberOfTypes);
     hold on;
-    for i = 1:size(names, 1)
+    for i = 1:size(names, 2)
         if isempty(strfind(names{i}, 'BC')) == 0
             h(1, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(1, :), 'MarkerFaceColor', colors(1, :));
         elseif isempty(strfind(names{i}, 'omm')) == 0
