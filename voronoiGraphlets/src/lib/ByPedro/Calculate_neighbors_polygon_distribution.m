@@ -81,7 +81,7 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                 Img_det_bord(max(zerosXs), min(zerosYs):max(zerosYs))=1;
                 Img_det_bord(min(zerosXs):max(zerosXs), min(zerosYs))=1;
                 Img_det_bord(min(zerosXs):max(zerosXs), max(zerosYs))=1;
-                Img_det_bord = bwlabel(Img_det_bord,8);
+                Img_det_bord = watershed(1-Img_det_bord,8);
                 borderCells=[];
                 noBorderCells=[];
 
