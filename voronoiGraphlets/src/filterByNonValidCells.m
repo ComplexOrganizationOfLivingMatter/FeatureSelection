@@ -19,10 +19,11 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
             outputFile = strcat('results\graphletResultsFiltered\allOriginal\', imageNameReal(1:end-5), '.ndump2');
         end
         if isempty(strfind(outputFile, 'Weighted')) == 0
-            outputFileCancer = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
-            outputFileCancer = strcat(outputFileCancer, 'CancerCellsAndNeighbours\', imageNameReal(1:end-5), '_OnlyWeightedCellsAndNeighbours.ndump2');
+            outputFileCancerInit = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
+            outputFileCancer = strcat(outputFileCancerInit, 'CancerCells\', imageNameReal(1:end-5), '_OnlyWeightedCells.ndump2');
+            outputFileCancerNeighbours = strcat(outputFileCancerInit, 'NeighboursOfCancerCells\', imageNameReal(1:end-5), '_OnlyNeighboursOfWeightedCells.ndump2');
             if exist(outputFileCancer, 'file') ~= 2
-                imageName
+                imageName;
                 dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
                 matrixToFilter = csvread(fullPathImage);
                 dataFileName = allFilesData(dataFile);
@@ -32,7 +33,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
                 imageNameSplitted = strsplit(imageNameReal, '_');
                 weightsFileName = strcat('data\', typeOfData, '\data\', imageNameSplitted{2}, '\', strjoin(imageNameSplitted(9:end-1), '_'), '\', strjoin(imageNameSplitted(3:end), '_'), '.mat');
                 load(weightsFileName);
-                weightedCellsAndNeighbours = union(vertcat(vecinos{wts>0}), find(wts>0)); %and neighbours
+                weightedCellsAndNeighbours = find(wts>0); %and neighbours
                 weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
                 finalMatrixFiltered = matrixToFilter(weightedAndNeighboursValidCells, :); 
 
@@ -42,6 +43,42 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
                     fullpathImage
                     disp('Not enough nodes');
                 end
+            end
+            if exist(outputFileCancerNeighbours, 'file') ~= 2
+                imageName;
+                dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
+                matrixToFilter = csvread(fullPathImage);
+                dataFileName = allFilesData(dataFile);
+                load(dataFileName{1});
+                
+                %load weights
+                imageNameSplitted = strsplit(imageNameReal, '_');
+                weightsFileName = strcat('data\', typeOfData, '\data\', imageNameSplitted{2}, '\', strjoin(imageNameSplitted(9:end-1), '_'), '\', strjoin(imageNameSplitted(3:end), '_'), '.mat');
+                load(weightsFileName);
+                weightedCellsAndNeighbours = vertcat(vecinos{wts>0}); %and neighbours
+                weightedAndNeighboursValidCells = intersect(finalValidCells, weightedCellsAndNeighbours);
+                finalMatrixFiltered = matrixToFilter(weightedAndNeighboursValidCells, :); 
+
+                if size(finalMatrixFiltered, 1) > 6
+                    dlmwrite(outputFileCancerNeighbours, finalMatrixFiltered, ' ');
+                else
+                    fullpathImage
+                    disp('Not enough nodes');
+                end
+            end
+        end
+        if isempty(strfind(outputFile, 'Atrophy')) == 0 && isequal(kindOfValidCells, 'finalValidCells')
+            outputFileAtrophic = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
+            outputFileAtrophic = strcat(outputFileAtrophic, 'atrophicCells\' ,imageNameReal(1:end-5), '.ndump2');
+            
+            if exist(outputFileAtrophic, 'file') ~= 2
+                dataFile = cellfun(@(x) size(strfind(x, strrep(imageNameReal, '-', ' ')), 1) > 0, allFilesData);
+                matrixToFilter = csvread(fullPathImage);
+                dataFileName = allFilesData(dataFile);
+                load(dataFileName{1});
+
+                finalMatrixFiltered = matrixToFilter(atrophicCells, :);
+                dlmwrite(outputFileAtrophic, finalMatrixFiltered, ' ');
             end
         end
         if exist(outputFile, 'file') ~= 2
