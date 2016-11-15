@@ -4,7 +4,7 @@ function PCA_2_cc_Original(m_t1,m_t2,n_t1,n_t2)
 
 %Seleccionamos las características que queramos: 
 
-CARACT=1:81; %69 cc de estructura celular + 12 cc de núcleos.
+CARACT=1:size(m_t1, 2); %69 cc de estructura celular + 12 cc de núcleos.
 
 
 % Grupo 1. Asignamos al grupo 1 la matriz elegida en la función.

@@ -46,3 +46,9 @@ parfor i=2:size(names,2)
     TSNEClassification(matrices{1},matrices{i},names{1},names{i})
 
 end
+
+%--- NB ---%
+matrixChar = characteristicsRETGDDANormalizedWithClinicalInfo{:, 2:end};
+highInestability = cellfun(@(x) isequal('Alta', x), characteristicsRETGDDANormalizedWithClinicalInfo.Inestability);
+veryLowInestability = cellfun(@(x) isequal('Baja', x), characteristicsRETGDDANormalizedWithClinicalInfo.Inestability);
+PCA_2_cc_Original(matrixChar(veryLowInestability, :), matrixChar(veryLowInestability == 0, :), 'Muy baja', 'Rest');
