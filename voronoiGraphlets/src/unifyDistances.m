@@ -1,7 +1,7 @@
-function [  ] = unifyDistances(  )
+function [  ] = unifyDistances( path )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-    comparisonFiles = getAllFiles('results\comparisons\EveryFile\maxLength5\');
+    comparisonFiles = getAllFiles(path);
     differenceWithRegularHexagon = [];
     namesFinal = {};
     for numFile = 1:size(comparisonFiles,1)
@@ -10,24 +10,37 @@ function [  ] = unifyDistances(  )
         fullPathImageSplitted = strsplit(fullPathImage, '\');
         imageName = fullPathImageSplitted{end};
 
-        if isequal(imageName, 'distanceMatrixGDDA.mat') && isempty(strfind(fullPathImage, 'AllAtrophy'))
+        if isempty(strfind(imageName, 'distanceMatrix')) == 0 && isempty(strfind(fullPathImage, 'AtrophicCells')) %&& isempty(strfind(fullPathImage, '\CancerCells'))
             load(fullPathImage);
-            differenceWithRegularHexagon = [differenceWithRegularHexagon, distanceMatrix(1, 2:end)];
+            if isempty(strfind(fullPathImage, 'AgainstVoronoi1')) == 0
+                differenceWithRegularHexagon = [differenceWithRegularHexagon, differenceMean'];
+            else
+                differenceWithRegularHexagon = [differenceWithRegularHexagon, distanceMatrix(1, 2:end)];
+            end
             if isempty(namesFinal) == 0
                 if size(namesFinal, 1) ~= size(names, 1)
                     names = names';
                 end
-                namesFinal = [namesFinal, names{2:end}];
+                
+                if isempty(strfind(fullPathImage, 'AgainstVoronoi1'))
+                    namesFinal = [namesFinal, names{2:end}];
+                else
+                    namesFinal = [namesFinal, names{:}];
+                end
             else
                 if size(names, 2) == 1
                     names = names';
                 end
-                namesFinal = names(2:end);
+                if isempty(strfind(fullPathImage, 'AgainstVoronoi1'))
+                     namesFinal = names(2:end);
+                else
+                     namesFinal = names;
+                end
             end
         end
     end
 
-    save('results\comparisons\EveryFile\maxLength5\allDifferences.mat', 'differenceWithRegularHexagon', 'namesFinal');
+    save(strcat(path, 'allDifferences.mat'), 'differenceWithRegularHexagon', 'namesFinal');
 
 end
 
