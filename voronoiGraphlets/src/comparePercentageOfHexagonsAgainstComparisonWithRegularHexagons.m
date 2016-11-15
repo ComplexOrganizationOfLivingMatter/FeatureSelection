@@ -125,10 +125,13 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     
     %'BNA' remaining
     newNames = {'BCA', 'Eye', 'cNT', 'dWL', 'dWP', 'Voronoi', 'Voronoi weighted - Cancer cells', 'Voronoi Noise', 'Case II', 'Case III', 'Case IV', 'dMWP', 'Atrophy', 'Control Proliferative', 'Control No Proliferative', 'BNA', 'Voronoi weighted - Neighbours of cancer cells'};
-    hlegend1 = legend(h(:,1), newNames', 'Location', 'best');
+    hlegend1 = legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)', 'Location', 'best');
     
-    %title('Percentage of hexagons against graphlets difference with Hexagons');
-    title('Percentage of hexagons against graphlets difference with Voronoi 01 (20 realizations)');
+    if isempty(strfind(currentPath, 'Voronoi1'))
+        title('Percentage of hexagons against graphlets difference with Hexagons');
+    else
+        title('Percentage of hexagons against graphlets difference with Voronoi 01 (20 realizations)');
+    end
     xlabel('Graphlets value comparison');
     ylabel('Percentage of hexagons');
 
