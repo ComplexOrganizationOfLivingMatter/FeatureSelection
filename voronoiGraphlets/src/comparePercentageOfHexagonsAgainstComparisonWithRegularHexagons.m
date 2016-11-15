@@ -1,25 +1,21 @@
-function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons(  )
+function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( currentPath )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-%     analyzeGraphletDistances('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5');
-%     load('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\comparisons\EveryFile\maxLength5\distanceMatrixMeanGCDDA.mat');
-%     differenceWithRegularHexagon = distanceMatrix(22,:);
-%     differenceWithRegularHexagon = differenceWithRegularHexagon(differenceWithRegularHexagon > 0);
-%     names = {names(distanceMatrix(22, :) ~= distanceMatrix(22, 22))};
-%     names = names{1};
-%     save('differenceWithRegularHexagon.mat', 'differenceWithRegularHexagon', 'names');
-    clear
-    load('results\comparisons\EveryFile\maxLength5\allDifferences.mat');
-    %differenceWithRegularHexagon = cellfun(@(x) str2num(strrep(x, ',', '.')), distances.distance);
+    clearvars -except currentPath
+    load(strcat(currentPath, 'allDifferences.mat'))
     differenceWithRegularHexagon = differenceWithRegularHexagon';
+    names = namesFinal;
     load('results\comparisons\EveryFile\percentageOfHexagons.mat')
-    names = cellfun(@(x) strsplit(x, '/'), namesFinal, 'UniformOutput', false);
+%    load('results\comparisons\EveryFile\maxLength5\polygonDistribution1DimensionMaxLength5.mat')
+%    load('results\comparisons\EveryFile\maxLength5\polygonDistributionDistanceMatrix.mat')
+    names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
     names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, '-data', ''), names, 'UniformOutput', false);
     names = cellfun(@(x) x(1:end), names, 'UniformOutput', false);
-    names = cellfun(@(x) strrep(x, '-OnlyWeightedCellsAndNeighbours', ''), names, 'UniformOutput', false);
+    namesToCompare = cellfun(@(x) strrep(x, '-OnlyWeightedCells', ''), names, 'UniformOutput', false);
+    namesToCompare = cellfun(@(x) strrep(x, '-OnlyNeighboursOfWeightedCells', ''), namesToCompare, 'UniformOutput', false);
     
     nameFiles = cellfun(@(x) strsplit(x, '\'), nameFiles, 'UniformOutput', false);
     nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
@@ -28,13 +24,15 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     
     rightPercentages = zeros(1, size(names, 2));
     for numName = 1:size(nameFiles, 2)
-        numFound = find(cellfun(@(x) isequal(nameFiles{numName}, x ), names, 'UniformOutput', true) == 1);
+        numFound = find(cellfun(@(x) isequal(nameFiles{numName}, x ), namesToCompare, 'UniformOutput', true) == 1);
         if size(numFound, 1) > 1
             error('MEEEEC');
         end
         if isempty(numFound) == 0
-            nameFiles{numName};
             rightPercentages(1, numFound) = percentageOfHexagons(numName);
+%             rightPercentages(1, numFound) = points1Dimension(numName);
+        else
+            nameFiles{numName};
         end
     end
     percentageOfHexagons = rightPercentages;
@@ -45,7 +43,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
         error('Wrong percentages');
     end
 
-    numberOfTypes = 15;
+    numberOfTypes = 17;
     colors = hsv(numberOfTypes);
     colors(1, :) = [0.0 0.2 0.0]; %BCA
     colors(2, :) = [1.0 0.4 0.0]; %Eye
@@ -62,7 +60,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     colors(13, :) = [0.2 0.8 1.0]; %Atrophy Sim
     colors(14, :) = [0.0 0.0 0.0]; %Control Sim Prol
     colors(15, :) = [0.4 0.0 0.0]; %Control Sim No Prol
-    %colors(16, :) = [0.2 0.4 0.6]; %BNA
+    colors(16, :) = [0.2 0.4 0.6]; %BNA
     h1 = figure('units','normalized','outerposition',[0 0 1 1]);
     h = zeros(numberOfTypes);
     hold on;
@@ -78,19 +76,25 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
         elseif isempty(strfind(names{i}, 'dWP')) == 0
             h(5, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(5, :), 'MarkerFaceColor', colors(5, :));
         elseif isempty(strfind(names{i}, 'disk')) == 0 %voronoiWeighted
-            h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :), 'MarkerFaceColor', colors(7, :));
+            if isempty(strfind(names{i}, 'Neighbours'))
+                h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :), 'MarkerFaceColor', colors(7, :));
+            else
+                h(17, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :));
+            end
             nameDiagram = strsplit(names{i}, '-');
             t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(6));
             t1.FontSize = 5;
             t1.HorizontalAlignment = 'center';
             t1.VerticalAlignment = 'middle';
         elseif isempty(strfind(names{i}, 'voronoiNoise')) == 0
-            h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
-            nameDiagram = strsplit(names{i}, '-');
-            t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(5));
-            t1.FontSize = 5;
-            t1.HorizontalAlignment = 'center';
-            t1.VerticalAlignment = 'middle';
+%             if isempty(strfind(names{i}, 'voronoiNoise-Image-10')) ~= 0
+                h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
+                nameDiagram = strsplit(names{i}, '-');
+                t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(5));
+                t1.FontSize = 5;
+                t1.HorizontalAlignment = 'center';
+                t1.VerticalAlignment = 'middle';
+%             end
         elseif isempty(strfind(names{i}, 'Case-III')) == 0
             h(10, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(10, :), 'MarkerFaceColor', colors(10, :));
         elseif isempty(strfind(names{i}, 'Case-II')) == 0
@@ -112,17 +116,19 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             t1.FontSize = 5;
             t1.HorizontalAlignment = 'center';
             t1.VerticalAlignment = 'middle';
-%         elseif isempty(strfind(names{i}, 'BNA')) == 0
-%             h(16, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(16, :), 'MarkerFaceColor', colors(16, :));
-            else
+        elseif isempty(strfind(names{i}, 'BNA')) == 0
+            h(16, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(16, :), 'MarkerFaceColor', colors(16, :));
+        else
             names{i}
         end
     end
     
     %'BNA' remaining
-    newNames = {'BCA', 'Eye', 'cNT', 'dWL', 'dWP', 'Voronoi', 'Voronoi weighted', 'Voronoi Noise', 'Case II', 'Case III', 'Case IV', 'dMWP', 'Atrophy', 'Control Proliferative', 'Control No Proliferative'};
-    hlegend1 = legend(h(:,1), newNames');
-    title('Percentage of hexagons against graphlets difference with hexagonal tesselation');
+    newNames = {'BCA', 'Eye', 'cNT', 'dWL', 'dWP', 'Voronoi', 'Voronoi weighted - Cancer cells', 'Voronoi Noise', 'Case II', 'Case III', 'Case IV', 'dMWP', 'Atrophy', 'Control Proliferative', 'Control No Proliferative', 'BNA', 'Voronoi weighted - Neighbours of cancer cells'};
+    hlegend1 = legend(h(:,1), newNames', 'Location', 'best');
+    
+    %title('Percentage of hexagons against graphlets difference with Hexagons');
+    title('Percentage of hexagons against graphlets difference with Voronoi 01 (20 realizations)');
     xlabel('Graphlets value comparison');
     ylabel('Percentage of hexagons');
 
