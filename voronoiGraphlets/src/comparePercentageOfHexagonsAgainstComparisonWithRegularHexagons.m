@@ -2,6 +2,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
     clearvars -except currentPath
+    unifyDistances(currentPath);
     load(strcat(currentPath, 'allDifferences.mat'))
     differenceWithRegularHexagon = differenceWithRegularHexagon';
     names = namesFinal;
