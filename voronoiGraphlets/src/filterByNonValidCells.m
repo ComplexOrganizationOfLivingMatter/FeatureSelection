@@ -12,9 +12,13 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
         imageName = fullPathImageSplitted{end};
         imageNameReal = imageName(16:end-7);
         
-        if isempty(strfind(imageNameReal, 'Image_10_')) == 0 || isempty(strfind(imageNameReal, 'Image_10_')) == 0
+        %if isempty(strfind(imageNameReal, 'Image_10_')) == 0 || isempty(strfind(imageNameReal, 'Image_10_')) == 0
             if isequal(kindOfValidCells, 'finalValidCells')
                 outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
+                if length(removingGraphlets) > 0
+                    outputFile = strrep(outputFile, 'maxLength4', strcat('maxLength4Without', strjoin(removingGraphlets - 1, '_')));
+                    outputFile = strrep(outputFile, 'maxLength5', strcat('maxLength5Without', strjoin(removingGraphlets - 1, '_')));
+                end
                 outputFile = strcat(outputFile, imageNameReal(1:end-5), '.ndump2');
             else
                 outputFile = strcat('results\graphletResultsFiltered\allOriginal\', imageNameReal(1:end-5), '.ndump2');
@@ -111,7 +115,7 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
                     end
                 end
             end
-        end
+        %end
         
     end
 
