@@ -20,7 +20,28 @@ function Calculate_neighbors_polygon_distribution(currentPath)
             else
                 outputFile = strcat(strjoin(fullPathSplitted(1:end-4), '\'), '\data\', strjoin(fullPathSplitted(end-2:end-1), '\'), '\' ,nameWithoutExtension{1}, '_data.mat');
             end
-            if exist(outputFile, 'file') ~= 2
+            correct = 0; %If it is a voronoi diagrama, we select which diagrams we want to do
+            
+            diagramNameToCompare = strrep(diagramName, 'Voronoi_', 'Diagrama_');
+            if isempty(strfind(diagramNameToCompare, 'Diagrama_')) == 0
+                for i = 20:10:99
+                    if isempty(strfind(diagramNameToCompare, strcat('Diagrama_0', num2str(i)))) == 0
+                        correct = 1;
+                        break
+                    end
+                end
+                if correct == 0
+                    for j = 100:100:700
+                        if isempty(strfind(diagramNameToCompare, strcat('Diagrama_', num2str(j)))) == 0
+                            correct = 1;
+                            break
+                        end
+                    end
+                end
+            else %Not a voronoi diagram
+                correct = 1;
+            end
+            if exist(outputFile, 'file') ~= 2 && correct
                 fullPathFile
                 numIncorrectAreas = 0;
                 borderIncorrect = 0;
