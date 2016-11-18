@@ -14,7 +14,7 @@ function [ ] = analyzeGraphletDistances(currentPath, typeOfDistance)
     
     save(strcat(currentPath, 'distanceMatrix', upper(typeOfDistance) ,'.mat'), 'distanceMatrix', 'names');
     
-    voronoiDiagram1 = cellfun(@(x) isempty(strfind(x, 'Diagrama_01')) == 0 & isempty(strfind(x, 'weight')), names);
+    voronoiDiagram1 = cellfun(@(x) isempty(strfind(x, 'Diagrama_001')) == 0 & isempty(strfind(x, 'weight')), names);
     distanceMatrix = distanceMatrix(voronoiDiagram1 == 0, voronoiDiagram1);
     distanceMatrix = distanceMatrix(2:end, :);
     differenceMean = mean(distanceMatrix, 2);
