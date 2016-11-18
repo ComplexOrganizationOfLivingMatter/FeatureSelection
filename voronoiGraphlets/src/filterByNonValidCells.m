@@ -16,8 +16,14 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
             if isequal(kindOfValidCells, 'finalValidCells')
                 outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
                 if length(removingGraphlets) > 0
-                    outputFile = strrep(outputFile, 'maxLength4', strcat('maxLength4Without', strjoin(removingGraphlets - 1, '_')));
-                    outputFile = strrep(outputFile, 'maxLength5', strcat('maxLength5Without', strjoin(removingGraphlets - 1, '_')));
+                    removingGraphletsNames = removingGraphlets - 1;
+                    nameGraphlets = {num2str(removingGraphletsNames(1))};
+                    for i = 2:size(removingGraphletsNames, 2)
+                        nameGraphlets(end+1) = {num2str(removingGraphletsNames(i))};
+                    end
+                    outputFile = strrep(outputFile, 'maxLength4', strcat('maxLength4Without', strjoin(nameGraphlets, '_')));
+                    outputFile = strrep(outputFile, 'maxLength5', strcat('maxLength5Without', strjoin(nameGraphlets, '_')));
+                    mkdir(outputFile);
                 end
                 outputFile = strcat(outputFile, imageNameReal(1:end-5), '.ndump2');
             else
