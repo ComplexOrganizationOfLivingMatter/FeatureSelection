@@ -29,7 +29,7 @@ function [  ] = getPercentageOfHexagons( currentPath, maxLengthStr )
         diagramName = diagramName{1};
 
         %Check which files we want.
-        if isempty(strfind(lower(diagramName), '.ndump2')) == 0 && isempty(strfind(lower(diagramNameSplitted{end-1}), 'atrophicCells')) && isempty(strfind(lower(diagramNameSplitted{end-1}), 'Cancer'))
+        if isempty(strfind(lower(diagramName), '.ndump2')) == 0 && isempty(strfind(lower(diagramNameSplitted{end-1}), 'atrophiccells')) && isempty(strfind(lower(diagramNameSplitted{end-1}), 'cancer'))
             if isempty(strfind(lower(diagramNameSplitted{4}), lower(maxLengthStr))) == 0 || isempty(maxLengthStr)
                 matrixGraphlets = csvread(fullPathFile);
 
