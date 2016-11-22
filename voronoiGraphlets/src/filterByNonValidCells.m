@@ -1,4 +1,4 @@
-function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCells, removingGraphlets)
+function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCells, removingGraphlets, lastDirectoryName)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     allFilesImages = getAllFiles(currentPath);
@@ -16,19 +16,13 @@ function [ ] = filterByNonValidCells( currentPath, neighboursPath, kindOfValidCe
             if isequal(kindOfValidCells, 'finalValidCells')
                 outputFile = strrep(neighboursPath, 'validCellsMaxPathLength', 'graphletResultsFiltered');
                 if length(removingGraphlets) > 0
-                    removingGraphletsNames = removingGraphlets - 1;
-                    nameGraphlets = {num2str(removingGraphletsNames(1))};
-                    if isempty(strfind(outputFile, 'maxLength4')) == 0
-                        nameGraphlets(1) = {num2str(removingGraphletsNames(2))};
-                        nameGraphlets(end+1) = {num2str(removingGraphletsNames(end))};
-                        outputFile = strrep(outputFile, 'maxLength4', strcat('maxLength4Without8AndRange', strjoin(nameGraphlets, '_')));
-                    else
-                        for i = 2:size(removingGraphletsNames, 2)
-                            nameGraphlets(end+1) = {num2str(removingGraphletsNames(i))};
-                        end
-                        outputFile = strrep(outputFile, 'maxLength5', strcat('maxLength5Without', strjoin(nameGraphlets, '_')));
+                    outputFile = strrep(outputFile, 'maxLength4', lastDirectoryName);
+                    outputFile = strrep(outputFile, 'maxLength5', lastDirectoryName);
+                    outputDir = strsplit(outputFile, '\');
+                    
+                    if exist(strjoin(outputDir(1:end-1), '\'), 'dir') ~= 7
+                        mkdir(outputDir);
                     end
-                    mkdir(outputFile);
                 end
                 outputFile = strcat(outputFile, imageNameReal(1:end-5), '.ndump2');
             else
