@@ -48,15 +48,16 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     end
     %After that, 
     graphletResultsFilteredDir = strcat('results\graphletResultsFiltered\', typeOfData);
-        mkdir(graphletResultsFilteredDir);
-        mkdir(graphletResultsFilteredDir, 'maxLength4');
-        mkdir(graphletResultsFilteredDir, 'maxLength5');
+    mkdir(graphletResultsFilteredDir);
+    mkdir(graphletResultsFilteredDir, 'maxLength4');
+    mkdir(graphletResultsFilteredDir, 'maxLength5');
     
 %     for i = 12:73
 %         filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'finalValidCells', i, strcat('WithGraphlet', num2str(i)));
 %     end
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'finalValidCells', [9, 15, 23, 24, 36, 37, 38, 39, 52, 53, 54, 55, 56, 57, 58, 59, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73]);
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4\'), 'finalValidCells', [9, 13:73]);
+    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4\'), 'finalValidCells', 13:73);
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'finalValidCells', []);
     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'validCells', []);
     
@@ -66,19 +67,21 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
         mkdir(distanceDir, 'maxLength4\EveryFile');
         mkdir(distanceDir, 'maxLength5\EveryFile');
     end
-    answer = 'n';
-    while lower(answer) ~= 'y'
-        answer = input('Are distances calculated? [y/n] ');
-    end
     
-    %Calculate distance
-    analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\EveryFile\'), 'gdda');
-    analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\EveryFile\'), 'gdda');
-%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\'), 'gcd11');
-%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd11');
-%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd73');
-    
-    unifyDistances();
-    getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', 'maxLength5');
-    comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons();
+    getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '');
+%     answer = 'n';
+%     while lower(answer) ~= 'y'
+%         answer = input('Are distances calculated? [y/n] ');
+%     end
+%     
+%     %Calculate distance
+%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\EveryFile\'), 'gdda');
+%     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\EveryFile\'), 'gdda');
+% %     analyzeGraphletDistances(strcat(distanceDir, 'maxLength4\'), 'gcd11');
+% %     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd11');
+% %     analyzeGraphletDistances(strcat(distanceDir, 'maxLength5\'), 'gcd73');
+%     
+%     unifyDistances();
+%     getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '');
+%     comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons();
 end
