@@ -51,6 +51,7 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength, 
             end
 
             finalValidCells = [];
+            weightedCellsAndNeigbhours = union(vertcat(neighbours{wts > 0}), find(wts > 0));
             for numCell = 1:size(neighbours, 2)
                 neighboursInMaxPathLength = [];
                 antNeighbours = [neighbours{numCell}];
@@ -69,8 +70,16 @@ function [ finalValidCells ] = getValidCellsFromROI(currentPath, maxPathLength, 
                 end
 
                 noValidCellsInPath = intersect(noValidCells, neighboursInMaxPathLength);
+                
                 if isempty(noValidCellsInPath)
-                    finalValidCells(end+1) = numCell;
+                    %Only wants the cells that intervine (i.e. the weighted cells and their neighbours)
+                    if isempty(strfind(fullPathFile, 'Weighted')) == 0 
+                        if sum(ismember(neighboursInMaxPathLength, weightedCellsAndNeigbhours)) > 0
+                            finalValidCells(end+1) = numCell;
+                        end
+                    else
+                        finalValidCells(end+1) = numCell;
+                    end
                 end
             end
             
