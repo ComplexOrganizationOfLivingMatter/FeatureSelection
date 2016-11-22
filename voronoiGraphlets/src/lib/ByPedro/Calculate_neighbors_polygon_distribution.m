@@ -50,7 +50,7 @@ function Calculate_neighbors_polygon_distribution(currentPath)
                     end
                     if correct == 0
                         for j = 100:100:700
-                            if isempty(strfind(diagramNameToCompare, strcat('Diagrama_', num2str(j)))) == 0
+                            if isempty(strfind(diagramNameToCompare, strcat('Diagrama_', num2str(j), '_'))) == 0
                                 correct = 1;
                                 break
                             end
