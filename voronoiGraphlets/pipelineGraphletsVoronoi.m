@@ -49,7 +49,7 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
     %After that, 
     graphletResultsFilteredDir = strcat('results\graphletResultsFiltered\', typeOfData);
     mkdir(graphletResultsFilteredDir);
-    mkdir(graphletResultsFilteredDir, 'maxLength4');
+    %mkdir(graphletResultsFilteredDir, 'maxLength4');
     mkdir(graphletResultsFilteredDir, 'maxLength5');
     
 %     for i = 12:73
