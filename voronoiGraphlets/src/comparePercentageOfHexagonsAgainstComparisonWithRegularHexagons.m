@@ -155,7 +155,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     
     ylabel('Percentage of hexagons', 'FontWeight', 'bold');
     
-    if isempty(strfind(currentPath, 'Voronoi1'))
+    if isempty(strfind(currentPath, 'Voronoi1')) == 0
         xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
     else
         xlabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
