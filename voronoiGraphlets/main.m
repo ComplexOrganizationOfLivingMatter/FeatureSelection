@@ -403,5 +403,124 @@ pipelineGraphletsVoronoi('voronoiWeighted\');
 pipelineGraphletsVoronoi('biologicalImagesAndVoronoi\');
 
 %% Comparisons between different tissues
-analyzeGraphletDistances(strcat('results\graphletResultsFiltered\SickEpitheliums\', 'maxLength5\'), 'gdda');
-getPercentageOfHexagons('E:\Pablo\PhD-miscelanious\voronoiGraphlets\results\graphletResultsFiltered\allOriginal\');
+
+getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '');
+getPercentageOfHexagons('results\graphletResultsFiltered\', 'maxLength4All');
+getPercentageOfHexagons('results\graphletResultsFiltered\', 'maxLength5All');
+
+unifyDistances('results\comparisons\EveryFile\maxLength5\AgainstVoronoi1\');
+unifyDistances('results\comparisons\EveryFile\maxLength5\AgainstHexagons\');
+unifyDistances('results\comparisons\EveryFile\maxLength4Only11Graphlets\');
+unifyDistances('results\comparisons\EveryFile\maxLength4WithoutGraphlet8\');
+unifyDistances('results\comparisons\EveryFile\maxLength5Without8_68_69\AgainstHexagons\');
+unifyDistances('results\comparisons\EveryFile\maxLength5Without8_68_69\AgainstVoronoi1\');
+
+unifyDistances('results\comparisons\EveryFile\maxLength4Only11GraphletsWithoutGraphlet8\AgainstHexagons\');
+unifyDistances('results\comparisons\EveryFile\maxLength4Only11GraphletsWithoutGraphlet8\AgainstVoronoi1\');
+
+unifyDistances('results\comparisons\EveryFile\maxLength5WithoutSquares\AgainstHexagons\');
+unifyDistances('results\comparisons\EveryFile\maxLength5WithoutSquares\AgainstVoronoi1\');
+
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5\EveryFile\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4\EveryFile\AtrophicCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5\EveryFile\AtrophicCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5\EveryFile\AllAtrophic\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5\EveryFile\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11Graphlets\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4WithoutGraphlet8\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5\EveryFile\CancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4\EveryFile\CancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5\EveryFile\NeighboursOfCancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11GraphletsWithout8\NeighboursOfCancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11GraphletsWithout8\CancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11GraphletsWithout8\AtrophicCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11GraphletsWithout8\AllAtrophy\'), 'gdda');
+
+
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only8\'), 'gdda');
+
+
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5WithoutSquares\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5Without8_68_69\CancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5Without8_68_69\NeighboursOfCancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5Without8_68_69\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5Without8_68_69\AtrophicCells'), 'gdda');
+
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11GraphletsWithout8\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11GraphletsWithout8\CancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11GraphletsWithout8\NeighboursOfCancerCells\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength4Only11GraphletsWithout8\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11GraphletsWithout8\AtrophicCells\'), 'gdda');
+
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5Without8_14_22_23_35_36_37_38_51_52_53_54_55_56_57_58_62_63_64_65_66_67_68_69_70_71_72\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5WithoutJumps\'), 'gdda');
+
+
+
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstHexagons\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstVoronoi1\' )
+
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5Without8_14_22_23_35_36_37_38_51_52_53_54_55_56_57_58_62_63_64_65_66_67_68_69_70_71_72\AgainstHexagons\' )
+
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5Without8_14_22_23_35_36_37_38_51_52_53_54_55_56_57_58_62_63_64_65_66_67_68_69_70_71_72\AgainstVoronoi1\' )
+
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11GraphletsWithoutGraphlet8\AgainstHexagons\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11GraphletsWithoutGraphlet8\AgainstVoronoi1\' )
+
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5WithoutSquares\AgainstHexagons\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5WithoutSquares\AgainstVoronoi1\' )
+
+
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5Without8_14_22_23_35_36_37_38_51_52_53_54_55_56_57_58_62_63_64_65_66_67_68_69_70_71_72\AgainstHexagons\' )
+% 
+% for i = 12:73
+%     analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'TestingAllGraphletsVoronoi_001\', num2str(i), '\'), 'gdda');
+% end
+% 
+% for i = 12:73
+%     comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( strcat('results\comparisons\EveryFile\TestingAllGraphletsVoronoi_001\', num2str(i), '\'), num2str(i))
+% end
+
+%% 8 initial graphics
+getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '');
+maxLength5WithoutJumps\EveryFile\AllAtrophy
+
+%MaxLength4 Only 11 without 8
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength4Only11Without8\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11Without8\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11Without8\EveryFile\AllAtrophy\'), 'gdda');
+
+
+%MaxLength4 Only 11
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength4Only11\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11\EveryFile\AllAtrophy\'), 'gdda');
+
+
+%MaxLength5 without jumps
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5WithoutJumps\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5WithoutJumps\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5WithoutJumps\EveryFile\AllAtrophy\'), 'gdda');
+
+
+%MaxLength5
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5\EveryFile\AllAtrophy\'), 'gdda');
+
+
+%comparisons
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11Without8\AgainstHexagons\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11Without8\AgainstVoronoi1\' )
+
+%comparisons
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11\AgainstHexagons\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11\AgainstVoronoi1\' )
+
+%comparisons
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5WithoutJumps\AgainstHexagons\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5WithoutJumps\AgainstVoronoi1\' )
+
+%comparisons
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstHexagons\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstVoronoi1\' )
