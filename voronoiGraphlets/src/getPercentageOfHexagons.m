@@ -1,4 +1,4 @@
-function [  ] = getPercentageOfHexagons( currentPath, maxLengthStr )
+function [  ] = getPercentageOfHexagons( currentPath, maxLengthStr, maxLengthVoronoiWeighted )
 %GETPERCENTAGEOFHEXAGONS Get the percentage of hexagons of a tesselation.
 %   Calculate the number of nodes surrounded by 6 neighbours.
 %   This number will be divided by the total number of nodes, 
@@ -29,19 +29,22 @@ function [  ] = getPercentageOfHexagons( currentPath, maxLengthStr )
         diagramName = diagramName{1};
 
         %Check which files we want.
-        if isempty(strfind(lower(diagramName), '.ndump2')) == 0 && isempty(strfind(lower(diagramNameSplitted{end-1}), 'atrophiccells')) && isempty(strfind(lower(diagramNameSplitted{end-1}), 'cancer'))
+        if isempty(strfind(lower(diagramName), '.ndump2')) == 0 && isempty(strfind(lower(diagramNameSplitted{end-1}), 'atrophiccells'))
             if isempty(strfind(lower(diagramNameSplitted{4}), lower(maxLengthStr))) == 0 || isempty(maxLengthStr)
-                matrixGraphlets = csvread(fullPathFile);
+                if (isempty(strfind(lower(diagramName), 'weight')) == 1 && isempty(strfind(lower(diagramNameSplitted{end-1}), lower(maxLengthVoronoiWeighted))) == 0) || isempty(strfind(lower(diagramName), 'weight'))
+                    diagramName;
+                    matrixGraphlets = csvread(fullPathFile);
 
-                percentageOfTriangles(end+1) = sum(matrixGraphlets(:, 1) == 3) / size(matrixGraphlets, 1)*100;
-                percentageOfSquares(end+1) = sum(matrixGraphlets(:, 1) == 4) / size(matrixGraphlets, 1)*100;
-                percentageOfPentagons(end+1) = sum(matrixGraphlets(:, 1) == 5) / size(matrixGraphlets, 1)*100;
-                percentageOfHexagons(end+1) = sum(matrixGraphlets(:, 1) == 6) / size(matrixGraphlets, 1)*100;
-                percentageOfHeptagons(end+1) = sum(matrixGraphlets(:, 1) == 7) / size(matrixGraphlets, 1)*100;
-                percentageOfOctogons(end+1) = sum(matrixGraphlets(:, 1) == 8) / size(matrixGraphlets, 1)*100;
-                percentageOfNonagons(end+1) = sum(matrixGraphlets(:, 1) == 9) / size(matrixGraphlets, 1)*100;
-                percentageOfDecagons(end+1) = sum(matrixGraphlets(:, 1) == 10) / size(matrixGraphlets, 1)*100;
-                nameFiles{end+1} = fullPathFile;
+                    percentageOfTriangles(end+1) = sum(matrixGraphlets(:, 1) == 3) / size(matrixGraphlets, 1)*100;
+                    percentageOfSquares(end+1) = sum(matrixGraphlets(:, 1) == 4) / size(matrixGraphlets, 1)*100;
+                    percentageOfPentagons(end+1) = sum(matrixGraphlets(:, 1) == 5) / size(matrixGraphlets, 1)*100;
+                    percentageOfHexagons(end+1) = sum(matrixGraphlets(:, 1) == 6) / size(matrixGraphlets, 1)*100;
+                    percentageOfHeptagons(end+1) = sum(matrixGraphlets(:, 1) == 7) / size(matrixGraphlets, 1)*100;
+                    percentageOfOctogons(end+1) = sum(matrixGraphlets(:, 1) == 8) / size(matrixGraphlets, 1)*100;
+                    percentageOfNonagons(end+1) = sum(matrixGraphlets(:, 1) == 9) / size(matrixGraphlets, 1)*100;
+                    percentageOfDecagons(end+1) = sum(matrixGraphlets(:, 1) == 10) / size(matrixGraphlets, 1)*100;
+                    nameFiles{end+1} = fullPathFile;
+                end
             end
         end
     end
