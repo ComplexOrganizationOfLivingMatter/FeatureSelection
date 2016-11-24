@@ -100,7 +100,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             if isempty(strfind(names{i}, 'totalGraphlets'))
                 h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', graysFont (indices == str2num(nameDiagram{5}), :));
             else
-                h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', graysFont (indices == str2num(nameDiagram{5}), :), 'MarkerFaceColor', graysFont (indices == str2num(nameDiagram{5}), :));
+                h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', graysFont (indices == str2num(nameDiagram{2}), :), 'MarkerFaceColor', graysFont (indices == str2num(nameDiagram{2}), :));
             end
                 
 %             t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(5));
