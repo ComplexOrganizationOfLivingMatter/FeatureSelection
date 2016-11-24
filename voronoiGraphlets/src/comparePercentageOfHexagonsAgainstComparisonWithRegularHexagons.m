@@ -8,8 +8,15 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
 %     nameFiles = namesFinal;
 %     percentageOfHexagons = differenceWithRegularHexagon';
     load(strcat(currentPath, 'allDifferences.mat'))
-    differenceWithRegularHexagon = differenceWithRegularHexagon';
-    names = namesFinal;
+    differenceWithRegularHexagonToAppend = differenceWithRegularHexagon';
+    namesToAppend = namesFinal;
+    
+    %total graphlets
+    totalGraphletsPath = strrep(currentPath, 'EveryFile', 'Total');
+    unifyDistances(totalGraphletsPath);
+    load(strcat(totalGraphletsPath, 'allDifferences.mat'))
+    differenceWithRegularHexagon = vertcat(differenceWithRegularHexagon', differenceWithRegularHexagonToAppend);
+    names = {namesFinal{:}, namesToAppend{:}};
     if isempty(strfind(currentPath, 'maxLength5'))
         load('results\comparisons\EveryFile\percentageOfHexagons-Weighted_maxLength4.mat')
     else
@@ -90,8 +97,12 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
         if isempty(strfind(names{i}, 'voronoiNoise')) == 0
             %             if isempty(strfind(names{i}, 'voronoiNoise-Image-10')) ~= 0
             nameDiagram = strsplit(names{i}, '-');
-            h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', graysFont (indices == str2num(nameDiagram{5}), :));
-            
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', graysFont (indices == str2num(nameDiagram{5}), :));
+            else
+                h(8, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', graysFont (indices == str2num(nameDiagram{5}), :), 'MarkerFaceColor', graysFont (indices == str2num(nameDiagram{5}), :));
+            end
+                
 %             t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(5));
 %             t1.FontSize = 5;
 %             t1.HorizontalAlignment = 'center';
@@ -110,42 +121,98 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     
     for i = 1:size(names, 2)
         if isempty(strfind(names{i}, 'omm')) == 0
-            h(2, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(2, :));
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(2, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(2, :));
+            else
+                h(2, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(2, :), 'MarkerFaceColor', colors(2, :));
+            end
 %         elseif isempty(strfind(names{i}, 'BC')) == 0
 %             h(1, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(1, :));
         elseif isempty(strfind(names{i}, 'cNT')) == 0
-            h(3, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(3, :));
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(3, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(3, :));
+            else
+                h(3, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(3, :), 'MarkerFaceColor', colors(3, :));
+            end
         elseif isempty(strfind(names{i}, 'dWL')) == 0
-            h(4, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(4, :));
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(4, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(4, :));
+            else
+                h(4, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(4, :), 'MarkerFaceColor', colors(4, :));
+            end
         elseif isempty(strfind(names{i}, 'dWP')) == 0
-            h(5, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(5, :));
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(5, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(5, :));
+            else
+                h(5, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(5, :), 'MarkerFaceColor', colors(5, :));
+            end
         elseif isempty(strfind(names{i}, 'disk')) == 0 %voronoiWeighted
             if isempty(strfind(names{i}, 'Neighbours'))
-                h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :));
+                if isempty(strfind(names{i}, 'totalGraphlets'))
+                    h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :));
+                else
+                    h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :), 'MarkerFaceColor', colors(7, :));
+                end
             else
-                h(17, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :));
+                if isempty(strfind(names{i}, 'totalGraphlets'))
+                    h(17, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :));
+                else
+                    h(17, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
+                end
             end
 %             nameDiagram = strsplit(names{i}, '-');
 %             t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(6));
 %             t1.FontSize = 5;
 %             t1.HorizontalAlignment = 'center';
 %             t1.VerticalAlignment = 'middle';
-%         elseif isempty(strfind(names{i}, 'Case-III')) == 0
-%             h(10, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(10, :));
-%         elseif isempty(strfind(names{i}, 'Case-II')) == 0
-%             h(9, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(9, :));
-%         elseif isempty(strfind(names{i}, 'Case-IV')) == 0
-%             h(11, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(11, :));
-%         elseif isempty(strfind(names{i}, 'dMWP')) == 0
-%             h(12, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(12, :));
+        elseif isempty(strfind(names{i}, 'Case-III')) == 0
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(10, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(10, :));
+            else
+                h(10, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(10, :), 'MarkerFaceColor', colors(10, :));
+            end
+        elseif isempty(strfind(names{i}, 'Case-II')) == 0
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(9, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(9, :));
+            else
+                h(9, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(9, :), 'MarkerFaceColor', colors(9, :));
+            end
+        elseif isempty(strfind(names{i}, 'Case-IV')) == 0
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(11, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(11, :));
+            else
+                h(11, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(11, :), 'MarkerFaceColor', colors(11, :));
+            end
+        elseif isempty(strfind(names{i}, 'dMWP')) == 0
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(12, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(12, :));
+            else
+                h(12, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(12, :), 'MarkerFaceColor', colors(12, :));
+            end
 % %         elseif isempty(strfind(names{i}, 'Atrophy-Sim')) == 0
-% %             h(13, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(13, :));
-%         elseif isempty(strfind(names{i}, 'Control-Sim-Prol')) == 0
-%             h(14, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(14, :));
+% % if isempty(strfind(names{i}, 'totalGraphlets'))
+    % %             h(13, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(13, :));
+% % else
+% %         h(2, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(2, :), 'MarkerFaceColor', colors(2, :));
+% %     end
+        elseif isempty(strfind(names{i}, 'Control-Sim-Prol')) == 0
+            if isempty(strfind(names{i}, 'totalGraphlets'))
+                h(14, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(14, :));
+            else
+                h(14, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(14, :), 'MarkerFaceColor', colors(14, :));
+            end
 %         elseif isempty(strfind(names{i}, 'Control-Sim-no-Prol')) == 0
-%             h(15, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(15, :));
+%             if isempty(strfind(names{i}, 'totalGraphlets'))
+    %             h(15, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(15, :));
+%         else
+%     
+%                 end
 %         elseif isempty(strfind(names{i}, 'BNA')) == 0
-%             h(16, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(16, :));
+% if isempty(strfind(names{i}, 'totalGraphlets'))
+    %             h(16, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(16, :));
+% else
+%     
+%     end
 %         else
 %             names{i};
         end
