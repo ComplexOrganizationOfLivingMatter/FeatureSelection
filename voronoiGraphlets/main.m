@@ -483,18 +483,17 @@ comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\compar
 
 %% 8 initial graphics
 getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '');
-maxLength5WithoutJumps\EveryFile\AllAtrophy
 
 %MaxLength4 Only 11 without 8
 analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength4Only11Without8\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11Without8\'), 'gdda');
-analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11Without8\EveryFile\AllAtrophy\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11Without8\AllAtrophy\'), 'gdda');
 
 
 %MaxLength4 Only 11
 analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength4Only11\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11\'), 'gdda');
-analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11\EveryFile\AllAtrophy\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11\AllAtrophy\'), 'gdda');
 
 
 %MaxLength5 without jumps
@@ -504,7 +503,7 @@ analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxL
 
 
 %MaxLength5
-analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5\EveryFile\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5\EveryFile\AllAtrophy\'), 'gdda');
 
