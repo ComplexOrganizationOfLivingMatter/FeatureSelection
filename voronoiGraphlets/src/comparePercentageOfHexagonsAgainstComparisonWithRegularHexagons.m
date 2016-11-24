@@ -4,15 +4,13 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     set(0,'DefaultAxesFontName', 'Helvetica-Narrow')
     clearvars -except currentPath
     unifyDistances(currentPath);
-%     load('results\comparisons\EveryFile\maxLength5WithoutJumps\AgainstHexagons\allDifferences.mat' );
-%     nameFiles = namesFinal;
-%     percentageOfHexagons = differenceWithRegularHexagon';
+    load('results\comparisons\EveryFile\maxLength5\AgainstHexagons\allDifferences.mat' );
+    nameFiles = namesFinal;
+    percentageOfHexagons = differenceWithRegularHexagon';
     load(strcat(currentPath, 'allDifferences.mat'))
     differenceWithRegularHexagon = differenceWithRegularHexagon';
     names = namesFinal;
-    load('results\comparisons\EveryFile\percentageOfHexagons.mat')
-%    load('results\comparisons\EveryFile\maxLength5\polygonDistribution1DimensionMaxLength5.mat')
-%    load('results\comparisons\EveryFile\maxLength5\polygonDistributionDistanceMatrix.mat')
+    %load('results\comparisons\EveryFile\percentageOfHexagons.mat')
     names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
     names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
     names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
@@ -23,18 +21,18 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     namesToCompare = cellfun(@(x) strrep(x, '-OnlyNeighboursOfWeightedCells', ''), namesToCompare, 'UniformOutput', false);
     
     %% namefiles in case is GDDRV vs GDDRH
-%     nameFiles = cellfun(@(x) strsplit(x, '/'), nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) strrep(x, '-data', ''), nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) x(1:end), nameFiles, 'UniformOutput', false);
+    nameFiles = cellfun(@(x) strsplit(x, '/'), nameFiles, 'UniformOutput', false);
+    nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
+    nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
+    nameFiles = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), nameFiles, 'UniformOutput', false);
+    nameFiles = cellfun(@(x) strrep(x, '-data', ''), nameFiles, 'UniformOutput', false);
+    nameFiles = cellfun(@(x) x(1:end), nameFiles, 'UniformOutput', false);
 
     %% namefiles otherwise
-    nameFiles = cellfun(@(x) strsplit(x, '\'), nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) x(1:end-7), nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
+%     nameFiles = cellfun(@(x) strsplit(x, '\'), nameFiles, 'UniformOutput', false);
+%     nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
+%     nameFiles = cellfun(@(x) x(1:end-7), nameFiles, 'UniformOutput', false);
+%     nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
     
     rightPercentages = zeros(1, size(names, 2));
     for numName = 1:size(nameFiles, 2)
@@ -153,20 +151,29 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     hlegend1 = legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)', 'Location', 'best');
     
     
-    ylabel('Percentage of hexagons', 'FontWeight', 'bold');
-    
-    if isempty(strfind(currentPath, 'Voronoi1')) == 0
-        xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
-    else
-        xlabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
-    end
     auxLim = xlim;
     xlim([0 auxLim(2)])
     auxLim = ylim;
-    ylim([0 100])
+    %ylim([0 100])
+    ylim([0 auxLim(2)])
+    
+%     ylabel('Percentage of hexagons', 'FontWeight', 'bold');
+%     
+%     if isempty(strfind(currentPath, 'Voronoi1')) == 0
+%         xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
+%         export_fig(strcat('differenceGDDRV_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+%     else
+%         xlabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
+%         export_fig(strcat('differenceGDDH_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+%     end
+
+    %% GDDRV vs GDDH
+    xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
+    ylabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
+    export_fig(strcat('differenceGDDRV_GDDH', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
 
     %export_fig(h1, 'differenceGDDRV_GDDH', '-pdf', '-r300');
-    export_fig(strcat('differenceGDDRV_GDDH', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+    
     %export_fig(h1, 'differenceGDDRV_GDDH----OpenGl2', '-pdf', '-r400', '-opengl');
 
 end
