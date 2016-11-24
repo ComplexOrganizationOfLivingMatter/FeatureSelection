@@ -31,7 +31,7 @@ function [  ] = getPercentageOfHexagons( currentPath, maxLengthStr, maxLengthVor
         %Check which files we want.
         if isempty(strfind(lower(diagramName), '.ndump2')) == 0 && isempty(strfind(lower(diagramNameSplitted{end-1}), 'atrophiccells'))
             if isempty(strfind(lower(diagramNameSplitted{4}), lower(maxLengthStr))) == 0 || isempty(maxLengthStr)
-                if (isempty(strfind(lower(diagramName), 'weight')) == 1 && isempty(strfind(lower(diagramNameSplitted{end-1}), lower(maxLengthVoronoiWeighted))) == 0) || isempty(strfind(lower(diagramName), 'weight'))
+                if (isempty(strfind(lower(diagramName), 'weight')) == 0 && isempty(strfind(lower(diagramNameSplitted{end-1}), lower(maxLengthVoronoiWeighted))) == 0) || isempty(strfind(lower(diagramName), 'weight'))
                     diagramName;
                     matrixGraphlets = csvread(fullPathFile);
 
@@ -61,8 +61,8 @@ function [  ] = getPercentageOfHexagons( currentPath, maxLengthStr, maxLengthVor
 %     percentageOfHexagons;
 %     nameFiles;
     %points1Dimension = mdscale(distanceMatrix, 1, 'Criterion', 'sstress');
-    save(strcat('results\comparisons\EveryFile\polygonDistributionDistanceMatrix', maxLengthStr ,'.mat'), 'distanceMatrix', 'nameFiles');
-    save(strcat('results\comparisons\EveryFile\percentageOfHexagons', maxLengthStr, '.mat'), 'percentageOfHexagons', 'nameFiles');
+    save(strcat('results\comparisons\EveryFile\polygonDistributionDistanceMatrix', maxLengthStr , '-Weighted_', maxLengthVoronoiWeighted, '.mat'), 'distanceMatrix', 'nameFiles');
+    save(strcat('results\comparisons\EveryFile\percentageOfHexagons', maxLengthStr, '-Weighted_', maxLengthVoronoiWeighted, '.mat'), 'percentageOfHexagons', 'nameFiles');
 
 end
 
