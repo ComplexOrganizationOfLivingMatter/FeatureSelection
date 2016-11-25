@@ -5,76 +5,94 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     clearvars -except currentPath kindOfGraphics
     unifyDistances(currentPath);
     
-    
-    load(strrep(strcat(currentPath, 'allDifferences.mat'), 'AgainstVoronoi1', 'AgainstHexagons'))
-    nameFiles = namesFinal;
-    percentageOfHexagons = differenceWithRegularHexagon';
-    
-    %% namefiles in case is GDDRV vs GDDRH
-    nameFiles = cellfun(@(x) strsplit(x, '/'), nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) strrep(x, '-data', ''), nameFiles, 'UniformOutput', false);
-    nameFiles = cellfun(@(x) x(1:end), nameFiles, 'UniformOutput', false);
+    %%GDDRV vs GDDRH
+    if isequal(kindOfGraphics, 'GDDRV_GDDRH')
+        load(strrep(strcat(currentPath, 'allDifferences.mat'), 'AgainstVoronoi1', 'AgainstHexagons'))
+        nameFiles = namesFinal;
+        percentageOfHexagons = differenceWithRegularHexagon';
 
-    load(strcat('results\comparisons\Total\maxLength5WithoutJumps\AgainstHexagons\', 'allDifferences.mat'))
-    names2 = cellfun(@(x) strsplit(x, '/'), namesFinal, 'UniformOutput', false);
-    names2 = cellfun(@(x) x{end}, names2, 'UniformOutput', false);
-    names2 = cellfun(@(x) strrep(x, '_', '-'), names2, 'UniformOutput', false);
-    names2 = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names2, 'UniformOutput', false);
-    names2 = cellfun(@(x) strrep(x, '-data', ''), names2, 'UniformOutput', false);
-    names2 = cellfun(@(x) x(1:end), names2, 'UniformOutput', false);
-    for i = 1:length(names2)
-        if isempty(strfind(names2{i}, 'totalGraphlets')) == 0
-            nameDiagram = strsplit(names2{i}, '-');
-            if length(nameDiagram) >= 7 && isequal(nameDiagram{7}, 'totalGraphlets')
-                meanImages = cellfun(@(x) isempty(strfind(x, nameDiagram{2})) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, nameDiagram{end-1})) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
-            elseif isempty(strfind(names2{i}, 'voronoiNoise')) == 0
-                meanImages = cellfun(@(x) isempty(strfind(x, nameDiagram{1})) == 0 & isempty(strfind(x, nameDiagram{2})) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
-            elseif isempty(strfind(names2{i}, 'imagen')) == 0
-                meanImages = cellfun(@(x) isempty(strfind(x, nameDiagram{1})) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
-            else
-                meanImages = cellfun(@(x) isempty(strfind(x, strjoin(nameDiagram(1:end-1), '-'))) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
+        
+        nameFiles = cellfun(@(x) strsplit(x, '/'), nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) strrep(x, '-data', ''), nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) x(1:end), nameFiles, 'UniformOutput', false);
+
+        load(strcat('results\comparisons\Total\maxLength5WithoutJumps\AgainstHexagons\', 'allDifferences.mat'))
+        names2 = cellfun(@(x) strsplit(x, '/'), namesFinal, 'UniformOutput', false);
+        names2 = cellfun(@(x) x{end}, names2, 'UniformOutput', false);
+        names2 = cellfun(@(x) strrep(x, '_', '-'), names2, 'UniformOutput', false);
+        names2 = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names2, 'UniformOutput', false);
+        names2 = cellfun(@(x) strrep(x, '-data', ''), names2, 'UniformOutput', false);
+        names2 = cellfun(@(x) x(1:end), names2, 'UniformOutput', false);
+        for i = 1:length(names2)
+            if isempty(strfind(names2{i}, 'totalGraphlets')) == 0
+                nameDiagram = strsplit(names2{i}, '-');
+                if length(nameDiagram) >= 7 && isequal(nameDiagram{7}, 'totalGraphlets')
+                    meanImages = cellfun(@(x) isempty(strfind(x, nameDiagram{2})) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, nameDiagram{end-1})) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
+                elseif isempty(strfind(names2{i}, 'voronoiNoise')) == 0
+                    meanImages = cellfun(@(x) isempty(strfind(x, nameDiagram{1})) == 0 & isempty(strfind(x, nameDiagram{2})) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
+                elseif isempty(strfind(names2{i}, 'imagen')) == 0
+                    meanImages = cellfun(@(x) isempty(strfind(x, nameDiagram{1})) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
+                else
+                    meanImages = cellfun(@(x) isempty(strfind(x, strjoin(nameDiagram(1:end-1), '-'))) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
+                end
+                nameFiles = {names2{i}, nameFiles{:}};
+                percentageOfHexagons = [mean(percentageOfHexagons(meanImages)); percentageOfHexagons];
             end
-            nameFiles = {names2{i}, nameFiles{:}};
-            percentageOfHexagons = [mean(percentageOfHexagons(meanImages)); percentageOfHexagons];
         end
-    end
-    load(strcat(currentPath, 'allDifferences.mat'))
-    differenceWithRegularHexagonToAppend = differenceWithRegularHexagon';
-    namesToAppend = namesFinal;
-    
-    %total graphlets
-%     totalGraphletsPath = strrep(currentPath, 'EveryFile', 'Total');
-%     unifyDistances(totalGraphletsPath);
-%     load(strcat(totalGraphletsPath, 'allDifferences.mat'))
-    %%%%%Not really used! CARE!!!!!!
-    load(strcat('results\comparisons\Total\maxLength5WithoutJumps\AgainstHexagons\', 'allDifferences.mat'))
-    differenceWithRegularHexagon = vertcat(differenceWithRegularHexagon', differenceWithRegularHexagonToAppend);
-    names = {namesFinal{:}, namesToAppend{:}};
-    %%%%% END CARE!!!!
-    if isempty(strfind(currentPath, 'maxLength5'))
-        %load('results\comparisons\EveryFile\percentageOfHexagons-Weighted_maxLength4.mat')
+        load(strcat(currentPath, 'allDifferences.mat'))
+        differenceWithRegularHexagonToAppend = differenceWithRegularHexagon';
+        namesToAppend = namesFinal;
+        
+        
+        %%%%% Not really used! CARE!!!!!!
+        load(strcat('results\comparisons\Total\maxLength5WithoutJumps\AgainstHexagons\', 'allDifferences.mat'))
+        differenceWithRegularHexagon = vertcat(differenceWithRegularHexagon', differenceWithRegularHexagonToAppend);
+        names = {namesFinal{:}, namesToAppend{:}};
+        %%%%% END CARE!!!!
+        
+        names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
+        names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
+        names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
+        names = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names, 'UniformOutput', false);
+        names = cellfun(@(x) strrep(x, '-data', ''), names, 'UniformOutput', false);
+        namesToCompare = cellfun(@(x) x(1:end), names, 'UniformOutput', false);
     else
-        %load('results\comparisons\EveryFile\percentageOfHexagons-Weighted_maxLength5.mat')
+        %total graphlets
+        totalGraphletsPath = strrep(currentPath, 'EveryFile', 'Total');
+        unifyDistances(totalGraphletsPath);
+        load(strcat(totalGraphletsPath, 'allDifferences.mat'))
+        
+        
+        %%%%% Not really used! CARE!!!!!!
+        load(strcat('results\comparisons\Total\maxLength5WithoutJumps\AgainstHexagons\', 'allDifferences.mat'))
+        differenceWithRegularHexagon = vertcat(differenceWithRegularHexagon', differenceWithRegularHexagonToAppend);
+        names = {namesFinal{:}, namesToAppend{:}};
+        %%%%% END CARE!!!!
+        
+        if isempty(strfind(currentPath, 'maxLength5'))
+            load('results\comparisons\EveryFile\percentageOfHexagons-Weighted_maxLength4.mat')
+        else
+            load('results\comparisons\EveryFile\percentageOfHexagons-Weighted_maxLength5.mat')
+        end
+        
+        names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
+        names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
+        names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
+        names = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names, 'UniformOutput', false);
+        names = cellfun(@(x) strrep(x, '-data', ''), names, 'UniformOutput', false);
+        names = cellfun(@(x) x(1:end), names, 'UniformOutput', false);
+        namesToCompare = cellfun(@(x) strrep(x, '-OnlyWeightedCells', ''), names, 'UniformOutput', false);
+        namesToCompare = cellfun(@(x) strrep(x, '-OnlyNeighboursOfWeightedCells', ''), namesToCompare, 'UniformOutput', false);
+        
+        nameFiles = cellfun(@(x) strsplit(x, '\'), nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) x(1:end-7), nameFiles, 'UniformOutput', false);
+        nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
     end
-    names = cellfun(@(x) strsplit(x, '/'), names, 'UniformOutput', false);
-    names = cellfun(@(x) x{end}, names, 'UniformOutput', false);
-    names = cellfun(@(x) strrep(x, '_', '-'), names, 'UniformOutput', false);
-    names = cellfun(@(x) strrep(x, 'adjacencyMatrix', ''), names, 'UniformOutput', false);
-    names = cellfun(@(x) strrep(x, '-data', ''), names, 'UniformOutput', false);
-    namesToCompare = cellfun(@(x) x(1:end), names, 'UniformOutput', false);
-    %namesToCompare = cellfun(@(x) strrep(x, '-OnlyWeightedCells', ''), names, 'UniformOutput', false);
-    %namesToCompare = cellfun(@(x) strrep(x, '-OnlyNeighboursOfWeightedCells', ''), namesToCompare, 'UniformOutput', false);
-    
 
-
-    %% namefiles otherwise
-%     nameFiles = cellfun(@(x) strsplit(x, '\'), nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) x{end}, nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) x(1:end-7), nameFiles, 'UniformOutput', false);
-%     nameFiles = cellfun(@(x) strrep(x, '_', '-'), nameFiles, 'UniformOutput', false);
     
     rightPercentages = zeros(1, size(names, 2));
     for numName = 1:size(nameFiles, 2)
@@ -280,25 +298,30 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     auxLim = xlim;
     xlim([0 auxLim(2)])
     auxLim = ylim;
-    %ylim([0 100])
-    ylim([0 auxLim(2)])
     
-    legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)', 'Location', 'best');
-    
-%     ylabel('Percentage of hexagons', 'FontWeight', 'bold');
-%     
-%     if isempty(strfind(currentPath, 'Voronoi1')) == 0
-%         xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
-%         export_fig(h1, strcat('GDDRV_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
-%     else
-%         xlabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
-%         export_fig(h1, strcat('GDDH_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
-%     end
-
-    %% GDDRV vs GDDH
-    xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
-    ylabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
-    export_fig(strcat('GDDRV_GDDH', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
-
+    %%GDDRV vs GDDRH
+    if isequal(kindOfGraphics, 'GDDRV_GDDRH')
+        ylim([0 auxLim(2)])
+        
+        legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)', 'Location', 'best');
+        
+        xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
+        ylabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
+        export_fig(strcat('GDDRV_GDDH', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+    else
+        ylim([0 100])
+        
+        legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)', 'Location', 'best');
+        
+        ylabel('Percentage of hexagons', 'FontWeight', 'bold');
+        
+        if isempty(strfind(currentPath, 'Voronoi1')) == 0
+            xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
+            export_fig(h1, strcat('GDDRV_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+        else
+            xlabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
+            export_fig(h1, strcat('GDDH_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+        end
+    end
 end
 
