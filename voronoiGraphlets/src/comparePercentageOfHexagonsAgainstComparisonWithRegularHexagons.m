@@ -12,11 +12,14 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     namesToAppend = namesFinal;
     
     %total graphlets
-    totalGraphletsPath = strrep(currentPath, 'EveryFile', 'Total');
-    unifyDistances(totalGraphletsPath);
-    load(strcat(totalGraphletsPath, 'allDifferences.mat'))
+%     totalGraphletsPath = strrep(currentPath, 'EveryFile', 'Total');
+%     unifyDistances(totalGraphletsPath);
+%     load(strcat(totalGraphletsPath, 'allDifferences.mat'))
+    %%%%%Not really used! CARE!!!!!!
+    load(strcat('results\comparisons\Total\maxLength5WithoutJumps\AgainstHexagons\', 'allDifferences.mat'))
     differenceWithRegularHexagon = vertcat(differenceWithRegularHexagon', differenceWithRegularHexagonToAppend);
     names = {namesFinal{:}, namesToAppend{:}};
+    %%%%% END CARE!!!!
     if isempty(strfind(currentPath, 'maxLength5'))
         load('results\comparisons\EveryFile\percentageOfHexagons-Weighted_maxLength4.mat')
     else
@@ -208,7 +211,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
                     h(17, :) = plot(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
                 end
                 t1 = text(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), num2str(str2num(nameDiagram{3})));
-                t1.FontSize = 5;
+                t1.FontSize = 6;
                 t1.HorizontalAlignment = 'center';
                 t1.VerticalAlignment = 'middle';
             end
