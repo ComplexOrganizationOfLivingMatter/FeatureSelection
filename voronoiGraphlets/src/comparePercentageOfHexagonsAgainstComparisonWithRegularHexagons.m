@@ -4,7 +4,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     set(0,'DefaultAxesFontName', 'Helvetica-Narrow')
     clearvars -except currentPath
     unifyDistances(currentPath);
-%     load('results\comparisons\EveryFile\maxLength5\AgainstHexagons\allDifferences.mat' );
+%     load(strrep(strcat(currentPath, 'allDifferences.mat'), 'AgainstVoronoi1', 'AgainstHexagons'))
 %     nameFiles = namesFinal;
 %     percentageOfHexagons = differenceWithRegularHexagon';
     load(strcat(currentPath, 'allDifferences.mat'))
@@ -251,8 +251,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     ylim([0 100])
     %ylim([0 auxLim(2)])
     
-    hlegend1 = legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)');
-    hlegend1.Location = 'best';
+    legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)', 'Location', 'best');
     
     ylabel('Percentage of hexagons', 'FontWeight', 'bold');
     
