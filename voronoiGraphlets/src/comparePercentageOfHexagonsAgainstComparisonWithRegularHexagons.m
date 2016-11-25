@@ -130,16 +130,19 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             elseif isempty(strfind(names{i}, 'dWP')) == 0
                 h(5, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(5, :));
             elseif isempty(strfind(names{i}, 'disk')) == 0 %voronoiWeighted
-                if isempty(strfind(names{i}, 'Neighbours'))
-                    h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :));
-                else
-                    h(17, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :));
+                nameDiagram = strsplit(names{i}, '-');
+                if str2num(nameDiagram{6}) < 10 || mod(str2num(nameDiagram{6}), 5) == 0
+                    if isempty(strfind(names{i}, 'Neighbours'))
+                        h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :));
+                    else
+                        h(17, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(8, :));
+                    end
                 end
-    %             nameDiagram = strsplit(names{i}, '-');
-    %             t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(6));
-    %             t1.FontSize = 5;
-    %             t1.HorizontalAlignment = 'center';
-    %             t1.VerticalAlignment = 'middle';
+%                 nameDiagram = strsplit(names{i}, '-');
+%                 t1 = text(differenceWithRegularHexagon(i),percentageOfHexagons(i), nameDiagram(6));
+%                 t1.FontSize = 5;
+%                 t1.HorizontalAlignment = 'center';
+%                 t1.VerticalAlignment = 'middle';
             elseif isempty(strfind(names{i}, 'Case-III')) == 0
                 h(10, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(10, :));
             elseif isempty(strfind(names{i}, 'Case-II')) == 0
@@ -195,12 +198,19 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             h(5, :) = plot(mean(differenceWithRegularHexagon(meanImages)), 48.10, 'o', 'color', colors(5, :), 'MarkerFaceColor', colors(5, :));
         elseif isempty(strfind(namesTotalGraphlets{i}, 'disk')) == 0 %voronoiWeighted
             nameDiagram = strsplit(namesTotalGraphlets{i}, '-');
-            if isempty(strfind(namesTotalGraphlets{i}, 'Neighbours'))
-                meanImages = cellfun(@(x) isempty(strfind(x, 'disk')) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, 'Neighbours')) & isempty(strfind(x, 'totalGraphlets')), names);
-                h(7, :) = plot(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), 'o', 'color', colors(7, :), 'MarkerFaceColor', colors(7, :));
-            else
-                meanImages = cellfun(@(x) isempty(strfind(x, 'disk')) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, 'Neighbours')) == 0 & isempty(strfind(x, 'totalGraphlets')), names);
-                h(17, :) = plot(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
+            if str2num(nameDiagram{3}) < 10 || mod(str2num(nameDiagram{3}), 5) == 0
+                nameDiagram{3};
+                if isempty(strfind(namesTotalGraphlets{i}, 'Neighbours'))
+                    meanImages = cellfun(@(x) isempty(strfind(x, 'disk')) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, 'Neighbours')) & isempty(strfind(x, 'totalGraphlets')), names);
+                    h(7, :) = plot(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), 'o', 'color', colors(7, :), 'MarkerFaceColor', colors(7, :));
+                else
+                    meanImages = cellfun(@(x) isempty(strfind(x, 'disk')) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, 'Neighbours')) == 0 & isempty(strfind(x, 'totalGraphlets')), names);
+                    h(17, :) = plot(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), 'o', 'color', colors(8, :), 'MarkerFaceColor', colors(8, :));
+                end
+                t1 = text(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), num2str(str2num(nameDiagram{3})));
+                t1.FontSize = 5;
+                t1.HorizontalAlignment = 'center';
+                t1.VerticalAlignment = 'middle';
             end
         elseif isempty(strfind(namesTotalGraphlets{i}, 'Case-III')) == 0
             meanImages = cellfun(@(x) isempty(strfind(x, 'Case-III')) == 0 & isempty(strfind(x, 'totalGraphlets')), names);
