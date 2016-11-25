@@ -243,7 +243,6 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     
     %'BNA' remaining
     newNames = {'BCA', 'Eye', 'cNT', 'dWL', 'dWP', 'Voronoi', 'Voronoi weighted - Cancer cells', 'Voronoi Noise', 'Case II', 'Case III', 'Case IV', 'dMWP', 'Atrophy', 'Control Proliferative', 'Control No Proliferative', 'BNA', 'Voronoi weighted - Neighbours of cancer cells'};
-    hlegend1 = legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)', 'Location', 'best');
     
     
     auxLim = xlim;
@@ -252,14 +251,17 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     ylim([0 100])
     %ylim([0 auxLim(2)])
     
+    hlegend1 = legend(h(h(:, 1) > 0, 1), newNames(h(:, 1) > 0)');
+    hlegend1.Location = 'best';
+    
     ylabel('Percentage of hexagons', 'FontWeight', 'bold');
     
     if isempty(strfind(currentPath, 'Voronoi1')) == 0
         xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
-        export_fig(strcat('GDDRV_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+        export_fig(h1, strcat('GDDRV_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
     else
         xlabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
-        export_fig(strcat('GDDH_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+        export_fig(h1, strcat('GDDH_PercentageOfHexagons', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
     end
 
     %% GDDRV vs GDDH
