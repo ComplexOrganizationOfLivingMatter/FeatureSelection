@@ -36,8 +36,6 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
                 meanImages = cellfun(@(x) isempty(strfind(x, strjoin(nameDiagram(1:end-1), '-'))) == 0 & isempty(strfind(x, 'totalGraphlets')), nameFiles);
             end
             nameFiles = {names2{i}, nameFiles{:}};
-            names2{i}
-            mean(percentageOfHexagons(meanImages))
             percentageOfHexagons = [mean(percentageOfHexagons(meanImages)); percentageOfHexagons];
         end
     end
