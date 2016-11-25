@@ -296,7 +296,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     %% GDDRV vs GDDH
     xlabel('Graphlet degree distance random voronoi (GDDRV)', 'FontWeight', 'bold');
     ylabel('Graphlet degree distance-hexagons (GDDH)', 'FontWeight', 'bold');
-    export_fig(strcat('differenceGDDRV_GDDH', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
+    export_fig(strcat('GDDRV_GDDH', '-', strjoin(newNames(h(:, 1) > 0), '_')), '-pdf', '-r300', '-opengl');
 
 end
 
