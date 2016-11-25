@@ -171,8 +171,8 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
         if isempty(strfind(namesTotalGraphlets{i}, 'totalGraphlets')) == 0
             if isempty(strfind(namesTotalGraphlets{i}, 'voronoiNoise')) == 0
                 %             if isempty(strfind(names{i}, 'voronoiNoise-Image-10')) ~= 0
-                meanImages = cellfun(@(x) isempty(strfind(x, 'voronoiNoise')) == 0 & isempty(strfind(x, nameDiagram{2})) == 0 & isempty(strfind(x, 'totalGraphlets')), names);
                 nameDiagram = strsplit(namesTotalGraphlets{i}, '-');
+                meanImages = cellfun(@(x) isempty(strfind(x, 'voronoiNoise')) == 0 & isempty(strfind(x, nameDiagram{2})) == 0 & isempty(strfind(x, 'totalGraphlets')), names);
                 h(8, :) = plot(mean(differenceWithRegularHexagon(meanImages)), percentageOfHexagonsTotalGraphlets(i), 'o', 'color', graysFont (indices == str2num(nameDiagram{2}), :), 'MarkerFaceColor', graysFont (indices == str2num(nameDiagram{2}), :));
             end
         end
