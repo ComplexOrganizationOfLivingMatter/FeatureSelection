@@ -22,7 +22,7 @@ function [ ] = getSpecialIndividualCells( infoPath, outputPath, additionalDataPa
             for i = 1:length(nameVars)
                 especialCells = cells{i};
                 for numCell = 1:size(especialCells)
-                    finalOutputFile = strcat(outputPath, strjoin(fileNameSplitted(1:2), '_'), '_', nameVars{i}, '_' ,num2str(especialCells(numCell)), '.ndump2');
+                    finalOutputFile = strcat(outputPath, strjoin(fileNameSplitted(1:2), '_'), '_', nameVars{i}, '_' ,num2str(especialCells(numCell)), '_numNeighbours_', num2str(matrixGraphlets(especialCells(numCell), 1)),'.ndump2');
                     if exist(finalOutputFile, 'file') ~= 2
                         dlmwrite(finalOutputFile, matrixGraphlets(especialCells(numCell), :), ' ');
                     end
