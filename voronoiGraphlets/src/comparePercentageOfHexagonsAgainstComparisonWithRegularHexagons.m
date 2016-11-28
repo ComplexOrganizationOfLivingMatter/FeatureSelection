@@ -138,7 +138,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
     colors(15, :) = [0.0 0.0 0.0]; %Control Sim No Prol
     colors(14, :) = [0.4 0.0 0.0]; %Control Sim Prol
     colors(16, :) = [0.2 0.4 0.6]; %BNA
-    h1 = figure('units','normalized','outerposition',[0 0 1 1]);
+    h1 = figure('units','normalized','outerposition',[0 0 1 1], 'Color', [1 1 1]);
     h = zeros(numberOfTypes);
     hold on;
     indices = [1:20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700];
