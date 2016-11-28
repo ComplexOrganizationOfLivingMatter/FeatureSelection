@@ -482,44 +482,55 @@ comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\compar
 % end
 
 %% 8 initial graphics
-getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '');
+getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '', 'maxLength4');
+getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '', 'maxLength5');
 
 %MaxLength4 Only 11 without 8
 analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength4Only11Without8\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11Without8\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11Without8\AllAtrophy\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11Without8\Neighbours\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11Without8\CancerCells\'), 'gdda');
 
 
 %MaxLength4 Only 11
 analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength4Only11\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength4Only11\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength4Only11\AllAtrophy\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11\Neighbours\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength4Only11\CancerCells\'), 'gdda');
 
 
 %MaxLength5 without jumps
 analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5WithoutJumps\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5WithoutJumps\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5WithoutJumps\EveryFile\AllAtrophy\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5WithoutJumps\Neighbours\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5WithoutJumps\CancerCells\'), 'gdda');
 
 
 %MaxLength5
 analyzeGraphletDistances(strcat('results\distanceMatrix\biologicalImagesAndVoronoi\', 'maxLength5\EveryFile\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiNoise\', 'maxLength5\'), 'gdda');
 analyzeGraphletDistances(strcat('results\distanceMatrix\SickEpitheliums\', 'maxLength5\EveryFile\AllAtrophy\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5\Neighbours\'), 'gdda');
+analyzeGraphletDistances(strcat('results\distanceMatrix\voronoiWeighted\', 'maxLength5\CancerCells\'), 'gdda');
 
+%Total
+analyzeGraphletDistances(strcat('results\comparisons\Total\', 'maxLength5WithoutJumps\'), 'gdda');
 
 %comparisons
-comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11Without8\AgainstHexagons\' )
-comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11Without8\AgainstVoronoi1\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11Without8\AgainstHexagons\', '' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11Without8\AgainstVoronoi1\', '' )
 
 %comparisons
-comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11\AgainstHexagons\' )
-comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11\AgainstVoronoi1\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11\AgainstHexagons\' , '')
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength4Only11\AgainstVoronoi1\' , '')
 
 %comparisons
 comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5WithoutJumps\AgainstHexagons\' )
 comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5WithoutJumps\AgainstVoronoi1\' )
 
 %comparisons
-comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstHexagons\' )
-comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstVoronoi1\' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstHexagons\', '' )
+comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstVoronoi1\', '')
