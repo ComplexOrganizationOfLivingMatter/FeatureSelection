@@ -184,7 +184,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
 %                 h(5, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(5, :));
 % %             elseif isempty(strfind(names{i}, 'disk')) == 0 %voronoiWeighted
 % %                 nameDiagram = strsplit(names{i}, '-');
-% %                 if str2num(nameDiagram{6}) < 10 || mod(str2num(nameDiagram{6}), 5) == 0
+% %                 if (str2num(nameDiagram{3}) < 10 && str2num(nameDiagram{3}) > 3) || mod(str2num(nameDiagram{6}), 5) == 0
 % %                     if isempty(strfind(names{i}, 'Neighbours'))
 % %                         h(7, :) = plot(differenceWithRegularHexagon(i), percentageOfHexagons(i), 'o', 'color', colors(7, :));
 % %                     else
@@ -255,7 +255,7 @@ function [ ] = comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 
             h(5, :) = plot(mean(differenceWithRegularHexagon(meanImages)), 48.10, 'o', 'color', colors(5, :), 'MarkerFaceColor', colors(5, :));
         elseif isempty(strfind(namesTotalGraphlets{i}, 'disk')) == 0 %voronoiWeighted
             nameDiagram = strsplit(namesTotalGraphlets{i}, '-');
-            if str2num(nameDiagram{3}) < 10 || mod(str2num(nameDiagram{3}), 5) == 0
+            if (str2num(nameDiagram{3}) < 10 && str2num(nameDiagram{3}) > 3) || mod(str2num(nameDiagram{3}), 5) == 0
                 nameDiagram{3};
                 if isempty(strfind(namesTotalGraphlets{i}, 'Neighbours'))
                     meanImages = cellfun(@(x) isempty(strfind(x, 'disk')) == 0 & isempty(strfind(x, nameDiagram{3})) == 0 & isempty(strfind(x, 'Neighbours')) & isempty(strfind(x, 'totalGraphlets')), names);
