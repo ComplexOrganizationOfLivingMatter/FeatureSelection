@@ -74,7 +74,7 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
         mkdir(distanceDir, 'maxLength5\EveryFile');
     end
     
-    getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '', 'maxLength5');
+    %getPercentageOfHexagons('results\graphletResultsFiltered\allOriginal\', '', 'maxLength5');
 %     answer = 'n';
 %     while lower(answer) ~= 'y'
 %         answer = input('Are distances calculated? [y/n] ');
