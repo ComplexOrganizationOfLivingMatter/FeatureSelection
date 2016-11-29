@@ -534,3 +534,8 @@ comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\compar
 %comparisons
 comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstHexagons\', '' )
 comparePercentageOfHexagonsAgainstComparisonWithRegularHexagons( 'results\comparisons\EveryFile\maxLength5\AgainstVoronoi1\', '')
+
+
+%% INDIVIDUAL CELL COMPARISON
+
+analyzeGraphletDistances(strcat('results\comparisons\IndividualCells\', ''), 'gdda');
