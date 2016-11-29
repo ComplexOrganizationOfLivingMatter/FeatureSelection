@@ -61,6 +61,11 @@ function [  ] = pipelineGraphletsVoronoi( typeOfData )
    filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'finalValidCells', [], 'maxLength5');
 %     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength5\'), 'validCells', [], '');
 %     filterByNonValidCells(graphletResultsDir, strcat(validCellsDir, 'maxLength4\'), 'validCells', [], '');
+
+    %Individual cells
+    graphletResultsIndividual = strcat('results\graphletResultsIndividual\', typeOfData);
+    mkdir(graphletResultsIndividual);
+    getSpecialIndividualCells(graphletResultsDir, graphletResultsIndividual, dataDir);
     
     distanceDir = strcat('results\distanceMatrix\', typeOfData);
     if exist(distanceDir, 'dir') ~= 7
