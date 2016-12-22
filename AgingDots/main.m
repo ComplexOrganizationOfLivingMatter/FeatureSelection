@@ -22,7 +22,16 @@ imgInvalidBinary = im2bw(imgInvalid(:,:,1), 0.0);
 se = strel('disk', 15);
 imgInvalidBinaryDilated = imdilate(imgInvalidBinary, se);
 
+regions = regionprops(imgInvalidBinaryDilated, 'Centroid');
+centroid = fliplr(round(regions.Centroid));
+newImg(centroid(1), centroid(2)) = 1;
+centroidInit = min(lineCentroids);
+
+
 img_Cropped = imgInvalidBinaryDilated(round(size(img, 1) * 2/5:size(img, 1)),:, :);
+pixelsX = find(img_Cropped(1, :) == 1);
+point1OfLine = round(mean(pixelsX));
+point1OfLine = [point1OfLine, round(size(img, 1) * 2/5)];
 imgInvalid_L = bwlabel(img_Cropped, 8);
 
 endPoint = [size(rawImg, 1), size(rawImg, 2)];
@@ -33,21 +42,11 @@ for label = 1:2
     closestPixels = linePixels(distancesToTheEnd == min(distancesToTheEnd), :);
     closestPixels(1) = closestPixels(1) + round(size(img, 1) * 2/5);
     
-    actualPixel = closestPixels;
-    while isequal(actualPixel, endPoint) == 0
-        img2(actualPixel(1), actualPixel(2)) = 1;
-        nextPoint1 = [actualPixel(1) + 1, actualPixel(2)];
-        nextPoint2 = [actualPixel(1) - 1, actualPixel(2)];
-        nextPoint3 = [actualPixel(1), actualPixel(2) + 1];
-        nextPoint4 = [actualPixel(1), actualPixel(2) - 1];
-        newPoints = vertcat(nextPoint1, nextPoint2, nextPoint3, nextPoint4);
-        distance = pdist2(newPoints, endPoint);
-        actualPixel = newPoints(distance == min(distance), :)
-    end
+    
 end
 
 figure;
-imshow(img2);
+imshow(newImg);
 figure;
 imshow(imgInvalidBinaryDilated);
 
