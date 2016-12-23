@@ -1,53 +1,82 @@
 %% Developed by Pablo Vicente-Munuera and Pedro Gomez-Galvez
-rawImg = imread('E:\Pablo\PhD-miscelanious\AgingDots\data\3m\3-1.bmp');
+% rawImg = imread('E:\Pablo\PhD-miscelanious\AgingDots\data\raw\3m\3-1.bmp');
 img = rawImg(:, :, 1) - rawImg(:, :, 3);
-img2 = im2bw(img(:,:,1), 0.9);
-se = strel ('disk', 1);
-newImg = imerode(img2, se);
-imgRegions = regionprops(img2);
-
-imgAreas = vertcat(imgRegions.Area);
-imgCentroids = vertcat(imgRegions.Centroid);
-
-lineCentroids = round(imgCentroids(imgAreas < 4, :));
-
-newImg = zeros(size(img2, 2) , size(img2, 1));
-for i = 1:size(lineCentroids, 1)
-    newImg(lineCentroids(i, 2), lineCentroids(i, 1)) = 1;
-end
-
-%% get invalid area inside points
-imgInvalid = rawImg;
-imgInvalidBinary = im2bw(imgInvalid(:,:,1), 0.0);
-se = strel('disk', 15);
-imgInvalidBinaryDilated = imdilate(imgInvalidBinary, se);
-
-regions = regionprops(imgInvalidBinaryDilated, 'Centroid');
-centroid = fliplr(round(regions.Centroid));
-newImg(centroid(1), centroid(2)) = 1;
-centroidInit = min(lineCentroids);
+invalidArea = rawImg(:, :, 1) == 0 & rawImg(:, :, 3);
+img2 = im2bw(img(:,:,1), 0.8);
+ se = strel('disk', 1);
+imgEroded = imerode(img2, se);
 
 
-img_Cropped = imgInvalidBinaryDilated(round(size(img, 1) * 2/5:size(img, 1)),:, :);
-pixelsX = find(img_Cropped(1, :) == 1);
-point1OfLine = round(mean(pixelsX));
-point1OfLine = [point1OfLine, round(size(img, 1) * 2/5)];
-imgInvalid_L = bwlabel(img_Cropped, 8);
+ imgRegions = regionprops(imgEroded);
+ 
+% imgAreas = vertcat(imgRegions.Area);
+Centroids = round(vertcat(imgRegions.Centroid));
 
-endPoint = [size(rawImg, 1), size(rawImg, 2)];
-for label = 1:2
-    [row, col] = find(imgInvalid_L == label);
-    linePixels = horzcat(row, col);
-    distancesToTheEnd = pdist2(linePixels, endPoint);
-    closestPixels = linePixels(distancesToTheEnd == min(distancesToTheEnd), :);
-    closestPixels(1) = closestPixels(1) + round(size(img, 1) * 2/5);
+%Create centroids image and distance matrices for each centroid
+ ImgCentroids = zeros(size(img2, 2) , size(img2, 1));
+ 
+ distanceMatrix={};
+ 
+ %left region is label as 1, righ - 2 & top 3
+ for i = 1:size(Centroids, 1)
+    ImgCentroids(Centroids(i, 2), Centroids(i, 1)) = 1;
+     
+    mask=zeros(size(img2, 2) , size(img2, 1));
+    mask(Centroids(i, 2), Centroids(i, 1)) = 1;
+    distanceMatrix{i}=round(bwdist(mask));
+    
+    %find position of blue point
+    [~,Y]=find(invalidArea(Centroids(i, 2), :)==1);
+    
+    if isempty(Y)
+        regionLabel(i)=3;
+    elseif Y(1) > Centroids(i, 1)
+        regionLabel(i)=2;
+    elseif Y(1) < Centroids(i, 1)
+        regionLabel(i)=1;    
+    end
     
     
-end
+ end
 
-figure;
-imshow(newImg);
-figure;
-imshow(imgInvalidBinaryDilated);
+ % find blue max point as reference to calculate distance.
+ [X,Y]=find(invalidArea==1);
+ mask=zeros(size(img2, 2) , size(img2, 1));
+ mask(X(1),Y(1)) = 1;
+ distanceMatrixReference=round(bwdist(mask));
+ 
+ %create final distance matrix between dots
+ 
+ distMatrix=zeros(size(Centroids, 1));
+ 
+ for i = 1:size(Centroids, 1)
+     
+     distImg=distanceMatrix{i};
+     
+     for j = i+1:size(Centroids, 1)
+         
+         if (regionLabel(i)==1 && regionLabel(j)==2) || (regionLabel(i)==2 && regionLabel(j)==1)
+         
+             distMatrix(i,j)=distanceMatrixReference(Centroids(j, 2), Centroids(j, 1))+distanceMatrixReference(Centroids(i, 2), Centroids(i, 1));
+             distMatrix(j,i)=distanceMatrixReference(Centroids(j, 2), Centroids(j, 1))+distanceMatrixReference(Centroids(i, 2), Centroids(i, 1));
+                
+         else
+             distMatrix(i,j)=distImg(Centroids(j, 2), Centroids(j, 1)); 
+             distMatrix(j,i)=distImg(Centroids(j, 2), Centroids(j, 1)); 
+         end
+         
+     end
+     
+ end
+ 
+ 
+%     imshow(ImgCentroids)     
+%     for k=1:size(Centroids, 1)
+%         c=Centroids(k,:);
+%         text(c(1),c(2),sprintf('%d',k),'HorizontalAlignment','center','VerticalAlignment','middle','Color','Green','FontSize',10);
+%     end
+     
+     
 
+ 
 
