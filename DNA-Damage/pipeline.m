@@ -7,28 +7,16 @@ function [] = pipeline( )
     cd 'E:\Pablo\PhD-miscelanious\DNA-Damage\'
     allImages = getAllFiles('data/images/');
 
-    previousSerie = '';
     %A big number because of the final if of the for
     previousNumChannel = 20;
 
     imagesOfSerieByChannel = {};
     numChannel = 0;
-    for fileIndex = 1:size(allImages)
+    for fileIndex = 1:size(allImages, 1)
         fullPathImage = allImages{fileIndex};
         fileNameSplitted = strsplit(fullPathImage, '\');
         fileName = fileNameSplitted{end};
         dirName = fileNameSplitted{end-1};
-
-        %Check if it's another Serie of images
-        if isequal(previousSerie, fileName(1:9)) == 0
-            if isequal(previousSerie, '') == 0
-                outputDir = strcat('results\', dirName);
-                mkdir(outputDir);
-                save(strcat(outputDir, '\', previousSerie), 'imagesOfSerieByChannel');
-                imagesOfSerieByChannel = {};
-            end
-            previousSerie = fileName(1:9);
-        end
 
         img = imread(fullPathImage);
         img = im2double(img);
@@ -41,12 +29,31 @@ function [] = pipeline( )
         end
 
         if previousNumChannel < numChannel
-            imagesOfSerieByChannel{end, numChannel} = img(:,:, :);
+            imagesOfSerieByChannel{end, numChannel} = img(:,:, numChannel+1); %green
         else
-            imagesOfSerieByChannel{end+1, numChannel} = img(:,:, :);
+            imagesOfSerieByChannel{end+1, numChannel} = img(:,:, numChannel+1); %blue
         end
         previousNumChannel = numChannel;
-    end
+    
 
+        if fileIndex < size(allImages, 1)
+            fullPathNextSerie = allImages{fileIndex+1};
+            fileNameSplitted = strsplit(fullPathNextSerie, '\');
+            nextSerie = fileNameSplitted{end};
+            nextSerie = nextSerie(1:9);
+        else
+            nextSerie = '';
+        end
+        
+        %Check if it's another Serie of images
+        if isequal(nextSerie, fileName(1:9)) == 0
+            outputDir = strcat('results\', dirName);
+            mkdir(outputDir);
+            strcat(outputDir, '\', fileName(1:9))
+            save(strcat(outputDir, '\', fileName(1:9)), 'imagesOfSerieByChannel');
+            imagesOfSerieByChannel = {};
+            previousNumChannel = 20;
+        end
+    end
 end
 
