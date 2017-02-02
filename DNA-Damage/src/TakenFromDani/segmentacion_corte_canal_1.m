@@ -1,35 +1,31 @@
-function [Diapositiva,celulanovalida]=segmentacion_corte_canal_1(serie,canal,cell,rect,Diapositiva)
+function [Diapositiva,celulanovalida]=segmentacion_corte_canal_1(nameFile, canal, cell, rect, Diapositiva)
 %% Segmentacion por cortes y por celula del canal 1
 %Para ejecutar este codigo primero hay que ejecutar
 %segmentacion_cortes_canal_2
 
-% Variables utilizadas para guardar los datos
-canal=num2str(canal);
+%% load data
+load(nameFile);
 
-%% Datos
-nombre=strcat('Lectura_Serie_',serie);
-cd (nombre)
-nombre1=strcat('Lectura_Serie_',serie,'_ch1');
-load (nombre1)
-cd ..
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('segmentacion_Serie_',serie,'_ch_','2','_celula_',cell);
-load (n2)
-cd ..
-
+nameFileSplitted = strsplit(nameFile, '\');
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
+fichero=strcat(directory, '\segmentacion_ch_', num2str(canal+1),'_celula_', cell, '_', nameFileSplitted{end});
+load(fichero);
 
 proyb=proyeccionb;
-BWcelulas=masc_celulas;
-im=imagen;
-pl=planos;
+im=imagesOfSerieByChannel;
 Long=length(im);
+proyb=proyeccionb;
+BWcelulas=masc_celulas;
+pl=imagesOfSerieByChannel(:, canal+1);
 recorte=rect;
 
+
+canal=num2str(canal);
+
 %% Proyeccion de todos los planos
-proyecciong=pl{1,1};
+proyecciong=pl{1};
 for k=1:Long-1
-    maximo = max(proyecciong,pl{1,1+k});
+    maximo = max(proyecciong,pl{1+k});
     proyecciong=maximo;
 end
 %figure, imshow(proyecciong),title('Proyeccion de todo los planos')
@@ -135,40 +131,25 @@ if celulanovalida==0
     % subplot(1,2,1);imshow(proyb_rect);title('Proyeccion del plano azul')
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    stringres=strcat('Proyeccion_General_Plano-verde.tiff');
-    ncc=strcat('Imagenes_Serie_',serie,'_resultados');
-    if isdir(ncc)~=1
-        mkdir(ncc)
-    end
-    cd (ncc)
-    nccb=strcat('Celula_',cell);
-    if isdir(nccb)~=1
-        mkdir(nccb)
-    end
-    cd (nccb)
-    ncca=strcat('Imagenes_Serie_',serie,'_Proyeccion');
-    if isdir(ncca)~=1
-        mkdir(ncca)
-    end
-    cd (ncca)
+    fileNameNoExtension = strsplit(nameFileSplitted{end}, '.');
+    stringres=strcat(directory, '\Proyeccion_General_Plano-verde', fileNameNoExtension{1} ,'.tiff');
+    
     Diapositiva=Diapositiva+1;
     Diapositivach=num2str(Diapositiva);
     numeracion=strcat('-f',Diapositivach);
     print(numeracion,'-dtiff',stringres)
-    cd ..
-    cd ..
-    cd ..
+    
     aux1=zeros(recorte(4)+1,recorte(3)+1);
     
     for corte=1:Long
-        capa=imcrop(pl{1,corte},rect);
+        capa=imcrop(pl{corte},rect);
         capa=capa.*mascara_validatoria;
         h=fspecial('gaussian',[7 7], 1.5);
         capa=imfilter(capa,h);
         capa=capa.*mascara;
         umbral(corte)=graythresh(capa);
     end
-   % figure;plot(1:Long,umbral)
+    % figure;plot(1:Long,umbral)
     umbral_fin=findpeaks(umbral,'SORTSTR','descend');
     umbral_fin=umbral_fin(find(umbral_fin>0.03));
     umbral_fin=min(umbral_fin)*1.2;
@@ -176,7 +157,7 @@ if celulanovalida==0
     
     for corte=1:Long
         % Recorte de la celula
-        capa=imcrop(pl{1,corte},recorte);
+        capa=imcrop(pl{corte},recorte);
         capa=capa.*mascara_validatoria;
         h=fspecial('gaussian',[7 7], 1.5);
         capa=imfilter(capa,h);
@@ -216,10 +197,10 @@ if celulanovalida==0
         
         
         %Representaciones
-%             titulo=strcat('Picos de gH2AX sobre mascara en corte -', num2str(corte));
-%             figure;subplot(1,2,1),imshow(capa)
-%             subplot(1,2,2),imshow(MSK);title(titulo)
-%         
+        %             titulo=strcat('Picos de gH2AX sobre mascara en corte -', num2str(corte));
+        %             figure;subplot(1,2,1),imshow(capa)
+        %             subplot(1,2,2),imshow(MSK);title(titulo)
+        %
         mask_fosi{1,corte}=aux;
         mask_fosi_pico{1,corte}=MSK;
         
@@ -233,7 +214,7 @@ if celulanovalida==0
     mask=aux1;
     %figure;imshow(picos_proy);title('antes')
     picos_proy(mask==0)=0;
-   % figure;imshow(picos_proy);title('despues')
+    % figure;imshow(picos_proy);title('despues')
     
     PR=zeros(recorte(4)+1,recorte(3)+1);
     PR=PR+mask;
@@ -427,13 +408,10 @@ if celulanovalida==0
         end
     end
     Matriz_resultado{Med,1}=objeto;
-    nombre2=strcat('Datos_Serie_',serie,'_valores_intermedios');
-    if isdir(nombre2)~=1
-        mkdir(nombre2)
-    end
-    cd (nombre2)
-    fichero=strcat('segmentacion_Serie_',serie,'_ch_',canal,'_celula_',cell);
+    
+    fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', cell, '_', nameFileSplitted{end});
     save (fichero,'mascara_validatoria','proyeccionb','proy_bin_azul','masc_celulas','proyecciong','mask_fosi','mask_fosi_pico','MSK_general','Matriz_resultado','pos_seed','Bordes','BWcell','picos_proy')
-    cd ..
+    
+end
     
 end

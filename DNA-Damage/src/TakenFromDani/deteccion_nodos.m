@@ -1,13 +1,7 @@
-function deteccion_nodos(serie,canal,cell,rect)
+function deteccion_nodos(nameFile, canal, cell, rect)
 
 %% Deteccion de nodos dentro de objetos en plano verde
-canal=num2str(canal);
-cell=num2str(cell);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('segmentacion_Serie_',serie,'_ch_',canal,'_celula_',cell);
-load (n2)
-cd ..
+
 if Matriz_resultado{1,1}~=0
     n_obj=length(unique(cell2mat(Matriz_resultado(:,1))));
     n_datos=length(cell2mat(Matriz_resultado(:,1)));
@@ -220,8 +214,8 @@ if Matriz_resultado{1,1}~=0
             nodo_final{fila,2}=nodo{i_actual,2};
             fila=fila+1;
         elseif nodo{i_actual,4}>=umbral_redond
-            max=length(nodo{i_actual,2});
-            for k=1:max
+            max1=length(nodo{i_actual,2});
+            for k=1:max1
                 for j_recorre=1:fila-1
                     rep= find(nodo_final{j_recorre,2}==nodo{i_actual,2}(1,k));
                     if isempty(rep)==0
@@ -239,8 +233,8 @@ if Matriz_resultado{1,1}~=0
             end
             coinciden=0;
         else
-            max=length(nodo{i_actual,2});
-            for k=1:max
+            max1=length(nodo{i_actual,2});
+            for k=1:max1
                 for j_recorre=1:fila-1
                     rep= find(nodo_final{j_recorre,2}==nodo{i_actual,2}(1,k));
                     if isempty(rep)==0
@@ -251,7 +245,7 @@ if Matriz_resultado{1,1}~=0
                 end
             end
             if coinciden==0
-                for k=1:max
+                for k=1:max1
                     nodo_final{fila,1}=nodo{i_actual,1};
                     nodo_final{fila,2}=nodo{i_actual,2}(1,k);
                     fila=fila+1;
@@ -310,15 +304,10 @@ if Matriz_resultado{1,1}~=0
             num=num+1;
         end
     end
-else    
+else
     nodo_final{1,1}=0;
 end
-nombre2=strcat('Datos_Serie_',serie,'_valores_intermedios');
-    if isdir(nombre2)~=1
-        mkdir(nombre2)
-    end
-cd (nombre2)
-fichero=strcat('Deteccion_de_nodos_Serie_',serie,'_ch_',canal,'_celula_',cell);
-save (fichero,'Matriz_resultado','pos_seed','masc_celulas','mascara_validatoria','Bordes','BWcell','picos_proy','nodo_final')
-cd ..
 
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',canal,'_celula_',cell, '_', nameFileSplitted{end});
+save (fichero,'Matriz_resultado','pos_seed','masc_celulas','mascara_validatoria','Bordes','BWcell','picos_proy','nodo_final')
+end
