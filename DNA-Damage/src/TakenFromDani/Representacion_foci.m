@@ -1,12 +1,15 @@
-function Diapositiva=Representacion_foci(serie,cell,corte_max,rect,Diapositiva)
+function Diapositiva=Representacion_foci(nameFile, cell, rect, Diapositiva)
 
 %% DATOS DEL PLANO VERDE
-canal=num2str(1);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('Deteccion_de_nodos_Serie_',serie,'_ch_1_celula_',cell);
-load (n2)
-cd ..
+canal=num2str(0);
+
+load(nameFile);
+
+N_cortes = size(imagesOfSerieByChannel, 1);
+nameFileSplitted = strsplit(nameFile, '\');
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell, '_', nameFileSplitted{end});
+load(fichero);
 
 % Datos de medida de la imagen
 Tam_imagen_pix_x=1024; %pixeles
@@ -15,7 +18,7 @@ Tam_imagen_um_x=82.01; %umetro
 Tam_imagen_um_y=82.01; %umetro
 Height_recor=rect(4); %pixeles
 
-N_cortes=corte_max;
+
 Tam_imagen_um_z=0.21*N_cortes; %umetro
 
 % Pasamos las medidas de picos de foci de pixeles a micrometro
@@ -347,227 +350,14 @@ eje_x_blue=pos_seed_blue(:,1)*Rel_dist_x;
 eje_y_blue=pos_seed_blue(:,2)*Rel_dist_y;
 
 
-%% DATOS PARA EL PLANO ROJO
-
-canal=num2str(0);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('Deteccion_de_nodos_Serie_',serie,'_ch_0_celula_',cell);
-load (n2)
-cd ..
-if Matriz_resultado{1,1}~=0
-%     pos_seed=pos_seed';
-%     pos_seed=cell2mat(pos_seed);
-    eje_x_red=pos_seed(:,1)*Rel_dist_x;
-    eje_y_red=pos_seed(:,2)*Rel_dist_y;
-    eje_z_red=zeros(size(eje_x_red,1),1);
-    Tam_imagen_rect_um_y=Height_recor*Rel_dist_y;
-    
-    
-    
-    %% Introducimos componente z
-    %Vemos el numero de objetos detectados
-    Objetos=unique(cell2mat(Matriz_resultado(:,1)));
-    recorre=size(Matriz_resultado,1);
-    
-    %Asignamos a cada objeto el numero de picos asociados
-    clear picos
-    for i=1:length(Objetos)
-        nuevo=1;
-        for j=1:recorre
-            if Matriz_resultado{j,1}==i
-                tam=size(Matriz_resultado{j,4},2);
-                picos{i,1}(1,nuevo:nuevo-1+tam)=Matriz_resultado{j,4};
-                nuevo=nuevo+tam;
-            end
-        end
-        
-        
-        picos{i,1}=sort(unique(picos{i,1}'));
-        picos{i,1}=picos{i,1}(picos{i,1}~=0);
-    end
-    
-    
-    
-    % A cada pico se asigna corte primero y numero corte total
-    primera_vez=0;
-    cuenta=0;
-    
-    for i=1:length(Objetos)
-        npicos=length(picos{i,1});
-        for j=1:npicos
-            ind_pico=picos{i,1}(j,1);
-            for k=1:recorre
-                coin=find(Matriz_resultado{k,4}==ind_pico);
-                if isempty(coin)==0
-                    if Matriz_resultado{k,1}==i
-                        if primera_vez==0
-                            primera_vez=1;
-                            picos{i,1}(j,2)=Matriz_resultado{k,2};
-                        end
-                        cuenta=cuenta+1;
-                    end
-                    
-                end
-            end
-            picos{i,1}(j,3)=cuenta;
-            cuenta=0;
-            primera_vez=0;
-        end
-    end
-    
-    %Recopilamos picos , para que no se repitan
-    fila=1;
-    aux=picos(1,1);
-    obj_del_2=0;
-    
-    for i=2:size(picos,1)
-        coincidencia=0;
-        for j=1:length(aux)
-            if size(picos{i,1},1)==size(aux{j,1},1)
-                if picos{i,1}(:,1)==aux{j,1}(:,1)
-                    coincidencia=1;
-                    moment=j;
-                end
-            end
-        end
-        if coincidencia==0
-            aux(fila+1,:)=picos(i,1);
-            fila=fila+1;
-        elseif picos{i,1}(:,2)-aux{moment,1}(:,2)<=2
-            aux{moment,1}(:,3)=picos{i,1}(:,3)+aux{moment,1}(:,3)+1;
-            obj_detec=0;
-            for ll=1:size(picos,1)
-                if picos{ll,1}(:,1)==aux{moment,1}(:,1)
-                    if obj_detec==0
-                        obj_del_2=ll;
-                        obj_detec=1;
-                    end
-                end
-            end
-            obj_del=i; % Objeto a eliminar
-            for corre=1:size(Matriz_resultado,1)
-                if Matriz_resultado{corre,1}==obj_del
-                    Matriz_resultado{corre,1}=obj_del_2;
-                end
-            end
-            
-        else
-            if picos{i,1}(:,3)>=3 && aux{moment,1}(:,3)<3
-                aux{moment,1}= picos{i,1};
-                obj_detec=0;
-                for ll=1:size(picos,1)
-                    if picos{ll,1}(:,1)==aux{moment,1}(:,1)
-                        if obj_detec==0
-                            obj_del_2=ll;
-                            obj_detec=1;
-                        end
-                    end
-                end
-                obj_del=i; % Objeto a eliminar
-                aux_mr=Matriz_resultado;
-                count=0;
-                for corre=1:size(Matriz_resultado,1)
-                    if  obj_del_2==Matriz_resultado{corre,1}
-                        aux_mr(corre-count,:)=[];
-                        count=count+1;
-                    end
-                end
-                Matriz_resultado=aux_mr;
-                for corre=1:size(Matriz_resultado,1)
-                    if Matriz_resultado{corre,1}==obj_del
-                        Matriz_resultado{corre,1}=obj_del_2;
-                    end
-                end
-                
-            elseif picos{i,1}(:,3)<3 && aux{moment,1}(:,3)>=3
-                aux{moment,1}=aux{moment,1}; %Se queda igual
-                obj_del=i; % Objeto a eliminar
-                aux_mr=Matriz_resultado;
-                count=0;
-                for corre=1:size(Matriz_resultado,1)
-                    if obj_del==Matriz_resultado{corre,1}
-                        aux_mr(corre-count,:)=[];
-                        count=count+1;
-                    end
-                end
-                Matriz_resultado=aux_mr;
-            elseif picos{i,1}(:,3)>=3 && aux{moment,1}(:,3)>=3
-                aux(fila+1,:)=picos(i,1);
-                fila=fila+1;
-            elseif picos{i,1}(:,3)<3 && aux{moment,1}(:,3)<3
-                obj_detec=0;
-                for ll=1:size(picos,1)
-                    if picos{ll,1}(:,1)==aux{moment,1}(:,1)
-                        if obj_detec==0
-                            obj_del_2=ll;
-                            obj_detec=1;
-                        end
-                    end
-                end
-                for counter=moment+1:size(aux,1)
-                    aux{counter-1}=aux{counter};
-                end
-                aux(end)=[];
-                fila=fila-1;
-                
-                %%Reorganizamos Matriz resultado eliminando todos los objetos
-                %%que contengan ese pico
-                obj_del=i; % Objeto a eliminar
-                aux_mr=Matriz_resultado;
-                count=0;
-                for corre=1:size(Matriz_resultado,1)
-                    if obj_del==Matriz_resultado{corre,1} || obj_del_2==Matriz_resultado{corre,1}
-                        aux_mr(corre-count,:)=[];
-                        count=count+1;
-                    end
-                end
-                Matriz_resultado=aux_mr;
-            end
-        end
-    end
-    Matriz_resultado=sortrows(Matriz_resultado,[1]);
-    %Renumeramos matriz resultado en orden ascendente
-    numera=1;
-    Matriz_resultado{1,1}=1;
-    aux_mat=Matriz_resultado;
-    for corre=2:size(Matriz_resultado,1)
-        if Matriz_resultado{corre,1}==Matriz_resultado{corre-1,1}
-            aux_mat{corre,1}=numera;
-        else
-            numera=numera+1;
-            aux_mat{corre,1}=numera;
-            
-        end
-    end
-    Matriz_resultador=aux_mat;
-    picos=aux;
-    picosr=picos;
-    
-    %Asignamos altura z a cada pico en micrometro
-    
-    for i=1:size(picos,1)
-        npicos=size(picos{i,1},1);
-        for j=1:npicos
-            dist_ini=(picos{i,1}(j,2)-1)*Rel_dist_z;
-            dist=dist_ini+((picos{i,1}(j,3)/2)*Rel_dist_z);
-            eje_z_red(picos{i,1}(j,1),1)=dist;
-        end
-    end
-    Datos_objeto{2,1}=Matriz_resultador;
-else
-    eje_x_red=[];
-    eje_y_red=[];
-    eje_z_red=[];
-end
 %% DATOS PARA LOS NODOS VERDES
-canal=num2str(1);
+canal=num2str(0);
 cell=num2str(cell);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('Deteccion_de_nodos_Serie_',serie,'_ch_',canal,'_celula_',cell);
-load (n2)
-cd ..
+nameFileSplitted = strsplit(nameFile, '\');
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell, '_', nameFileSplitted{end});
+load(fichero);
+
 %%Reorganizamos nodos verdes eliminando nodos que pertenezcan a objetos
 %%eliminados
 picos=picosv;
@@ -619,95 +409,7 @@ for i=1:size(nodo_final,1)
 end
 nodo_verde=nodo_final;
 Datos_objeto{1,1}=Matriz_resultadov;
-%% DATOS PARA LOS NODOS ROJOS;
-canal=num2str(0);
-cell=num2str(cell);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('Deteccion_de_nodos_Serie_',serie,'_ch_',canal,'_celula_',cell);
-load (n2)
-cd ..
-if Matriz_resultado{1,1}~=0
-    %%Reorganizamos nodos verdes eliminando nodos que pertenezcan a objetos
-    %%eliminados
-    picos=picosr;
-    aux=nodo_final;
-    count=0;
-    for i=1:size(nodo_final,1)
-        coincidencia=0;
-        for j=1:size(picos,1)
-            if length(picos{j,1}(:,1))==length(nodo_final{i,2})
-                if (picos{j,1}(:,1))' == nodo_final{i,2}
-                    coincidencia=1;
-                    peak=nodo_final{i,2};
-                end
-            end
-        end
-        if coincidencia==0
-            aux(i-count,:)=[];
-            count=count+1;
-        else
-            for go=1:size(Matriz_resultador,1)
-                if length(Matriz_resultador{go,4})==length(peak)
-                    if Matriz_resultador{go,4}==peak
-                        objeto_renombrado=Matriz_resultador{go,1};
-                        break
-                    end
-                end
-            end
-                aux{i-count,1}=objeto_renombrado;
-        end
-    end
-    nodo_final=aux;
-    
-    pos_node=cell2mat({nodo_final{:,3}}');
-    eje_x_red_node=pos_node(:,1)*Rel_dist_x;
-    eje_y_red_node=pos_node(:,2)*Rel_dist_y;
-    eje_z_red_node=zeros(size(eje_x_red_node,1),1);
-    Tam_imagen_rect_um_y=Height_recor*Rel_dist_y;
-    
-    
-    
-    for i=1:size(nodo_final,1)
-        varz=zeros(1,length(nodo_final{i,2}));
-        for k=1:length(nodo_final{i,2})
-            varz(k)=eje_z_red(nodo_final{i,2}(1,k),1);
-        end
-        eje_z_red_node(i,1)=mean(varz);
-        nodo_final{i,4}=[eje_x_red_node(i,1) Tam_imagen_rect_um_y-eje_y_red_node(i,1) eje_z_red_node(i,1)];
-    end
-    nodo_rojo=nodo_final;
-    
-    
-    
-    
-    %% Asociacion de nodos verdes con nodos rojos
-    nodo_rojo(:,5)={[]};
-    nodo_verde(:,5)={[]};
-    for i=1:size(nodo_rojo,1)
-        centro_r=nodo_rojo{i,4};
-        asociacion{i,1}=centro_r;
-        dist_min=1000;
-        for j=1:size(nodo_verde,1)
-            centro_g=nodo_verde{j,4};
-            dist_eucli=sqrt(sum((centro_g-centro_r).^2));
-            if dist_eucli<=dist_min
-                dist_min=dist_eucli;
-                asociacion{i,2}=j;
-            end
-        end
-        nodo_rojo{i,5}=asociacion{i,2};
-        if isempty(nodo_verde{asociacion{i,2},5})==1
-            nodo_verde{asociacion{i,2},5}=i;
-        else
-            nodo_verde{asociacion{i,2},5}=[nodo_verde{asociacion{i,2},5} i];
-        end
-    end
-else
-    eje_x_red_node=[];
-    eje_y_red_node=[];
-    eje_z_red_node=[];
-end
+
 %%%%%%% Representaciones %%%%%%%%
 numg=12;
 numr=6;
@@ -729,7 +431,7 @@ color_nodos_rojos=[0.6 0 0];
 %
 figure;subplot(1,2,1),plot(eje_x_green,Tam_imagen_rect_um_y-eje_y_green,'.g','MarkerSize', numg)
 hold on;plot(eje_x_blue,Tam_imagen_rect_um_y-eje_y_blue,'.b')
-plot(eje_x_red,Tam_imagen_rect_um_y-eje_y_red,'.r','MarkerSize', numr);
+%plot(eje_x_red,Tam_imagen_rect_um_y-eje_y_red,'.r','MarkerSize', numr);
 axis ([ 0 rect(3)*Rel_dist_x 0 rect(4)*Rel_dist_y])
 naa=strcat('Serie-',serie,'-Cell-',cell,'-rgb-Proyeccion X-Y');
 title(naa)

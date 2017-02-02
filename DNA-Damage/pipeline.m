@@ -21,8 +21,8 @@ function [] = pipeline( )
             % %% Detection of green nodes
             deteccion_nodos(fullPathImage,0,cell,rect)
             % % %Representacion y almacenamiento de datos
-            Diapositiva=Representacion_foci(fullPathImage,cell,corte_max,rect,Diapositiva);
-            Diapositiva=Representacion_Heterocromatina(fullPathImage,cell,corte_max,rect,Diapositiva);
+            Diapositiva=Representacion_foci(fullPathImage, cell, rect, Diapositiva);
+            Diapositiva=Representacion_Heterocromatina(fullPathImage, cell, corte_max, rect, Diapositiva);
 
             Compro_foci_hetero(fullPathImage, cell, corte_max, rect, Diapositiva);
         end
