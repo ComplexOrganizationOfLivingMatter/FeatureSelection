@@ -19,6 +19,28 @@ TSNEClassification(WT_100, WT_120, 'WT_100', 'WT_120');
 TSNEClassification(CONT_100, CONT_120, 'CONT_100', 'CONT_120');
 TSNEClassification(G93A_100, G93A_120, 'G93A_100', 'G93A_120');
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 %Original
 PCA_2_cc_Original(WT_120, CONT_120, 'WT_120', 'CONT_120');
 PCA_2_cc_Original(WT_100, CONT_100, 'WT_100', 'CONT_100');
@@ -48,7 +70,7 @@ parfor i=2:size(names,2)
 end
 
 %--- NB ---%
-matrixChar = characteristicsRETGDDANormalizedWithClinicalInfo{:, 2:end};
-highInestability = cellfun(@(x) isequal('Alta', x), characteristicsRETGDDANormalizedWithClinicalInfo.Inestability);
-veryLowInestability = cellfun(@(x) isequal('Baja', x), characteristicsRETGDDANormalizedWithClinicalInfo.Inestability);
-PCA_2_cc_Original(matrixChar(veryLowInestability, :), matrixChar(veryLowInestability == 0, :), 'Muy baja', 'Rest');
+matrixChar = table2array(CharacteristicsGDDAAgainstControlUHR30012017(:, 3:end));
+matrixChar(matrixChar(:, :) == -1) = 0;
+class2 = cellfun(@(x) isequal('UHR', x), CharacteristicsGDDAAgainstControlUHR30012017.HighRisk);
+PCA_2_cc_Original(matrixChar(class2, :), matrixChar(class2 == 0, :), 'UHR', 'HR');
