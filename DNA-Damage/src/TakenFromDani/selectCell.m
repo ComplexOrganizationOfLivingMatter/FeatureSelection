@@ -10,14 +10,14 @@ cell=input('Introduzca el numero de la celula a capturar: ');
 cell=num2str(cell);
 
 im=imagesOfSerieByChannel;
-pl=planos;
+pl=imagesOfSerieByChannel(:, 2);
 [H,W,~]=size(im{1,1});
-Long=length(im);
+Long=size(im, 1);
 
 %% Proyeccion de todos los planos
 proyeccion=pl{1,1};
 for k=1:Long-1
-    maximo = max(proyeccion,pl{1,1+k});
+    maximo = max(proyeccion,pl{1+k});
     proyeccion=maximo;
 end
 

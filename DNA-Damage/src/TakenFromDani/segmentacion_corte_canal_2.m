@@ -4,16 +4,17 @@ function segmentacion_corte_canal_2(nameFile, canal,cell,rect)
 load(nameFile);
 
 
-canal=num2str(canal);
+im=imagesOfSerieByChannel;
+pl=imagesOfSerieByChannel(:, canal+1);
+[H,W,~]=size(im{1,1});
+Long=size(im, 1);
 
-im=imagen;
-pl=planos;
-Long=length(im);
+canal=num2str(canal);
 
 %% Proyeccion de todos los planos
 proyeccionb=pl{1,1};
 for k=1:Long-1
-    maximo = max(proyeccionb,pl{1,1+k});
+    maximo = max(proyeccionb,pl{1+k});
     proyeccionb=maximo;
 end
 proyb=proyeccionb;
@@ -85,7 +86,7 @@ proy_bin_azul=aux;
 
 %Umbral para detectar la heterocromatina de forma generalizada
 for corte=1:Long
-    capa=imcrop(pl{1,corte},rect);
+    capa=imcrop(pl{corte},rect);
     capa=capa.*mascara_validatoria;
     h=fspecial('gaussian',[7 7], 1.5);
     capa=imfilter(capa,h);
@@ -99,7 +100,7 @@ umbral_fin=umbral_fin*0.75;
 
 for corte=1:Long
     % Detecta la heterocromatina de una celula determinada en cada uno de los cortes
-    capa=imcrop(pl{1,corte},rect);
+    capa=imcrop(pl{corte},rect);
     capa=capa.*mascara_validatoria;
     capa=imadjust(capa,[0 max(max(capa))], [0 1]);
     h=fspecial('gaussian',[7 7], 1.5);
@@ -130,7 +131,7 @@ for corte=1:Long
     La=bwlabel(aux,8);
     med=unique(La);
     numobj=length(med)-1;
-    capa=imcrop(pl{1,corte},rect);
+    capa=imcrop(pl{corte},rect);
     capa=capa.*mascara_validatoria;
     %figure;imshow(capa)
     % Binarizo la imagen proyeccion
@@ -298,12 +299,11 @@ for fragmento=1:n_datos
 end
     
     
-    
-nombre2=strcat('Datos_Serie_',serie,'_valores_intermedios');
-if isdir(nombre2)~=1
-    mkdir(nombre2)
+nameFileSplitted = strsplit(nameFile, '\');
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
+if isdir(directory)~=1
+    mkdir(directory)
 end
-cd (nombre2)
-fichero=strcat('segmentacion_Serie_',serie,'_ch_',canal,'_celula_',cell);
+fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', cell, '_', nameFileSplitted{end});
 save (fichero,'mascara_validatoria','proyeccionb','proyb_rect','proy_bin_azul','mask_Hetero','Matriz_resultado','masc_celulas','Bordes','BWcell')
-cd ..
+
