@@ -16,7 +16,7 @@ function [] = pipeline( )
 
         Diapositiva=0;
         segmentacion_corte_canal_2(fullPathImage,1,cell,rect);
-        [cellnoval, Diapositiva] = segmentacion_corte_canal_1(fullPathImage,0,cell,rect);
+        [Diapositiva, cellnoval] = segmentacion_corte_canal_1(fullPathImage,0,cell,rect, Diapositiva);
         if cellnoval==0
             % %% Detection of green nodes
             deteccion_nodos(fullPathImage,0,cell,rect)
