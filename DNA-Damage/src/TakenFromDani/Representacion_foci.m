@@ -7,6 +7,8 @@ load(nameFile);
 
 N_cortes = size(imagesOfSerieByChannel, 1);
 nameFileSplitted = strsplit(nameFile, '\');
+nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
+nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
 fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell, '_', nameFileSplitted{end});
 load(fichero);
@@ -433,7 +435,7 @@ figure;subplot(1,2,1),plot(eje_x_green,Tam_imagen_rect_um_y-eje_y_green,'.g','Ma
 hold on;plot(eje_x_blue,Tam_imagen_rect_um_y-eje_y_blue,'.b')
 %plot(eje_x_red,Tam_imagen_rect_um_y-eje_y_red,'.r','MarkerSize', numr);
 axis ([ 0 rect(3)*Rel_dist_x 0 rect(4)*Rel_dist_y])
-naa=strcat('Serie-',serie,'-Cell-',cell,'-rgb-Proyeccion X-Y');
+naa=strcat(nameFileSplittedNoExtension,'-Cell-',cell,'-rgb-Proyeccion X-Y');
 title(naa)
 xlabel('Eje x'),
 ylabel('Eje y'),
@@ -444,41 +446,25 @@ hold off
 subplot(1,2,2),plot(eje_x_green_node,Tam_imagen_rect_um_y-eje_y_green_node,'.','Color',color_nodos_verdes,'MarkerSize', numg)
 hold on;plot(eje_x_blue,Tam_imagen_rect_um_y-eje_y_blue,'.b')
 
-plot(eje_x_red_node,Tam_imagen_rect_um_y-eje_y_red_node,'.','Color',color_nodos_rojos,'MarkerSize', numr)
-nab=strcat('Serie-',serie,'-Cell-',cell,'-nodos-Proyeccion X-Y');
+%plot(eje_x_red_node,Tam_imagen_rect_um_y-eje_y_red_node,'.','Color',color_nodos_rojos,'MarkerSize', numr)
+nab=strcat(nameFileSplittedNoExtension,'-Cell-',cell,'-nodos-Proyeccion X-Y');
 title(nab)
 axis ([ 0 rect(3)*Rel_dist_x 0 rect(4)*Rel_dist_y])
 xlabel('Eje x'),
 ylabel('Eje y'),
 grid on
 hold off
-nombre=strcat('Serie_',serie,'_cell_',cell);
-stringres=strcat(nombre,'_rgb_Proyeccion_X-Y.tiff');
-nac=strcat('Imagenes_Serie_',serie,'_resultados');
-if isdir(nac)~=1
-    mkdir(nac)
-end
-cd (nac)
-nacb=strcat('Celula_',cell);
-cd (nacb)
-naca=strcat('Imagenes_Serie_',serie,'_Nodos');
-if isdir(naca)~=1
-    mkdir(naca)
-end
-cd (naca)
+nombre=strcat(nameFileSplittedNoExtension,'_cell_',cell);
+stringres=strcat(directory, '\', nombre,'_rgb_Proyeccion_X-Y.tiff');
 Diapositiva=Diapositiva+1;
 Diapositivach=num2str(Diapositiva);
 numeracion=strcat('-f',Diapositivach);
 print(numeracion,'-dtiff',stringres)
-cd ..
-cd ..
-cd ..
 % 
 % 
 figure;subplot(1,2,1),plot(eje_x_green,eje_z_green,'.g','MarkerSize', numg)
 hold on;plot(planoxz,eje_z_cont,'b')
-plot(eje_x_red,eje_z_red,'.r','MarkerSize', numr)
-nba=strcat('Serie-',serie,'-Cell-',cell,'-rgb-Proyeccion X-Z');
+nba=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-rgb-Proyeccion X-Z');
 title(nba)
 axis ([ 0 rect(3)*Rel_dist_x 0 N_cortes*Rel_dist_z])
 xlabel('Eje x'),
@@ -487,41 +473,25 @@ grid on
 hold off
 subplot(1,2,2),plot(eje_x_green_node,eje_z_green_node,'.','Color',color_nodos_verdes,'MarkerSize', numg)
 hold on;plot(planoxz,eje_z_cont,'b')
-plot(eje_x_red_node,eje_z_red_node,'.','Color',color_nodos_rojos,'MarkerSize', numr)
-nbb=strcat('Serie-',serie,'-Cell-',cell,'-nodos-Proyeccion X-Z');
+nbb=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-nodos-Proyeccion X-Z');
 title(nbb)
 axis ([ 0 rect(3)*Rel_dist_x 0 N_cortes*Rel_dist_z])
 xlabel('Eje x'),
 ylabel('Eje z'),
 grid on
 hold off
-nombre=strcat('Serie_',serie,'_cell_',cell);
-stringres=strcat(nombre,'_rgb_Proyeccion_X-Z.tiff');
-nbc=strcat('Imagenes_Serie_',serie,'_resultados');
-if isdir(nbc)~=1
-    mkdir(nbc)
-end
-cd (nbc)
-nbcb=strcat('Celula_',cell);
-cd (nbcb)
-nbca=strcat('Imagenes_Serie_',serie,'_Nodos');
-if isdir(nbca)~=1
-    mkdir(nbca)
-end
-cd (nbca)
+nombre=strcat(nameFileSplittedNoExtension,'_cell_',cell);
+stringres=strcat(directory, '\', nombre,'_rgb_Proyeccion_X-Z.tiff');
+
 Diapositiva=Diapositiva+1;
 Diapositivach=num2str(Diapositiva);
 numeracion=strcat('-f',Diapositivach);
 print(numeracion,'-dtiff',stringres)
-cd ..
-cd ..
-cd ..
-
 
 figure;subplot(1,2,1),plot(Tam_imagen_rect_um_y-eje_y_green,eje_z_green,'.g','MarkerSize', numg)
 hold on;plot(planoyz,eje_z_cont,'b')
-plot(Tam_imagen_rect_um_y-eje_y_red,eje_z_red,'.r','MarkerSize', numr)
-nca=strcat('Serie-',serie,'-Cell-',cell,'-rgb-Proyeccion Y-Z');
+
+nca=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-rgb-Proyeccion Y-Z');
 title(nca)
 axis ([ 0 rect(4)*Rel_dist_y 0 N_cortes*Rel_dist_z])
 xlabel('Eje y'),
@@ -531,34 +501,20 @@ hold off
 
 subplot(1,2,2),plot(Tam_imagen_rect_um_y-eje_y_green_node,eje_z_green_node,'.','Color',color_nodos_verdes,'MarkerSize', numg)
 hold on;plot(planoyz,eje_z_cont,'b')
-plot(Tam_imagen_rect_um_y-eje_y_red_node,eje_z_red_node,'.','Color',color_nodos_rojos,'MarkerSize', numr)
-ncb=strcat('Serie-',serie,'-Cell-',cell,'-nodos-Proyeccion Y-Z');
+
+ncb=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-nodos-Proyeccion Y-Z');
 title(ncb)
 axis ([ 0 rect(4)*Rel_dist_y 0 N_cortes*Rel_dist_z])
 xlabel('Eje y'),
 ylabel('Eje z'),
 grid on
 hold off
-stringres=strcat(nombre,'_rgb_Proyeccion_Y-Z.tiff');
-ncc=strcat('Imagenes_Serie_',serie,'_resultados');
-if isdir(ncc)~=1
-    mkdir(ncc)
-end
-cd (ncc)
-nccb=strcat('Celula_',cell);
-cd (nccb)
-ncca=strcat('Imagenes_Serie_',serie,'_Nodos');
-if isdir(ncca)~=1
-    mkdir(ncca)
-end
-cd (ncca)
+stringres=strcat(directory, '\', nombre,'_rgb_Proyeccion_Y-Z.tiff');
+
 Diapositiva=Diapositiva+1;
 Diapositivach=num2str(Diapositiva);
 numeracion=strcat('-f',Diapositivach);
 print(numeracion,'-dtiff',stringres)
-cd ..
-cd ..
-cd ..
 
 
 
@@ -570,12 +526,6 @@ for i=1:(size(nodo_verde,1))
     NV{i,2}=nodo_verde{i,4};
 end
 
-if Matriz_resultado{1,1}~=0
-    for i=1:(size(nodo_rojo,1))
-        NR{i,1}=i;
-        NR{i,2}=nodo_rojo{i,4};
-    end
-end
 Distancia=zeros(size(NV,1));
 
 %%Calculamos distancia de cada nodo al resto de nodos ..... PARA LOS VERDES
@@ -586,120 +536,42 @@ for i=1:size(NV,1)
   end
 end
 
-if Matriz_resultado{1,1}~=0
-    for i=1:size(NR,1)
-        for j=1:size(NR,1)
-            DistanciaR(i,j)=sqrt(sum((NR{i,2}-NR{j,2}).^2));
-        end
-    end
-end
 [Bv DistanciaV]=sort(DistanciaV,2);
 DistanciaV(:,1)=[];
 Bv(:,1)=[];
 Pesos_g=Bv;
-if Matriz_resultado{1,1}~=0
-    [Br DistanciaR]=sort(DistanciaR,2);
-    DistanciaR(:,1)=[];
-    Br(:,1)=[];
-    Pesos_r=Br;
-end
+
 color_nodos_verdes=[0 0.5 0];
-color_nodos_rojos=[0.5 0 0];
 tamg=25;
 tamr=25;
-nombre2=strcat('Serie_',serie,'_celula_',cell);
-noun=strcat('Imagenes_Serie_',serie,'_resultados');
-names=strcat('Celula_',cell);
-if isdir(noun)~=1
-    mkdir(noun)
-end
+nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+
 [h iteracion_ver Conectividad_dir_ver Conectividad_dir_k_1_ver Conectividad_dir_k_2_ver Conectividad]=Representacion_network(NV,12,DistanciaV,color_nodos_verdes,tamg);
-cd (noun)
-cd (names)
-nombre2=strcat('Serie_',serie,'_celula_',cell);
-nouna=strcat('Imagenes_Serie_',serie,'_Network');
-if isdir(nouna)~=1
-    mkdir(nouna)
-end
-cd (nouna)
+
+
 Diapositiva=Diapositiva+1;
-stringres=strcat(nombre2,'_network_green_XY.jpg');
+stringres=strcat(directory, '\',nombre2,'_network_green_XY.jpg');
 saveas(h,stringres)
-cd ..
-cd ..
-cd ..
+
+
 [h ,~, ~]=Representacion_network(NV,13,DistanciaV,color_nodos_verdes,tamg);
-cd (noun)
-cd (names)
-cd (nouna)
+
 Diapositiva=Diapositiva+1;
-stringres=strcat(nombre2,'_network_green_XZ.jpg');
+stringres=strcat(directory, '\',nombre2,'_network_green_XZ.jpg');
 saveas(h,stringres)
-cd ..
-cd ..
-cd ..
+
 [h ,~ ,~]=Representacion_network(NV,23,DistanciaV,color_nodos_verdes,tamg);
-cd (noun)
-cd (names)
-cd (nouna)
+
 Diapositiva=Diapositiva+1;
-stringres=strcat(nombre2,'_network_green_YZ.jpg');
+stringres=strcat(directory, '\',nombre2,'_network_green_YZ.jpg');
 saveas(h,stringres)
-cd ..
-cd ..
-cd ..
+
 [h ,~ ,~]=Representacion_network(NV,123,DistanciaV,color_nodos_verdes,tamg);
-cd (noun)
-cd (names)
-cd (nouna)
+
 Diapositiva=Diapositiva+1;
-stringres=strcat(nombre2,'_network_green_3D.jpg');
+stringres=strcat(directory, '\',nombre2,'_network_green_3D.jpg');
 saveas(h,stringres)
-cd ..
-cd ..
-cd ..
-if Matriz_resultado{1,1}~=0
-    [h, iteracion_roj, Conectividad_dir_roj , ~ , ~, Conectividad]=Representacion_network(NR,12,DistanciaR,color_nodos_rojos,tamr);
-    cd (noun)
-    cd (names)
-    cd (nouna)
-    Diapositiva=Diapositiva+1;
-    stringres=strcat(nombre2,'_network_red_XY.jpg');
-    saveas(h,stringres)
-    cd ..
-    cd ..
-    cd ..
-    [h, ~ ,~]=Representacion_network(NR,13,DistanciaR,color_nodos_rojos,tamr);
-    cd (noun)
-    cd (names)
-    cd (nouna)
-    Diapositiva=Diapositiva+1;
-    stringres=strcat(nombre2,'_network_red_XZ.jpg');
-    saveas(h,stringres)
-    cd ..
-    cd ..
-    cd ..
-    [h, ~, ~]=Representacion_network(NR,23,DistanciaR,color_nodos_rojos,tamr);
-    cd (noun)
-    cd (names)
-    cd (nouna)
-    Diapositiva=Diapositiva+1;
-    stringres=strcat(nombre2,'_network_red_YZ.jpg');
-    saveas(h,stringres)
-    cd ..
-    cd ..
-    cd ..
-    [h, ~ ,~]=Representacion_network(NR,123,DistanciaR,color_nodos_rojos,tamr);
-    cd (noun)
-    cd (names)
-    cd (nouna)
-    Diapositiva=Diapositiva+1;
-    stringres=strcat(nombre2,'_network_red.jpg');
-    saveas(h,stringres)
-    cd ..
-    cd ..
-    cd ..
-end
+
 if Matriz_resultado{1,1}~=0
     for i=1:size(nodo_verde,1)
         for j=1:6
@@ -716,27 +588,7 @@ if Matriz_resultado{1,1}~=0
             end
         end
     end
-    for i=1:size(nodo_rojo,1)
-        for j=1:5
-            if j==1
-                Datos{2,1}{i,j}=i;
-            elseif j==2
-                Datos{2,1}{i,j}=nodo_rojo{i,4};
-            elseif j==3
-                Datos{2,1}{i,j}=nodo_rojo{i,5};
-            elseif j==4
-                Datos{2,1}{i,j}=nodo_rojo{i,1};
-            elseif j==5
-                Datos{2,1}{i,j}=nodo_rojo{i,2};
-            end
-        end
-    end
 else
-    iteracion_roj=0;
-    Conectividad_dir_roj=0;
-    DistanciaR=0;
-    Pesos_r=0;
-    NR=0;
      for i=1:size(nodo_verde,1)
         for j=1:6
             if j==1
@@ -754,17 +606,16 @@ else
     end
     
 end
-name=strcat('Datos_Serie_',serie,'_resultados');
-if isdir(name)~=1
-    mkdir(name)
-end
-cd (name)
+
 if Matriz_resultado{1,1}==0
     Matriz_resultador=Matriz_resultado;
 end
-nombre2=strcat('Serie_',serie,'_celula_',cell);
-stringres=strcat(nombre2,'_results.mat');
+
+nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+stringres=strcat(directory, '\', nombre2,'_results.mat');
 save (stringres,'Datos', 'Matriz_resultadov','Matriz_resultador','Datos_objeto','iteracion_ver','iteracion_roj','Conectividad','Conectividad_dir_ver','Conectividad_dir_k_1_ver','Conectividad_dir_k_2_ver','Conectividad_dir_roj','DistanciaV','DistanciaR','Pesos_g','Pesos_r','NV','NR','eje_x_red_node','eje_y_red_node','eje_z_red_node','eje_x_green_node','eje_y_green_node','eje_z_green_node')
-cd ..
+
+end
+
 
 
