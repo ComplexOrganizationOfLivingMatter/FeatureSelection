@@ -3,6 +3,7 @@ function [] = pipeline( )
 %   Detailed explanation goes here
 %
 %   Developed by Pablo Vicente-Munuera
+    
 
     cd 'E:\Pablo\PhD-miscelanious\DNA-Damage\'
     extractImages();
@@ -10,6 +11,8 @@ function [] = pipeline( )
     allFiles = getAllFiles('results\images\');
     
     for numFile = 1:size(allFiles, 1)
+        close all
+        allFiles{numFile}
         fullPathImage = allFiles{numFile};
         
         [cell,rect]=selectCell(fullPathImage);
@@ -22,9 +25,9 @@ function [] = pipeline( )
             deteccion_nodos(fullPathImage,0,cell,rect)
             % % %Representacion y almacenamiento de datos
             Diapositiva=Representacion_foci(fullPathImage, cell, rect, Diapositiva);
-            Diapositiva=Representacion_Heterocromatina(fullPathImage, cell, corte_max, rect, Diapositiva);
+            Diapositiva=Representacion_Heterocromatina(fullPathImage, cell, rect, Diapositiva);
 
-            Compro_foci_hetero(fullPathImage, cell, corte_max, rect, Diapositiva);
+            Compro_foci_hetero(fullPathImage, cell, rect, Diapositiva);
         end
     end
 end

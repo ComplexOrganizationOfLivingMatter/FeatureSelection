@@ -151,7 +151,7 @@ if celulanovalida==0
     end
     % figure;plot(1:Long,umbral)
     umbral_fin=findpeaks(umbral,'SORTSTR','descend');
-    umbral_fin=umbral_fin(find(umbral_fin>0.03));
+    umbral_fin=umbral_fin(umbral_fin>0.03);
     umbral_fin=min(umbral_fin)*1.2;
     
     

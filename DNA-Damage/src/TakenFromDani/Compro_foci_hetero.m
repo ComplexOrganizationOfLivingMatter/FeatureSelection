@@ -1,18 +1,20 @@
-function Compro_foci_hetero(serie,cell,corte_max,rect,Diapositiva)
+function Compro_foci_hetero(nameFile,cell,rect,Diapositiva)
 
 %% DATOS DEL PLANO AZUL
-canal=num2str(2);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('segmentacion_Serie_',serie,'_ch_',canal,'_celula_',cell);
-load (n2)
-cd ..
+nameFileSplitted = strsplit(nameFile, '\');
+nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
+nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
 
-n=strcat('Datos_Serie_',serie,'_resultados');
-cd (n)
-n2=strcat('Serie_',serie,'_celula_',cell,'_results');
-load (n2)
-cd ..
+canal=num2str(1);
+fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', cell, '_', nameFileSplitted{end});
+load(fichero);
+
+nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+stringres=strcat(directory, '\', nombre2,'_results.mat');
+load(stringres);
+
+corte_max = size(Bordes, 1);
 
 
 
@@ -72,11 +74,7 @@ end
 dibujo(num_hetero_um,2);
 %% DATOS DEL PLANO VERDE
 canal=num2str(1);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('Deteccion_de_nodos_Serie_',serie,'_ch_1_celula_',cell);
-load (n2)
-cd ..
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell, '_', nameFileSplitted{end});
 
 objeto=1;
 Pos_x=[];

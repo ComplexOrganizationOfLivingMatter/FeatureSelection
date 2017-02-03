@@ -351,6 +351,205 @@ pos_seed_blue = cell2mat(pos_seed_blue);
 eje_x_blue=pos_seed_blue(:,1)*Rel_dist_x;
 eje_y_blue=pos_seed_blue(:,2)*Rel_dist_y;
 
+if Matriz_resultado{1,1}~=0
+    
+    
+    %% Introducimos componente z
+    %Vemos el numero de objetos detectados
+    Objetos=unique(cell2mat(Matriz_resultado(:,1)));
+    recorre=size(Matriz_resultado,1);
+    
+    %Asignamos a cada objeto el numero de picos asociados
+    clear picos
+    for i=1:length(Objetos)
+        nuevo=1;
+        for j=1:recorre
+            if Matriz_resultado{j,1}==i
+                tam=size(Matriz_resultado{j,4},2);
+                picos{i,1}(1,nuevo:nuevo-1+tam)=Matriz_resultado{j,4};
+                nuevo=nuevo+tam;
+            end
+        end
+        
+        
+        picos{i,1}=sort(unique(picos{i,1}'));
+        picos{i,1}=picos{i,1}(picos{i,1}~=0);
+    end
+    
+    
+    
+    % A cada pico se asigna corte primero y numero corte total
+    primera_vez=0;
+    cuenta=0;
+    
+    for i=1:length(Objetos)
+        npicos=length(picos{i,1});
+        for j=1:npicos
+            ind_pico=picos{i,1}(j,1);
+            for k=1:recorre
+                coin=find(Matriz_resultado{k,4}==ind_pico);
+                if isempty(coin)==0
+                    if Matriz_resultado{k,1}==i
+                        if primera_vez==0
+                            primera_vez=1;
+                            picos{i,1}(j,2)=Matriz_resultado{k,2};
+                        end
+                        cuenta=cuenta+1;
+                    end
+                    
+                end
+            end
+            picos{i,1}(j,3)=cuenta;
+            cuenta=0;
+            primera_vez=0;
+        end
+    end
+    
+    %Recopilamos picos , para que no se repitan
+    fila=1;
+    aux=picos(1,1);
+    obj_del_2=0;
+    
+    for i=2:size(picos,1)
+        coincidencia=0;
+        for j=1:length(aux)
+            if size(picos{i,1},1)==size(aux{j,1},1)
+                if picos{i,1}(:,1)==aux{j,1}(:,1)
+                    coincidencia=1;
+                    moment=j;
+                end
+            end
+        end
+        if coincidencia==0
+            aux(fila+1,:)=picos(i,1);
+            fila=fila+1;
+        elseif picos{i,1}(:,2)-aux{moment,1}(:,2)<=2
+            aux{moment,1}(:,3)=picos{i,1}(:,3)+aux{moment,1}(:,3)+1;
+            obj_detec=0;
+            for ll=1:size(picos,1)
+                if picos{ll,1}(:,1)==aux{moment,1}(:,1)
+                    if obj_detec==0
+                        obj_del_2=ll;
+                        obj_detec=1;
+                    end
+                end
+            end
+            obj_del=i; % Objeto a eliminar
+            for corre=1:size(Matriz_resultado,1)
+                if Matriz_resultado{corre,1}==obj_del
+                    Matriz_resultado{corre,1}=obj_del_2;
+                end
+            end
+            
+        else
+            if picos{i,1}(:,3)>=3 && aux{moment,1}(:,3)<3
+                aux{moment,1}= picos{i,1};
+                obj_detec=0;
+                for ll=1:size(picos,1)
+                    if picos{ll,1}(:,1)==aux{moment,1}(:,1)
+                        if obj_detec==0
+                            obj_del_2=ll;
+                            obj_detec=1;
+                        end
+                    end
+                end
+                obj_del=i; % Objeto a eliminar
+                aux_mr=Matriz_resultado;
+                count=0;
+                for corre=1:size(Matriz_resultado,1)
+                    if  obj_del_2==Matriz_resultado{corre,1}
+                        aux_mr(corre-count,:)=[];
+                        count=count+1;
+                    end
+                end
+                Matriz_resultado=aux_mr;
+                for corre=1:size(Matriz_resultado,1)
+                    if Matriz_resultado{corre,1}==obj_del
+                        Matriz_resultado{corre,1}=obj_del_2;
+                    end
+                end
+                
+            elseif picos{i,1}(:,3)<3 && aux{moment,1}(:,3)>=3
+                aux{moment,1}=aux{moment,1}; %Se queda igual
+                obj_del=i; % Objeto a eliminar
+                aux_mr=Matriz_resultado;
+                count=0;
+                for corre=1:size(Matriz_resultado,1)
+                    if obj_del==Matriz_resultado{corre,1}
+                        aux_mr(corre-count,:)=[];
+                        count=count+1;
+                    end
+                end
+                Matriz_resultado=aux_mr;
+            elseif picos{i,1}(:,3)>=3 && aux{moment,1}(:,3)>=3
+                aux(fila+1,:)=picos(i,1);
+                fila=fila+1;
+            elseif picos{i,1}(:,3)<3 && aux{moment,1}(:,3)<3
+                obj_detec=0;
+                for ll=1:size(picos,1)
+                    if picos{ll,1}(:,1)==aux{moment,1}(:,1)
+                        if obj_detec==0
+                            obj_del_2=ll;
+                            obj_detec=1;
+                        end
+                    end
+                end
+                for counter=moment+1:size(aux,1)
+                    aux{counter-1}=aux{counter};
+                end
+                aux(end)=[];
+                fila=fila-1;
+                
+                %%Reorganizamos Matriz resultado eliminando todos los objetos
+                %%que contengan ese pico
+                obj_del=i; % Objeto a eliminar
+                aux_mr=Matriz_resultado;
+                count=0;
+                for corre=1:size(Matriz_resultado,1)
+                    if obj_del==Matriz_resultado{corre,1} || obj_del_2==Matriz_resultado{corre,1}
+                        aux_mr(corre-count,:)=[];
+                        count=count+1;
+                    end
+                end
+                Matriz_resultado=aux_mr;
+            end
+        end
+    end
+    Matriz_resultado=sortrows(Matriz_resultado,[1]);
+    %Renumeramos matriz resultado en orden ascendente
+    numera=1;
+    Matriz_resultado{1,1}=1;
+    aux_mat=Matriz_resultado;
+    for corre=2:size(Matriz_resultado,1)
+        if Matriz_resultado{corre,1}==Matriz_resultado{corre-1,1}
+            aux_mat{corre,1}=numera;
+        else
+            numera=numera+1;
+            aux_mat{corre,1}=numera;
+            
+        end
+    end
+    Matriz_resultador=aux_mat;
+    picos=aux;
+    picosr=picos;
+    
+    %Asignamos altura z a cada pico en micrometro
+    
+    for i=1:size(picos,1)
+        npicos=size(picos{i,1},1);
+        for j=1:npicos
+            dist_ini=(picos{i,1}(j,2)-1)*Rel_dist_z;
+            dist=dist_ini+((picos{i,1}(j,3)/2)*Rel_dist_z);
+            %eje_z_red(picos{i,1}(j,1),1)=dist;
+        end
+    end
+    Datos_objeto{2,1}=Matriz_resultador;
+else
+    eje_x_red=[];
+    eje_y_red=[];
+    eje_z_red=[];
+end
+
 
 %% DATOS PARA LOS NODOS VERDES
 canal=num2str(0);
@@ -411,6 +610,48 @@ for i=1:size(nodo_final,1)
 end
 nodo_verde=nodo_final;
 Datos_objeto{1,1}=Matriz_resultadov;
+
+if Matriz_resultado{1,1}~=0
+    %%Reorganizamos nodos verdes eliminando nodos que pertenezcan a objetos
+    %%eliminados
+    picos=picosr;
+    aux=nodo_final;
+    count=0;
+    for i=1:size(nodo_final,1)
+        coincidencia=0;
+        for j=1:size(picos,1)
+            if length(picos{j,1}(:,1))==length(nodo_final{i,2})
+                if (picos{j,1}(:,1))' == nodo_final{i,2}
+                    coincidencia=1;
+                    peak=nodo_final{i,2};
+                end
+            end
+        end
+        if coincidencia==0
+            aux(i-count,:)=[];
+            count=count+1;
+        else
+            for go=1:size(Matriz_resultador,1)
+                if length(Matriz_resultador{go,4})==length(peak)
+                    if Matriz_resultador{go,4}==peak
+                        objeto_renombrado=Matriz_resultador{go,1};
+                        break
+                    end
+                end
+            end
+                aux{i-count,1}=objeto_renombrado;
+        end
+    end
+    nodo_final=aux;
+    
+    pos_node=cell2mat({nodo_final{:,3}}');
+
+    nodo_verde(:,5)={[]};
+else
+    eje_x_red_node=[];
+    eje_y_red_node=[];
+    eje_z_red_node=[];
+end
 
 %%%%%%% Representaciones %%%%%%%%
 numg=12;
@@ -613,7 +854,7 @@ end
 
 nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
 stringres=strcat(directory, '\', nombre2,'_results.mat');
-save (stringres,'Datos', 'Matriz_resultadov','Matriz_resultador','Datos_objeto','iteracion_ver','iteracion_roj','Conectividad','Conectividad_dir_ver','Conectividad_dir_k_1_ver','Conectividad_dir_k_2_ver','Conectividad_dir_roj','DistanciaV','DistanciaR','Pesos_g','Pesos_r','NV','NR','eje_x_red_node','eje_y_red_node','eje_z_red_node','eje_x_green_node','eje_y_green_node','eje_z_green_node')
+save (stringres,'Datos', 'Matriz_resultadov','Matriz_resultador','Datos_objeto','iteracion_ver','Conectividad','Conectividad_dir_ver','Conectividad_dir_k_1_ver','Conectividad_dir_k_2_ver','DistanciaV','Pesos_g','NV','eje_x_green_node','eje_y_green_node','eje_z_green_node')
 
 end
 

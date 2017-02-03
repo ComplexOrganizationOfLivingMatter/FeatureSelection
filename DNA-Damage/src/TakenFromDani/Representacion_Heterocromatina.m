@@ -1,18 +1,20 @@
-function [Diapositiva]=Representacion_Heterocromatina(serie,cell,corte_max,rect,Diapositiva)
+function [Diapositiva]=Representacion_Heterocromatina(nameFile,cell,rect,Diapositiva)
 
 %% DATOS DEL PLANO AZUL
-canal=num2str(2);
-n=strcat('Datos_Serie_',serie,'_valores_intermedios');
-cd (n)
-n2=strcat('segmentacion_Serie_',serie,'_ch_',canal,'_celula_',cell);
-load (n2)
-cd ..
+nameFileSplitted = strsplit(nameFile, '\');
+nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
+nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
 
-n=strcat('Datos_Serie_',serie,'_resultados');
-cd (n)
-n2=strcat('Serie_',serie,'_celula_',cell,'_results');
-load (n2)
-cd ..
+canal=num2str(1);
+fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', cell, '_', nameFileSplitted{end});
+load(fichero);
+
+nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+stringres=strcat(directory, '\', nombre2,'_results.mat');
+load(stringres);
+
+corte_max = size(Bordes, 1);
 
 
 
@@ -81,55 +83,16 @@ ylabel('Eje Y')
 zlabel('Eje Z')
 
 title('Relacion Heterocromatina con picos gH2AX');
-stringres=strcat('Proyeccion_General_3D_FOCI-VERDE.tiff');
-ncc=strcat('Imagenes_Serie_',serie,'_resultados');
-if isdir(ncc)~=1
-    mkdir(ncc)
-end
-cd (ncc)
-nccb=strcat('Celula_',cell);
-cd (nccb)
-ncca=strcat('Imagenes_Serie_',serie,'_Representacion-3D');
-if isdir(ncca)~=1
-    mkdir(ncca)
-end
-cd (ncca)
+stringres=strcat(directory, '\', nameFileSplittedNoExtension, 'Proyeccion_General_3D_FOCI-VERDE.tiff');
+
 Diapositiva=Diapositiva+1;
 Diapositivach=num2str(Diapositiva);
 numeracion=strcat('-f',Diapositivach);
 print(numeracion,'-dtiff',stringres)
-cd ..
-cd ..
-cd ..
 
-if length(eje_x_red_node)~=0
-    
-    dibujo(num_hetero_um,2);
-    hold on;plot3(eje_x_red_node,Tam_imagen_rect_um_y-eje_y_red_node,eje_z_red_node,'.','Color',color_nodos_rojos,'MarkerSize', numr)
-    xlabel('Eje X')
-    ylabel('Eje Y')
-    zlabel('Eje Z')
-    
-    title('Relacion Heterocromatina con picos de 53BP1');
-    stringres=strcat('Proyeccion_General_3D_FOCI-ROJO.tiff');
-    cd (ncc)
-    cd (nccb)
-    cd (ncca)
-    Diapositiva=Diapositiva+1;
-    Diapositivach=num2str(Diapositiva);
-    numeracion=strcat('-f',Diapositivach);
-    print(numeracion,'-dtiff',stringres)
-    cd ..
-    cd ..
-    cd ..
-end
 
-name=strcat('Datos_Serie_',serie,'_resultados_heterocromatina');
-if isdir(name)~=1
-    mkdir(name)
-end
-cd (name)
-nombre2=strcat('Serie_',serie,'_celula_',cell);
-stringres=strcat(nombre2,'_hetero_results.mat');
+nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+stringres=strcat(directory, '\', nombre2,'_hetero_results.mat');
 save (stringres,'Matriz_resultado','Pos_x','Pos_y','Pos_z','num_hetero','num_hetero_um')
-cd ..
+
+end
