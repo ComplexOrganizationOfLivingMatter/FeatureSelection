@@ -73,8 +73,9 @@ for i=1:objeto
 end
 dibujo(num_hetero_um,2);
 %% DATOS DEL PLANO VERDE
-canal=num2str(1);
+canal=num2str(0);
 fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell, '_', nameFileSplitted{end});
+load(fichero);
 
 objeto=1;
 Pos_x=[];
@@ -112,3 +113,11 @@ for i=1:objeto
     num_foci_verde_um{i}(:,3)=(num_foci_verde{i}(:,3)-1)*Rel_dist_z;
 end
 dibujo(num_foci_verde_um,1);
+
+stringres=strcat(directory, '\', nameFileSplittedNoExtension, 'Proyeccion_General_3D_FOCI-VERDE-2.tiff');
+savefig(strcat(directory, '\', nameFileSplittedNoExtension, 'Proyeccion_General_3D_FOCI-VERDE-2'));
+
+Diapositiva=Diapositiva+1;
+Diapositivach=num2str(Diapositiva);
+numeracion=strcat('-f',Diapositivach);
+print(numeracion,'-dtiff',stringres)
