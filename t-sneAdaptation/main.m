@@ -71,7 +71,10 @@ end
 
 %--- NB ---%
 uiopen('D:\Pablo\Neuroblastoma\Results\graphletsCount\NuevosCasos\Analysis\Characteristics_GDDA_AgainstControl_RiskWithWeights_24_02_2017.csv',1)
-matrixChar = table2array(CharacteristicsGDDAAgainstControlRiskWithWeights24022017(:, 3:end));
+matrixChar = table2array(CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201(:, 3:end));
 matrixChar(matrixChar(:, :) == -1) = 0;
-class2 = cellfun(@(x) isequal('NoRisk', x), CharacteristicsGDDAAgainstControlRiskWithWeights24022017.Risk);
-PCA_2_cc_Original(matrixChar(class2, :), matrixChar(class2 == 0, :), 'HR', 'NoRisk');
+class2 = cellfun(@(x) isequal('Alta', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
+class1 = cellfun(@(x) isequal('Media', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
+class3 = cellfun(@(x) isequal('Baja', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
+class4 = cellfun(@(x) isequal('Muy baja', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
+PCA_2_cc_Original(matrixChar(class2, :), matrixChar(class4, :), 'Alta', 'Muy baja');
