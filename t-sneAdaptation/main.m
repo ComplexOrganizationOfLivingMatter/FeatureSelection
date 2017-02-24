@@ -70,7 +70,8 @@ parfor i=2:size(names,2)
 end
 
 %--- NB ---%
-matrixChar = table2array(CharacteristicsGDDAAgainstControlUHR30012017(:, 3:end));
+uiopen('D:\Pablo\Neuroblastoma\Results\graphletsCount\NuevosCasos\Analysis\Characteristics_GDDA_AgainstControl_RiskWithWeights_24_02_2017.csv',1)
+matrixChar = table2array(CharacteristicsGDDAAgainstControlRiskWithWeights24022017(:, 3:end));
 matrixChar(matrixChar(:, :) == -1) = 0;
-class2 = cellfun(@(x) isequal('UHR', x), CharacteristicsGDDAAgainstControlUHR30012017.HighRisk);
-PCA_2_cc_Original(matrixChar(class2, :), matrixChar(class2 == 0, :), 'UHR', 'HR');
+class2 = cellfun(@(x) isequal('NoRisk', x), CharacteristicsGDDAAgainstControlRiskWithWeights24022017.Risk);
+PCA_2_cc_Original(matrixChar(class2, :), matrixChar(class2 == 0, :), 'HR', 'NoRisk');
