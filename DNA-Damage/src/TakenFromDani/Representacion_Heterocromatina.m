@@ -83,8 +83,8 @@ ylabel('Eje Y')
 zlabel('Eje Z')
 
 title('Relacion Heterocromatina con picos gH2AX');
-stringres=strcat(directory, '\', nameFileSplittedNoExtension, '_cell_', num2str(numCell), '_Proyeccion_General_3D_FOCI-VERDE.tiff');
-savefig(strcat(directory, '\', nameFileSplittedNoExtension, '_cell_', num2str(numCell), 'Proyeccion_General_3D_FOCI-VERDE'));
+stringres=strcat(directory, '\', 'Cell_', num2str(numCell), '_Proyeccion_General_3D_FOCI-VERDE.tiff');
+savefig(strcat(directory, '\', 'Cell_', num2str(numCell), 'Proyeccion_General_3D_FOCI-VERDE'));
 
 Diapositiva=Diapositiva+1;
 Diapositivach=num2str(Diapositiva);

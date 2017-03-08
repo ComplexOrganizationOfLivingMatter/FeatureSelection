@@ -1,4 +1,4 @@
-function [numCell,rect] = selectCell(fileName)
+function [numCell,rect] = selectCell(fileName, numCell)
 %Developed by Daniel Sanchez-Gutierrez
 %Function known as recorte
 %
@@ -9,8 +9,7 @@ nameFileSplitted = strsplit(fileName, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
 nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 
-numCell=input('Introduzca el numero de la celula a capturar: ');
-numCell=num2str(numCell);
+
 
 im=imagesOfSerieByChannel;
 pl=imagesOfSerieByChannel(:, 2);

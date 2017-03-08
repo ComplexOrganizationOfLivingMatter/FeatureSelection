@@ -23,11 +23,11 @@ function [] = pipeline( )
         if isdir(directory)~=1
             mkdir(directory)
         end
-        [numCell,rect]=selectCell(fullPathImage);
-        
-       
-        firstOuputFile = strcat(directory, '\', 'cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2');
+        numCell=input('Introduzca el numero de la celula a capturar: ');
+        numCell=num2str(numCell);
+        firstOuputFile = strcat(directory, '\', 'Cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2.tiff');
         if exist(firstOuputFile, 'file') ~= 2
+            [numCell,rect]=selectCell(fullPathImage, numCell);
             Diapositiva=0;
             segmentacion_corte_canal_2(fullPathImage,1,numCell,rect);
             [Diapositiva, cellnoval] = segmentacion_corte_canal_1(fullPathImage,0,numCell,rect, Diapositiva);

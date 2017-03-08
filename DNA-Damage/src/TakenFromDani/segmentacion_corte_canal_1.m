@@ -145,7 +145,7 @@ if celulanovalida==0
     
     for corte=1:Long
         capa=imcrop(pl{corte},rect);
-        capa=capa.*mascara_validatoria;
+        capa=capa .* mascara_validatoria;
         h=fspecial('gaussian',[7 7], 1.5);
         capa=imfilter(capa,h);
         capa=capa.*mascara;
@@ -154,7 +154,12 @@ if celulanovalida==0
     % figure;plot(1:Long,umbral)
     umbral_fin=findpeaks(umbral,'SORTSTR','descend');
     umbral_fin=umbral_fin(umbral_fin>0.03);
-    umbral_fin=min(umbral_fin)*1.2;
+    
+    if (min(umbral_fin) <= 0.7)
+        umbral_fin = min(umbral_fin)*1.2;
+    else
+        umbral_fin = min(umbral_fin);
+    end
     
     
     for corte=1:Long
@@ -166,6 +171,7 @@ if celulanovalida==0
         capa=capa.*mascara;
         
         % Binarizamos la imagen
+
         BW=im2bw(capa,umbral_fin);
         %figure, imshow(BW),title('Binarizamos la imagen')
         
