@@ -304,6 +304,6 @@ function segmentacion_corte_canal_2(nameFile, canal,numCell,rect)
     nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
     directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
     
-    fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell);
+    fichero=strcat(directory, '\segmentacion_ch_', canal,'-Cell_', numCell);
     save (fichero,'mascara_validatoria','proyeccionb','proyb_rect','proy_bin_azul','mask_Hetero','Matriz_resultado','masc_celulas','Bordes','BWcell')
 end
