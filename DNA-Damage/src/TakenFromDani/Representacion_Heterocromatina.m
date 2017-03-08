@@ -1,4 +1,4 @@
-function [Diapositiva]=Representacion_Heterocromatina(nameFile,cell,rect,Diapositiva)
+function [Diapositiva]=Representacion_Heterocromatina(nameFile,numCell,rect,Diapositiva)
 
 %% DATOS DEL PLANO AZUL
 nameFileSplitted = strsplit(nameFile, '\');
@@ -7,10 +7,10 @@ nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
 
 canal=num2str(1);
-fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', cell, '_', nameFileSplitted{end});
+fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell, '_', nameFileSplitted{end});
 load(fichero);
 
-nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+nombre2=strcat(nameFileSplittedNoExtension, '_celula_',numCell);
 stringres=strcat(directory, '\', nombre2,'_results.mat');
 load(stringres);
 
@@ -83,7 +83,7 @@ ylabel('Eje Y')
 zlabel('Eje Z')
 
 title('Relacion Heterocromatina con picos gH2AX');
-stringres=strcat(directory, '\', nameFileSplittedNoExtension, 'Proyeccion_General_3D_FOCI-VERDE.tiff');
+stringres=strcat(directory, '\', nameFileSplittedNoExtension, '_cell_', num2str(numCell), '_Proyeccion_General_3D_FOCI-VERDE.tiff');
 savefig(strcat(directory, '\', nameFileSplittedNoExtension, 'Proyeccion_General_3D_FOCI-VERDE'));
 
 Diapositiva=Diapositiva+1;
@@ -92,7 +92,7 @@ numeracion=strcat('-f',Diapositivach);
 print(numeracion,'-dtiff',stringres)
 
 
-nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+nombre2=strcat(nameFileSplittedNoExtension, '_celula_',numCell);
 stringres=strcat(directory, '\', nombre2,'_hetero_results.mat');
 save (stringres,'Matriz_resultado','Pos_x','Pos_y','Pos_z','num_hetero','num_hetero_um')
 
