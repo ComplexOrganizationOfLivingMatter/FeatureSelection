@@ -4,13 +4,13 @@ function Compro_foci_hetero(nameFile,numCell,rect,Diapositiva)
 nameFileSplitted = strsplit(nameFile, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
 nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
-directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
 
 canal=num2str(1);
-fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell, '_', nameFileSplitted{end});
+fichero=strcat(directory, '\segmentacion_ch_', canal,'-Cell-', numCell, '.mat');
 load(fichero);
 
-nombre2=strcat(nameFileSplittedNoExtension, '_celula_',numCell);
+nombre2=strcat('Cell-',numCell);
 stringres=strcat(directory, '\', nombre2,'_results.mat');
 load(stringres);
 
@@ -74,7 +74,7 @@ end
 dibujo(num_hetero_um,2);
 %% DATOS DEL PLANO VERDE
 canal=num2str(0);
-fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',numCell, '_', nameFileSplitted{end});
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'-Cell-',numCell);
 load(fichero);
 
 objeto=1;
@@ -114,8 +114,8 @@ for i=1:objeto
 end
 dibujo(num_foci_verde_um,1);
 
-stringres=strcat(directory, '\', nameFileSplittedNoExtension,'_cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2.tiff');
-savefig(strcat(directory, '\', nameFileSplittedNoExtension, '_cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2'));
+stringres=strcat(directory, '\', 'Cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2.tiff');
+savefig(strcat(directory, '\', 'Cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2'));
 
 Diapositiva=Diapositiva+1;
 Diapositivach=num2str(Diapositiva);

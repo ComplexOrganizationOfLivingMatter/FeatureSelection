@@ -4,13 +4,13 @@ function [Diapositiva]=Representacion_Heterocromatina(nameFile,numCell,rect,Diap
 nameFileSplitted = strsplit(nameFile, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
 nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
-directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
 
 canal=num2str(1);
-fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell, '_', nameFileSplitted{end});
+fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell);
 load(fichero);
 
-nombre2=strcat(nameFileSplittedNoExtension, '_celula_',numCell);
+nombre2=strcat('Cell-',numCell);
 stringres=strcat(directory, '\', nombre2,'_results.mat');
 load(stringres);
 
@@ -92,7 +92,7 @@ numeracion=strcat('-f',Diapositivach);
 print(numeracion,'-dtiff',stringres)
 
 
-nombre2=strcat(nameFileSplittedNoExtension, '_celula_',numCell);
+nombre2=strcat('Cell_',numCell);
 stringres=strcat(directory, '\', nombre2,'_hetero_results.mat');
 save (stringres,'Matriz_resultado','Pos_x','Pos_y','Pos_z','num_hetero','num_hetero_um')
 

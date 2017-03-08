@@ -8,6 +8,7 @@ load(nameFile);
 
 nameFileSplitted = strsplit(nameFile, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
+nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
 fichero=strcat(directory, '\segmentacion_ch_', num2str(canal+1),'_celula_', numCell);
 load(fichero);

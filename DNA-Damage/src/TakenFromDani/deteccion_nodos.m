@@ -3,8 +3,9 @@ function deteccion_nodos(nameFile, canal, cell, rect)
 %% Deteccion de nodos dentro de objetos en plano verde
 nameFileSplitted = strsplit(nameFile, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
-directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplittedNoExtension, '\', nameFileSplitted{3});
-fichero=strcat(directory, '\segmentacion_ch_', num2str(canal) ,'_celula_', cell);
+nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
+fichero=strcat(directory, '\segmentacion_ch_', num2str(canal) ,'_celula_', cell, '.mat');
 load(fichero);
 
 if Matriz_resultado{1,1}~=0

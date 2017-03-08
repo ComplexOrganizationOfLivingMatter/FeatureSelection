@@ -26,7 +26,7 @@ function [] = pipeline( )
         [numCell,rect]=selectCell(fullPathImage);
         
        
-        firstOuputFile = strcat(directory, '\', cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2');
+        firstOuputFile = strcat(directory, '\', 'cell_',numCell, '_', 'Proyeccion_General_3D_FOCI-VERDE-2');
         if exist(firstOuputFile, 'file') ~= 2
             Diapositiva=0;
             segmentacion_corte_canal_2(fullPathImage,1,numCell,rect);
