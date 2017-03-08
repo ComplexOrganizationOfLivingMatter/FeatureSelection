@@ -1,13 +1,16 @@
-function [cell,rect] = selectCell(fileName)
+function [numCell,rect] = selectCell(fileName)
 %Developed by Daniel Sanchez-Gutierrez
 %Function known as recorte
 %
 % Modified by Pablo Vicente-Muneura
 
 load (fileName)
+nameFileSplitted = strsplit(nameFile, '\');
+nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
+nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 
-cell=input('Introduzca el numero de la celula a capturar: ');
-cell=num2str(cell);
+numCell=input('Introduzca el numero de la celula a capturar: ');
+numCell=num2str(numCell);
 
 im=imagesOfSerieByChannel;
 pl=imagesOfSerieByChannel(:, 2);
@@ -34,5 +37,6 @@ fcn = makeConstrainToRectFcn('imrect',[limite W-limite],[limite H-limite]);
 api.setPositionConstraintFcn(fcn);
 %setResizable(h,0)
 pause
-[~, rect] = imcrop(proy,floor(api.getPosition())-1);
+[imageCropped, rect] = imcrop(proy,floor(api.getPosition())-1);
+save('\segmentation\image', nameFileSplittedNoExtension, 'Cell_', numCell, '.png', imageCropped)
 close;
