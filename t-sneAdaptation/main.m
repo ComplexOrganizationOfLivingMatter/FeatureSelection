@@ -70,11 +70,14 @@ parfor i=2:size(names,2)
 end
 
 %--- NB ---%
-uiopen('D:\Pablo\Neuroblastoma\Results\graphletsCount\NuevosCasos\Analysis\Characteristics_GDDA_AgainstControl_RiskWithWeights_24_02_2017.csv',1)
-matrixChar = table2array(CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201(:, 3:end));
+%uiopen('D:\Pablo\Neuroblastoma\Results\graphletsCount\NuevosCasos\Analysis\Characteristics_GDDA_AgainstControl_RiskWithWeights_24_02_2017.csv',1)
+matrix2 = CharacteristicsGDDAAgainstControlInestability0sInsteadOf1s30012;
+matrixChar = table2array(matrix2(:, 3:end));
 matrixChar(matrixChar(:, :) == -1) = 0;
-class2 = cellfun(@(x) isequal('Alta', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
-class1 = cellfun(@(x) isequal('Media', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
-class3 = cellfun(@(x) isequal('Baja', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
-class4 = cellfun(@(x) isequal('Muy baja', x), CharacteristicsGDDAAgainstControlInestabilityWithWeights2402201.Inestabilidad);
-PCA_2_cc_Original(matrixChar(class2, :), matrixChar(class4, :), 'Alta', 'Muy baja');
+class2 = cellfun(@(x) isequal('Alta', x), matrix2.Inestability);
+% class1 = cellfun(@(x) isequal('Media', x), matrix2.Inestabilidad);
+% class3 = cellfun(@(x) isequal('Baja', x), matrix2.Inestabilidad);
+% class4 = cellfun(@(x) isequal('Muy baja', x), matrix2.Inestabilidad);
+%class1 = cellfun(@(x) isequal('NoHR', x), matrix2.Risk);
+%PCA_2_cc_Original(matrixChar(class1, :), matrixChar(class1 == 0, :), 'NoRisk', 'HighRisk');
+PCA_2_cc_Original(matrixChar(class2 == 0, :), matrixChar(class2, :), 'Rest', 'Alta');

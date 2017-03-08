@@ -5,7 +5,7 @@ function [] = pipeline( )
 %   Developed by Pablo Vicente-Munuera
     
 
-    cd 'E:\Pablo\PhD-miscelanious\DNA-Damage\'
+    cd 'D:\Pablo\PhD-miscelanious\DNA-Damage\'
     extractImages();
     
     allFiles = getAllFiles('results\images\');
@@ -20,7 +20,7 @@ function [] = pipeline( )
         nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
         nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
         firstOuputFile = strcat(directory, '\', nameFileSplittedNoExtension, 'Proyeccion_General_3D_FOCI-VERDE-2.tiff');
-        if exist(firstOuputFile, 'file') ~= 2
+        %if exist(firstOuputFile, 'file') ~= 2
             [cell,rect]=selectCell(fullPathImage);
 
             Diapositiva=0;
@@ -35,7 +35,8 @@ function [] = pipeline( )
                 
                 Compro_foci_hetero(fullPathImage, cell, rect, Diapositiva);
             end
-        end
+            
+    %end
     end
 end
 
