@@ -7,10 +7,10 @@ nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
 
 canal=num2str(1);
-fichero=strcat(directory, '\segmentacion_ch_', canal,'-Cell-', numCell, '.mat');
+fichero=strcat(directory, '\segmentacion_ch_', canal,'-Cell_', numCell, '.mat');
 load(fichero);
 
-nombre2=strcat('Cell-',numCell);
+nombre2=strcat('Cell_',numCell);
 stringres=strcat(directory, '\', nombre2,'_results.mat');
 load(stringres);
 
@@ -74,7 +74,7 @@ end
 dibujo(num_hetero_um,2);
 %% DATOS DEL PLANO VERDE
 canal=num2str(0);
-fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'-Cell-',numCell);
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'-Cell_',numCell);
 load(fichero);
 
 objeto=1;

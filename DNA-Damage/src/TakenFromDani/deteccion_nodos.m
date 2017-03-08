@@ -5,7 +5,7 @@ nameFileSplitted = strsplit(nameFile, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
 nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
-fichero=strcat(directory, '\segmentacion_ch_', num2str(canal) ,'_celula_', cell, '.mat');
+fichero=strcat(directory, '\segmentacion_ch_', num2str(canal) ,'-Cell_', cell, '.mat');
 load(fichero);
 
 if Matriz_resultado{1,1}~=0
@@ -314,6 +314,6 @@ else
     nodo_final{1,1}=0;
 end
 
-fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell);
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'-Cell_',cell);
 save (fichero,'Matriz_resultado','pos_seed','masc_celulas','mascara_validatoria','Bordes','BWcell','picos_proy','nodo_final')
 end

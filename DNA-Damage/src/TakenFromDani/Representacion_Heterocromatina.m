@@ -7,10 +7,10 @@ nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
 
 canal=num2str(1);
-fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell);
+fichero=strcat(directory, '\segmentacion_ch_', canal,'-Cell_', numCell);
 load(fichero);
 
-nombre2=strcat('Cell-',numCell);
+nombre2=strcat('Cell_',numCell);
 stringres=strcat(directory, '\', nombre2,'_results.mat');
 load(stringres);
 
