@@ -152,14 +152,11 @@ if celulanovalida==0
         umbral(corte)=graythresh(capa);
     end
     % figure;plot(1:Long,umbral)
-    umbral_fin=findpeaks(umbral,'SORTSTR','descend');
-    umbral_fin=umbral_fin(umbral_fin>0.03);
+    umbral_fin=findpeaks(umbral,'SORTSTR','descend')
+    umbral_fin=umbral_fin(umbral_fin > (max(umbral_fin) * 0.7));
     
-    if (min(umbral_fin) <= 0.7)
-        umbral_fin = min(umbral_fin)*1.2;
-    else
-        umbral_fin = min(umbral_fin);
-    end
+    umbral_fin = min(umbral_fin)*1.2;
+
     
     
     for corte=1:Long
