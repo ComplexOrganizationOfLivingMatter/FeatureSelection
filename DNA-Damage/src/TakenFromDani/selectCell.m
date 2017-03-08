@@ -5,7 +5,7 @@ function [numCell,rect] = selectCell(fileName)
 % Modified by Pablo Vicente-Muneura
 
 load (fileName)
-nameFileSplitted = strsplit(nameFile, '\');
+nameFileSplitted = strsplit(fileName, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
 nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
 
@@ -38,5 +38,6 @@ api.setPositionConstraintFcn(fcn);
 %setResizable(h,0)
 pause
 [imageCropped, rect] = imcrop(proy,floor(api.getPosition())-1);
-save('\segmentation\image', nameFileSplittedNoExtension, 'Cell_', numCell, '.png', imageCropped)
+save(strcat('results\segmentation\', nameFileSplitted{end - 1}, '\', nameFileSplittedNoExtension,'\image', '.png'), 'proy')
+save(strcat('results\segmentation\', nameFileSplitted{end - 1}, '\', nameFileSplittedNoExtension, '\image', '_Cell_', numCell, '.png'), 'imageCropped')
 close;

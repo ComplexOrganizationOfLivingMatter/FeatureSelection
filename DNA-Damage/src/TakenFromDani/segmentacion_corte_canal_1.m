@@ -7,8 +7,9 @@ function [Diapositiva,celulanovalida]=segmentacion_corte_canal_1(nameFile, canal
 load(nameFile);
 
 nameFileSplitted = strsplit(nameFile, '\');
-directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
-fichero=strcat(directory, '\segmentacion_ch_', num2str(canal+1),'_celula_', numCell, '_', nameFileSplitted{end});
+nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
+fichero=strcat(directory, '\segmentacion_ch_', num2str(canal+1),'_celula_', numCell);
 load(fichero);
 
 proyb=proyeccionb;
@@ -409,7 +410,7 @@ if celulanovalida==0
     end
     Matriz_resultado{Med,1}=objeto;
     
-    fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell, '_', nameFileSplitted{end});
+    fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell);
     save (fichero,'mascara_validatoria','proyeccionb','proy_bin_azul','masc_celulas','proyecciong','mask_fosi','mask_fosi_pico','MSK_general','Matriz_resultado','pos_seed','Bordes','BWcell','picos_proy')
     
 end

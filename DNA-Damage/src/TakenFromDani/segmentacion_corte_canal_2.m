@@ -1,4 +1,4 @@
-function segmentacion_corte_canal_2(nameFile, canal,cell,rect)
+function segmentacion_corte_canal_2(nameFile, canal,numCell,rect)
 
     %% Datos
     load(nameFile);
@@ -300,10 +300,9 @@ function segmentacion_corte_canal_2(nameFile, canal,cell,rect)
 
 
     nameFileSplitted = strsplit(nameFile, '\');
-    directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
-    if isdir(directory)~=1
-        mkdir(directory)
-    end
-    fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', cell, '_', nameFileSplitted{end});
+    nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
+    directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
+    
+    fichero=strcat(directory, '\segmentacion_ch_', canal,'_celula_', numCell);
     save (fichero,'mascara_validatoria','proyeccionb','proyb_rect','proy_bin_azul','mask_Hetero','Matriz_resultado','masc_celulas','Bordes','BWcell')
 end

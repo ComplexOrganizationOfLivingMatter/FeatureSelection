@@ -9,8 +9,8 @@ N_cortes = size(imagesOfSerieByChannel, 1);
 nameFileSplitted = strsplit(nameFile, '\');
 nameFileSplittedNoExtension = strsplit(nameFileSplitted{end}, '.');
 nameFileSplittedNoExtension = nameFileSplittedNoExtension{1};
-directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
-fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell, '_', nameFileSplitted{end});
+directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3}, '\', nameFileSplittedNoExtension);
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell);
 load(fichero);
 
 % Datos de medida de la imagen
@@ -554,9 +554,7 @@ end
 %% DATOS PARA LOS NODOS VERDES
 canal=num2str(0);
 cell=num2str(cell);
-nameFileSplitted = strsplit(nameFile, '\');
-directory = strcat(nameFileSplitted{1}, '\segmentation\', nameFileSplitted{3});
-fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell, '_', nameFileSplitted{end});
+fichero=strcat(directory, '\Deteccion_de_nodos_ch_',num2str(canal),'_celula_',cell);
 load(fichero);
 
 %%Reorganizamos nodos verdes eliminando nodos que pertenezcan a objetos
@@ -676,7 +674,7 @@ figure;subplot(1,2,1),plot(eje_x_green,Tam_imagen_rect_um_y-eje_y_green,'.g','Ma
 hold on;plot(eje_x_blue,Tam_imagen_rect_um_y-eje_y_blue,'.b')
 %plot(eje_x_red,Tam_imagen_rect_um_y-eje_y_red,'.r','MarkerSize', numr);
 axis ([ 0 rect(3)*Rel_dist_x 0 rect(4)*Rel_dist_y])
-naa=strcat(nameFileSplittedNoExtension,'-Cell-',cell,'-rgb-Proyeccion X-Y');
+naa=strcat('Cell-',cell,'-rgb-Proyeccion X-Y');
 title(naa)
 xlabel('Eje x'),
 ylabel('Eje y'),
@@ -688,14 +686,14 @@ subplot(1,2,2),plot(eje_x_green_node,Tam_imagen_rect_um_y-eje_y_green_node,'.','
 hold on;plot(eje_x_blue,Tam_imagen_rect_um_y-eje_y_blue,'.b')
 
 %plot(eje_x_red_node,Tam_imagen_rect_um_y-eje_y_red_node,'.','Color',color_nodos_rojos,'MarkerSize', numr)
-nab=strcat(nameFileSplittedNoExtension,'-Cell-',cell,'-nodos-Proyeccion X-Y');
+nab=strcat('Cell-',cell,'-nodos-Proyeccion X-Y');
 title(nab)
 axis ([ 0 rect(3)*Rel_dist_x 0 rect(4)*Rel_dist_y])
 xlabel('Eje x'),
 ylabel('Eje y'),
 grid on
 hold off
-nombre=strcat(nameFileSplittedNoExtension,'_cell_',cell);
+nombre=strcat('Cell-',cell);
 stringres=strcat(directory, '\', nombre,'_rgb_Proyeccion_X-Y.tiff');
 Diapositiva=Diapositiva+1;
 Diapositivach=num2str(Diapositiva);
@@ -705,7 +703,7 @@ print(numeracion,'-dtiff',stringres)
 % 
 figure;subplot(1,2,1),plot(eje_x_green,eje_z_green,'.g','MarkerSize', numg)
 hold on;plot(planoxz,eje_z_cont,'b')
-nba=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-rgb-Proyeccion X-Z');
+nba=strcat('Cell-',cell,'-rgb-Proyeccion X-Z');
 title(nba)
 axis ([ 0 rect(3)*Rel_dist_x 0 N_cortes*Rel_dist_z])
 xlabel('Eje x'),
@@ -714,14 +712,14 @@ grid on
 hold off
 subplot(1,2,2),plot(eje_x_green_node,eje_z_green_node,'.','Color',color_nodos_verdes,'MarkerSize', numg)
 hold on;plot(planoxz,eje_z_cont,'b')
-nbb=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-nodos-Proyeccion X-Z');
+nbb=strcat('Cell-',cell,'-nodos-Proyeccion X-Z');
 title(nbb)
 axis ([ 0 rect(3)*Rel_dist_x 0 N_cortes*Rel_dist_z])
 xlabel('Eje x'),
 ylabel('Eje z'),
 grid on
 hold off
-nombre=strcat(nameFileSplittedNoExtension,'_cell_',cell);
+nombre=strcat('Cell-',cell);
 stringres=strcat(directory, '\', nombre,'_rgb_Proyeccion_X-Z.tiff');
 
 Diapositiva=Diapositiva+1;
@@ -732,7 +730,7 @@ print(numeracion,'-dtiff',stringres)
 figure;subplot(1,2,1),plot(Tam_imagen_rect_um_y-eje_y_green,eje_z_green,'.g','MarkerSize', numg)
 hold on;plot(planoyz,eje_z_cont,'b')
 
-nca=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-rgb-Proyeccion Y-Z');
+nca=strcat('Cell-',cell,'-rgb-Proyeccion Y-Z');
 title(nca)
 axis ([ 0 rect(4)*Rel_dist_y 0 N_cortes*Rel_dist_z])
 xlabel('Eje y'),
@@ -743,7 +741,7 @@ hold off
 subplot(1,2,2),plot(Tam_imagen_rect_um_y-eje_y_green_node,eje_z_green_node,'.','Color',color_nodos_verdes,'MarkerSize', numg)
 hold on;plot(planoyz,eje_z_cont,'b')
 
-ncb=strcat(nameFileSplittedNoExtension, '-Cell-',cell,'-nodos-Proyeccion Y-Z');
+ncb=strcat('Cell-',cell,'-nodos-Proyeccion Y-Z');
 title(ncb)
 axis ([ 0 rect(4)*Rel_dist_y 0 N_cortes*Rel_dist_z])
 xlabel('Eje y'),
@@ -785,7 +783,7 @@ Pesos_g=Bv;
 color_nodos_verdes=[0 0.5 0];
 tamg=25;
 tamr=25;
-nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+nombre2=strcat('Cell-',cell);
 
 [h iteracion_ver Conectividad_dir_ver Conectividad_dir_k_1_ver Conectividad_dir_k_2_ver Conectividad]=Representacion_network(NV,12,DistanciaV,color_nodos_verdes,tamg);
 
@@ -852,7 +850,7 @@ if Matriz_resultado{1,1}==0
     Matriz_resultador=Matriz_resultado;
 end
 
-nombre2=strcat(nameFileSplittedNoExtension, '_celula_',cell);
+nombre2=strcat('Cell-',cell);
 stringres=strcat(directory, '\', nombre2,'_results.mat');
 save (stringres,'Datos', 'Matriz_resultadov','Matriz_resultador','Datos_objeto','iteracion_ver','Conectividad','Conectividad_dir_ver','Conectividad_dir_k_1_ver','Conectividad_dir_k_2_ver','DistanciaV','Pesos_g','NV','eje_x_green_node','eje_y_green_node','eje_z_green_node')
 
