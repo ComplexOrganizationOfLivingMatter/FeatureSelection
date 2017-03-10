@@ -11,7 +11,6 @@ function [] = pipeline( )
     allFiles = getAllFiles('results\images\');
     
     for numFile = 1:size(allFiles, 1)
-        close all
         allFiles{numFile}
         fullPathImage = allFiles{numFile};
         
@@ -41,6 +40,7 @@ function [] = pipeline( )
                 Compro_foci_hetero(fullPathImage, numCell, rect, Diapositiva);
             end
         end
+        close all
     end
 end
 
