@@ -1,7 +1,6 @@
 function [Mejores_i,Mejores_i_des,Proy, eigenvectorsF]=anadir_cc_original(Mejores,Mejores_des,vector_todas_caracteristicas,expansion,n_imagenes_tipo1,n_imagenes_tipo2)
 cuenta=0;
 Niteracion=1;
-REPETITIONS = 5;
 for paso=1:size(Mejores,1)
     cc=Mejores(paso,2:size(Mejores,2));
     vector_caracteristicas=[];
@@ -72,22 +71,20 @@ for paso=1:size(Mejores,1)
         end
     end
     auxiliar=Ratio_pca(1,:);
-    for repetition = 0:REPETITIONS-1
-        for i=1:expansion
-            [Mejores_i(cuenta+i+repetition,1) num]=max(auxiliar);
-            [Mejores_i_des(cuenta+i+repetition,1) num]=max(auxiliar);
-            for j=2:size(Mejores,2)
-                Mejores_i(cuenta+i+repetition,j)=Mejores(paso,j);
-                Mejores_i_des(cuenta+i+repetition,j)=Mejores_des(paso,j);
-            end
-            Mejores_i(cuenta+i+repetition,size(Mejores,2)+1)=Ratio_pca(2,num);
-            Mejores_i_des(cuenta+i+repetition,size(Mejores,2)+1)=Ratio_pca(2,num);
-            Proy{cuenta+i+repetition,1}=W{1,num};
-            eigenvectorsF{cuenta+i+repetition,1} = eigenvectors{1, num};
-            auxiliar(1,num)=0;
+    for i=1:expansion
+        [Mejores_i(cuenta+i,1) num]=max(auxiliar);
+        [Mejores_i_des(cuenta+i,1) num]=max(auxiliar);
+        for j=2:size(Mejores,2)
+            Mejores_i(cuenta+i,j)=Mejores(paso,j);
+            Mejores_i_des(cuenta+i,j)=Mejores_des(paso,j);
         end
+        Mejores_i(cuenta+i,size(Mejores,2)+1)=Ratio_pca(2,num);
+        Mejores_i_des(cuenta+i,size(Mejores,2)+1)=Ratio_pca(2,num);
+        Proy{cuenta+i,1}=W{1,num};
+        eigenvectorsF{cuenta+i,1} = eigenvectors{1, num};
+        auxiliar(1,num)=0;
     end
-    cuenta=cuenta+expansion+(REPETITIONS-1);
+    cuenta=cuenta+expansion;
     clear W Ratio_pca
 end
 
