@@ -156,10 +156,14 @@ Proy_ant=Proy;
 Mejores_des=Mejores;
 Mejores_ant_des=Mejores_des;
 
+mejoresEachStep{1} = Mejores;
+eigenvectorsEachStep{1} = best_eigenvectors;
+proyEachStep{1} = Proy;
+mejores_desEachStep{1} = Mejores_des;
+
 %El proceso sigue ejecutandose hasta que el descriptor de PCA es menor al
 %del paso anterior o hasta que se expanden las cc 4 veces. Es decir, como
 %máximo se realizarán 4 expansiones.
-
 while add_cc<=5
     add_cc
     Mejores_ant=Mejores;
@@ -211,91 +215,101 @@ while add_cc<=5
         end
     end
     
+    
     add_cc=add_cc+1;
+    mejoresEachStep{add_cc} = Mejores;
+    eigenvectorsEachStep{add_cc} = eigenvectors;
+    proyEachStep{add_cc} = Proy;
+    mejores_desEachStep{add_cc} = Mejores_des;
 end
 
 
 entra_bucle_while=0;
 
 
-%%Si se da el caso en el que los mejores descriptores de PCA del ultimo
-%%paso del bucle while no son mejores a los del paso anterior. Volvemos a
-%%obtener los mejores del paso anterior 
-if Mejores(1,1)<Mejores_ant(1,1)
-    Mejores=Mejores_ant;
-    Mejores_des=Mejores_ant_des;
-    Proy=Proy_ant;
-    eigenvectors = eigenvectors_ant;
-else
-    %%incrementamos cc hasta que
-    while Mejores(1,1)-Mejores_ant(1,1)>0.1
-        entra_bucle_while=1;
-        Mejores_ant=Mejores;
-        Mejores_ant_des=Mejores_des;
-        Proy_ant=Proy;
-        clear Proy
-        [Mejores,Mejores_des,Proy, eigenvectors]=anadir_cc_original(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2);
-        % Ordenamos Mejores de mejor a peor PCA
-        [Mejores orden]=sortrows(Mejores,-1);
-        
-        for i=1:size(orden,1)
-            Proyb{i,1}=Proy{orden(i),1};
-            eigenvectorsb{i,1} = eigenvectors(orden(i), 1);
-            Mejores_des_aux(i,:)=Mejores_des(orden(i),:);
-        end
-        Proy=Proyb;
-        clear Proyb
-        Mejores_des=Mejores_des_aux;
-        eigenvectors = eigenvectorsb;
-        clear eigenvectorsb
-        clear Mejores_des_aux
-        %Eliminamos de Mejores las cc que se repitan
-        i=1;
-        Tam=size(Mejores,1);
-        while i<=Tam-1
-            if length(find(sort(Mejores(i,2:end))==sort(Mejores(i+1,2:end))))==size(Mejores,2)-1
-                cuenta=1;
-                while length(find(sort(Mejores(i,2:end))==sort(Mejores(i+cuenta,2:end))))==size(Mejores,2)-1
-                    Mejores(i,2:end)=sort(Mejores(i,2:end));
-                    Mejores(i+cuenta,:)=[];
-                    Proy(i+cuenta,:)=[];
-                    Mejores_des(i+cuenta,:)=[];
-                    eigenvectors(i+cuenta, :) = [];
-                    if i+cuenta < size(Mejores,1)
-                        cuenta=cuenta+1;
-                    else
-                        break
-                    end
-                    Tam=Tam-1;
-                end
-            else
-                Mejores(i,2:end)=sort(Mejores(i,2:end));
-            end
-            if i+1 < size(Mejores,1)
-                i=i+1;
-            else
-                break
-            end
-        end
-        
-        add_cc=add_cc+1;
-    end
-end
-
-if entra_bucle_while==1
-    Mejores=Mejores_ant;
-    Mejores_des=Mejores_ant_des;
-    Proy=Proy_ant;
-    eigenvectors = eigenvectors_ant;
-end
+% %%Si se da el caso en el que los mejores descriptores de PCA del ultimo
+% %%paso del bucle while no son mejores a los del paso anterior. Volvemos a
+% %%obtener los mejores del paso anterior 
+% if Mejores(1,1)<Mejores_ant(1,1)
+%     Mejores=Mejores_ant;
+%     Mejores_des=Mejores_ant_des;
+%     Proy=Proy_ant;
+%     eigenvectors = eigenvectors_ant;
+% else
+%     %%incrementamos cc hasta que
+%     while Mejores(1,1)-Mejores_ant(1,1)>0.1
+%         entra_bucle_while=1;
+%         Mejores_ant=Mejores;
+%         Mejores_ant_des=Mejores_des;
+%         Proy_ant=Proy;
+%         clear Proy
+%         [Mejores,Mejores_des,Proy, eigenvectors]=anadir_cc_original(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2);
+%         % Ordenamos Mejores de mejor a peor PCA
+%         [Mejores orden]=sortrows(Mejores,-1);
+%         
+%         for i=1:size(orden,1)
+%             Proyb{i,1}=Proy{orden(i),1};
+%             eigenvectorsb{i,1} = eigenvectors(orden(i), 1);
+%             Mejores_des_aux(i,:)=Mejores_des(orden(i),:);
+%         end
+%         Proy=Proyb;
+%         clear Proyb
+%         Mejores_des=Mejores_des_aux;
+%         eigenvectors = eigenvectorsb;
+%         clear eigenvectorsb
+%         clear Mejores_des_aux
+%         %Eliminamos de Mejores las cc que se repitan
+%         i=1;
+%         Tam=size(Mejores,1);
+%         while i<=Tam-1
+%             if length(find(sort(Mejores(i,2:end))==sort(Mejores(i+1,2:end))))==size(Mejores,2)-1
+%                 cuenta=1;
+%                 while length(find(sort(Mejores(i,2:end))==sort(Mejores(i+cuenta,2:end))))==size(Mejores,2)-1
+%                     Mejores(i,2:end)=sort(Mejores(i,2:end));
+%                     Mejores(i+cuenta,:)=[];
+%                     Proy(i+cuenta,:)=[];
+%                     Mejores_des(i+cuenta,:)=[];
+%                     eigenvectors(i+cuenta, :) = [];
+%                     if i+cuenta < size(Mejores,1)
+%                         cuenta=cuenta+1;
+%                     else
+%                         break
+%                     end
+%                     Tam=Tam-1;
+%                 end
+%             else
+%                 Mejores(i,2:end)=sort(Mejores(i,2:end));
+%             end
+%             if i+1 < size(Mejores,1)
+%                 i=i+1;
+%             else
+%                 break
+%             end
+%         end
+%         
+%         add_cc=add_cc+1;
+%     end
+% end
+% 
+% if entra_bucle_while==1
+%     Mejores=Mejores_ant;
+%     Mejores_des=Mejores_ant_des;
+%     Proy=Proy_ant;
+%     eigenvectors = eigenvectors_ant;
+% end
 
 %% Evaluacion final
-Mejor_pca=Mejores(1,1);
-indice_cc_seleccionadas=Mejores(1,2:size(Mejores,2));
-eigenvectors = eigenvectors{1,1}{1};
+[~, numIter] = max(cellfun(@(x) max(x(:,1)), mejoresEachStep));
+%Mejor_pca=Mejores(1,1);
+bestIterationPCA = mejoresEachStep{numIter};
+[Mejor_pca, numRow] = max(bestIterationPCA(:, 1));
+indice_cc_seleccionadas=bestIterationPCA(numRow, 2:size(bestIterationPCA,2));
+eigenvectors = eigenvectorsEachStep{numIter};
+eigenvectors = eigenvectors{numRow,1}{1};
+Proy = proyEachStep{numIter};
 
 
-save( ['PCA_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'Mejores', 'Mejores_des', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors')
+save( ['PCA_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'mejoresEachStep', 'mejores_desEachStep', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors')
 
 
 %%Representar
