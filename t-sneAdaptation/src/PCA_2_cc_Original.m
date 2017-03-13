@@ -110,10 +110,7 @@ for cc1=1:n_cc_totales-1
         
           
         %%%%-----$$$$------PROBAR DIRECTAMENTE EL COMANDO PCA DE MATLAB y  observar DIFERENCIAS-----$$$$----%%%%
-        
-        
-         
-        
+
     end
 end
 

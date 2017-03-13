@@ -1,4 +1,4 @@
-function [Mejores_i,Mejores_i_des,Proy, eigenvectorsF]=anadir_cc(Mejores,Mejores_des,vector_todas_caracteristicas,expansion,n_imagenes_tipo1,n_imagenes_tipo2)
+function [Mejores_i,Mejores_i_des,Proy, eigenvectorsF]=anadir_cc_original(Mejores,Mejores_des,vector_todas_caracteristicas,expansion,n_imagenes_tipo1,n_imagenes_tipo2)
 cuenta=0;
 Niteracion=1;
 for paso=1:size(Mejores,1)
@@ -73,6 +73,7 @@ for paso=1:size(Mejores,1)
     auxiliar=Ratio_pca(1,:);
     for i=1:expansion
         [Mejores_i(cuenta+i,1) num]=max(auxiliar);
+        [Mejores_i_des(cuenta+i,1) num]=max(auxiliar);
         for j=2:size(Mejores,2)
             Mejores_i(cuenta+i,j)=Mejores(paso,j);
             Mejores_i_des(cuenta+i,j)=Mejores_des(paso,j);
