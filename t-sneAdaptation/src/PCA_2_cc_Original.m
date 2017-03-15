@@ -23,6 +23,7 @@ n_img_tipo2=size(matriz_t2,1);
 
 
 vector_todas_caracteristicas=[matriz_t1;matriz_t2];
+vector_todas_caracteristicas(isnan(vector_todas_caracteristicas))=0;
 
 
 %% numero de imagenes y numero de cc
@@ -328,9 +329,47 @@ h=figure; plot(Proyecc(1,1:n_img_tipo1),Proyecc(2,1:n_img_tipo1),'.g','MarkerSiz
 hold on, plot(Proyecc(1,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),Proyecc(2,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),'.r','MarkerSize',30)
 
 
+
+
+categorization(1:n_img_tipo1) = {n_t1};
+categorization(n_img_tipo1+1:n_imagenes) = {n_t2};
+
+weights = ones(n_imagenes, 1);
+resResubCM = ones(2, 2);
+if ~isempty(strfind(n_t1, 'High'))
+    highIndex = 1;
+    highIndex2 = 2;
+elseif ~isempty(strfind(n_t2, 'High'))
+    highIndex = 2;
+    highIndex2 = 1;
+end
+
+if exist('highIndex', 'var') == 1
+    while resResubCM(highIndex, highIndex2) >= 1
+        if ~isempty(strfind(n_t1, 'High'))
+            weights(1:n_img_tipo1) = weights(1:n_img_tipo1) + 1;
+        elseif ~isempty(strfind(n_t2, 'High'))
+            weights(n_img_tipo1+1:n_imagenes) = weights(n_img_tipo1+1:n_imagenes) + 1;
+        end
+        % You can put the Weights on here
+        res = fitcdiscr(Proyecc', categorization', 'Weights', weights);
+        resClass = resubPredict(res);
+        [resResubCM,grpOrder] = confusionmat(categorization', resClass);
+        bad = ~strcmp(resClass, categorization');
+    end
+else
+    res = fitcdiscr(Proyecc', categorization', 'Weights', weights);
+    resClass = resubPredict(res);
+    [resResubCM,grpOrder] = confusionmat(categorization', resClass);
+    bad = ~strcmp(resClass, categorization');
+end
+hold on;
+Proyecc = Proyecc';
+plot(Proyecc(bad,1), Proyecc(bad,2), 'kx');
+hold off;
+
 stringres=strcat(num2str(indice_cc_seleccionadas));
 title(stringres)
 saveas(h,['PCA_' n_t1 '_' n_t2 '.jpg'])
-
 close all
 end
