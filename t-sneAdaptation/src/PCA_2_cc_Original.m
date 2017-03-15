@@ -1,5 +1,5 @@
 %%PCA_2_cc
-function PCA_2_cc_Original(m_t1,m_t2,n_t1,n_t2)
+function PCA_2_cc_Original(m_t1,m_t2,n_t1,n_t2, weightedVersion)
 
 
 %Seleccionamos las características que queramos: 
@@ -327,9 +327,7 @@ save( ['PCA_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'mejoresEac
 Proyecc=Proy{1,1};
 h=figure; plot(Proyecc(1,1:n_img_tipo1),Proyecc(2,1:n_img_tipo1),'.g','MarkerSize',30)
 hold on, plot(Proyecc(1,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),Proyecc(2,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),'.r','MarkerSize',30)
-
-
-
+legend(n_t1,n_t2)
 
 categorization(1:n_img_tipo1) = {n_t1};
 categorization(n_img_tipo1+1:n_imagenes) = {n_t2};
@@ -344,7 +342,7 @@ elseif ~isempty(strfind(n_t2, 'High'))
     highIndex2 = 1;
 end
 
-if exist('highIndex', 'var') == 1
+if exist('highIndex', 'var') == 1 && weightedVersion
     while resResubCM(highIndex, highIndex2) >= 1
         if ~isempty(strfind(n_t1, 'High'))
             weights(1:n_img_tipo1) = weights(1:n_img_tipo1) + 1;
@@ -368,8 +366,13 @@ Proyecc = Proyecc';
 plot(Proyecc(bad,1), Proyecc(bad,2), 'kx');
 hold off;
 
+sensitivity = resResubCM(2) / sum(resResubCM(2, :)) * 100;
+specifity = resResubCM(1) / sum(resResubCM(1, :)) * 100;
+
 stringres=strcat(num2str(indice_cc_seleccionadas));
 title(stringres)
+classificationInfo = res;
+save( ['PCA_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'mejoresEachStep', 'mejores_desEachStep', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors', 'resResubCM', 'classificationInfo', 'specifity', 'sensitivity')
 saveas(h,['PCA_' n_t1 '_' n_t2 '.jpg'])
 close all
 end
