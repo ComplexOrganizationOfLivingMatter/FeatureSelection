@@ -372,7 +372,12 @@ specifity = resResubCM(1) / sum(resResubCM(1, :)) * 100;
 stringres=strcat(num2str(indice_cc_seleccionadas));
 title(stringres)
 classificationInfo = res;
-save( ['PCA_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'mejoresEachStep', 'mejores_desEachStep', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors', 'resResubCM', 'classificationInfo', 'specifity', 'sensitivity')
-saveas(h,['PCA_' n_t1 '_' n_t2 '.jpg'])
+if weightedVersion
+    save( ['PCA_Weighted_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'mejoresEachStep', 'mejores_desEachStep', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors', 'resResubCM', 'classificationInfo', 'specifity', 'sensitivity')
+    saveas(h,['PCA_Weighted_' n_t1 '_' n_t2 '.jpg'])
+else
+    save( ['PCA_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'mejoresEachStep', 'mejores_desEachStep', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors', 'resResubCM', 'classificationInfo', 'specifity', 'sensitivity')
+    saveas(h,['PCA_' n_t1 '_' n_t2 '.jpg'])
+end
 close all
 end
