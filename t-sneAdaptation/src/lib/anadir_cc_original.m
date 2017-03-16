@@ -64,8 +64,11 @@ for paso=1:size(Mejores,1)
                 %[T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
 %                 C=sinterluc/sintraluc;
 %                 Ratio_pca(1,Niteracion)=abs(trace(C));
-                %% ---- Discriminant analysis ----%
+                %
+                %% ---- Discriminant analysis with PCA Proy ----%
                 res = fitcdiscr(W{1,Niteracion}', categorization');
+                %% ---- Discriminant analysis ------------------%
+                %res = fitcdiscr(vector_caracteristicas_defi, categorization');
                 Ratio_pca(1,Niteracion)=1-resubLoss(res);
                 Ratio_pca(2,Niteracion)=caract;
                 eigenvectors{1,Niteracion} = V;
