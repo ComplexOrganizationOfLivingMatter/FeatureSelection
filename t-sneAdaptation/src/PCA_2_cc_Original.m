@@ -41,9 +41,9 @@ categorization(n_img_tipo1+1:n_imagenes) = {n_t2};
 % imagenes q pertenecen y en la segunda a 1 los que pertenecen a la clase
 % 2, y asi sucesivamente
 
-vector_clases=zeros([n_imagenes,2]);
-vector_clases(1:n_img_tipo1,1)=1;
-vector_clases(n_img_tipo1+1:n_imagenes,2)=1;
+%vector_clases=zeros([n_imagenes,2]);
+%vector_clases(1:n_img_tipo1,1)=1;
+%vector_clases(n_img_tipo1+1:n_imagenes,2)=1;
 
 %Comando que sirve simplemnte para medir el tiempo de ejecución. (se cierra con toc)
 
@@ -84,7 +84,7 @@ for cc1=1:n_cc_totales-1
           
         % Cálculo de los autovalores/autovesctores
         [Vectors,Values] = eig(L);
-        [d_ordenados,ind]=sort(diag(Values),'descend');   % se ordenan los autovalores
+        [~,ind]=sort(diag(Values),'descend');   % se ordenan los autovalores
         V=Vectors(:,ind);
         
         
@@ -112,7 +112,13 @@ for cc1=1:n_cc_totales-1
         res = fitcdiscr(W{1,Niteracion}', categorization');
         %% ---- Discriminant analysis ------------------%
         %res = fitcdiscr(vectores_caracteristicas, categorization');
-        Ratio_pca(1,Niteracion)=1-resubLoss(res);
+        
+        resClass = resubPredict(res);
+        [resResubCM,grpOrder] = confusionmat(categorization', resClass);
+        sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
+        specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+        Ratio_pca(1,Niteracion) = specifity + sensitivity;
+        %Ratio_pca(1,Niteracion)=1-resubLoss(res);
         Ratio_pca(2,Niteracion)=cc1;
         Ratio_pca(3,Niteracion)=cc2;
         eigenvectors{Niteracion} = V;
@@ -142,7 +148,7 @@ eigenvectors = best_eigenvectors;
 %Incrementamos el nº de cc a las que queramos. Nosotros nos quedamos con 
 %el vector expansión de este modo ya que seguimos un proceso:
 
-expansion=[10 10 5 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
+expansion=[1 5 5 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
 
 % 1-Bucle anterior: Ya hemos testeado las 10 mejores parejas que separan
 % mejor. Ahora les añadimos una cc para que sean los 10 mejores trios que

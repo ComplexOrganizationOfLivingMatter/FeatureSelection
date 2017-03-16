@@ -69,7 +69,12 @@ for paso=1:size(Mejores,1)
                 res = fitcdiscr(W{1,Niteracion}', categorization');
                 %% ---- Discriminant analysis ------------------%
                 %res = fitcdiscr(vector_caracteristicas_defi, categorization');
-                Ratio_pca(1,Niteracion)=1-resubLoss(res);
+                resClass = resubPredict(res);
+                [resResubCM,grpOrder] = confusionmat(categorization', resClass);
+                sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
+                specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+                Ratio_pca(1,Niteracion) = specifity + sensitivity;
+                %Ratio_pca(1,Niteracion)=1-resubLoss(res);
                 Ratio_pca(2,Niteracion)=caract;
                 eigenvectors{1,Niteracion} = V;
                 
