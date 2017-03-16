@@ -22,7 +22,6 @@ n_img_tipo2=size(matriz_t2,1);
 
 
 
-
 vector_todas_caracteristicas=[matriz_t1;matriz_t2];
 vector_todas_caracteristicas(isnan(vector_todas_caracteristicas))=0;
 
@@ -31,6 +30,11 @@ vector_todas_caracteristicas(isnan(vector_todas_caracteristicas))=0;
 
 n_imagenes=n_img_tipo1+n_img_tipo2;
 n_cc_totales=length(CARACT);
+
+
+
+categorization(1:n_img_tipo1) = {n_t1};
+categorization(n_img_tipo1+1:n_imagenes) = {n_t2};
 
 
 %% Vector de clases. hay tantas columnas como clases, en la primera column pongo a 1 las
@@ -44,7 +48,6 @@ vector_clases(n_img_tipo1+1:n_imagenes,2)=1;
 %Comando que sirve simplemnte para medir el tiempo de ejecución. (se cierra con toc)
 
 Niteracion=1;
-tic
 
 %% Calculamos las combinaciones iniciales de 2 caracteristicas
 
@@ -101,9 +104,13 @@ for cc1=1:n_cc_totales-1
         
         %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
         label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
-        [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
-        C=sinterluc/sintraluc;
-        Ratio_pca(1,Niteracion)=trace(C);
+        %% ---- PCA version -----%
+        %[T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
+        %C=sinterluc/sintraluc;
+        %Ratio_pca(1,Niteracion)=trace(C);
+        %% ---- Discriminant analysis ----%
+        res = fitcdiscr(W{1,Niteracion}', categorization');
+        Ratio_pca(1,Niteracion)=1-resubLoss(res);
         Ratio_pca(2,Niteracion)=cc1;
         Ratio_pca(3,Niteracion)=cc2;
         eigenvectors{Niteracion} = V;
@@ -173,7 +180,7 @@ while add_cc<=5
     Proy_ant=Proy;
     eigenvectors_ant = eigenvectors;
     clear Proy
-    [Mejores,Mejores_des,Proy, eigenvectors]=anadir_cc_original(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2);
+    [Mejores,Mejores_des,Proy, eigenvectors]=anadir_cc_original(Mejores_ant,Mejores_ant_des,vector_todas_caracteristicas,expansion(add_cc),n_img_tipo1,n_img_tipo2, categorization);
     % Ordenamos Mejores de mejor a peor PCA
     [Mejores orden]=sortrows(Mejores,-1);
     
@@ -357,7 +364,7 @@ if exist('highIndex', 'var') == 1 && weightedVersion
         bad = ~strcmp(resClass, categorization');
     end
 else
-    res = fitcdiscr(Proyecc', categorization', 'Weights', weights);
+    res = fitcdiscr(Proyecc', categorization');
     resClass = resubPredict(res);
     [resResubCM,grpOrder] = confusionmat(categorization', resClass);
     bad = ~strcmp(resClass, categorization');

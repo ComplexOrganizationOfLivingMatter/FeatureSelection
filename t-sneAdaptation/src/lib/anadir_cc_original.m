@@ -1,4 +1,4 @@
-function [Mejores_i,Mejores_i_des,Proy, eigenvectorsF]=anadir_cc_original(Mejores,Mejores_des,vector_todas_caracteristicas,expansion,n_imagenes_tipo1,n_imagenes_tipo2)
+function [Mejores_i,Mejores_i_des,Proy, eigenvectorsF]=anadir_cc_original(Mejores,Mejores_des,vector_todas_caracteristicas,expansion,n_imagenes_tipo1,n_imagenes_tipo2, categorization)
 cuenta=0;
 Niteracion=1;
 for paso=1:size(Mejores,1)
@@ -58,11 +58,15 @@ for paso=1:size(Mejores,1)
                 
                 W{1,Niteracion}=V'*X;  %Proyecciones
                 
-                %%%% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
                 label=[ones(1, n_imagenes_tipo1), 2*ones(1,n_imagenes_tipo2)];
-                [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
-                C=sinterluc/sintraluc;
-                Ratio_pca(1,Niteracion)=abs(trace(C));
+                
+                %% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
+                %[T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
+%                 C=sinterluc/sintraluc;
+%                 Ratio_pca(1,Niteracion)=abs(trace(C));
+                %% ---- Discriminant analysis ----%
+                res = fitcdiscr(W{1,Niteracion}', categorization');
+                Ratio_pca(1,Niteracion)=1-resubLoss(res);
                 Ratio_pca(2,Niteracion)=caract;
                 eigenvectors{1,Niteracion} = V;
                 
