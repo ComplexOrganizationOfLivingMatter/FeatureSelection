@@ -366,8 +366,8 @@ Proyecc = Proyecc';
 plot(Proyecc(bad,1), Proyecc(bad,2), 'kx');
 hold off;
 
-sensitivity = resResubCM(2) / sum(resResubCM(2, :)) * 100;
-specifity = resResubCM(1) / sum(resResubCM(1, :)) * 100;
+sensitivity = resResubCM(2, 1) / sum(resResubCM(2, :)) * 100;
+specifity = resResubCM(1, 2) / sum(resResubCM(1, :)) * 100;
 
 stringres=strcat(num2str(indice_cc_seleccionadas));
 title(stringres)
