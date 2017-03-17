@@ -289,7 +289,7 @@ else
     bad = ~strcmp(resClass, categorization');
 end
 hold on;
-Proyecc = L;
+Proyecc = Proyecc';
 plot(Proyecc(bad,1), Proyecc(bad,2), 'kx');
 hold off;
 
