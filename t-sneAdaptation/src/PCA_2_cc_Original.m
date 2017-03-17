@@ -134,7 +134,7 @@ eigenvectors = best_eigenvectors;
 %Incrementamos el nº de cc a las que queramos. Nosotros nos quedamos con 
 %el vector expansión de este modo ya que seguimos un proceso:
 
-expansion=[1 5 5 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
+expansion=[10 10 5 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
 
 % 1-Bucle anterior: Ya hemos testeado las 10 mejores parejas que separan
 % mejor. Ahora les añadimos una cc para que sean los 10 mejores trios que
