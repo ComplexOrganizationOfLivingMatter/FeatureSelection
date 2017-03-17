@@ -56,11 +56,11 @@ for paso=1:size(Mejores,1)
                 
                 V=Vectors(:,1:2);
                 
-                W{1,Niteracion}=V'*X;  %Proyecciones
+                %W{1,Niteracion}=V'*X;  %Proyecciones
                 
                 label=[ones(1, n_imagenes_tipo1), 2*ones(1,n_imagenes_tipo2)];
                 
-                Ratio_pca(1,Niteracion)= getHowGoodAreTheseCharacteristics(vector_caracteristicas_defi, label);
+                [Ratio_pca(1,Niteracion), W{1,Niteracion}] = getHowGoodAreTheseCharacteristics(vector_caracteristicas_defi, label, V);
                 Ratio_pca(2,Niteracion)=caract;
                 eigenvectors{1,Niteracion} = V;
                 

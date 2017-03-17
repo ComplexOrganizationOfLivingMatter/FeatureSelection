@@ -1,4 +1,4 @@
-function [ goodness ] = getHowGoodAreTheseCharacteristics(characteristics, labels)
+function [ goodness, projection ] = getHowGoodAreTheseCharacteristics(characteristics, labels, eigenvectors)
 %GETHOWGOODARETHESECHARACTERISTICS Summary of this function goes here
 %   Detailed explanation goes here
     %% ---- PCA feature selection -----%
@@ -6,12 +6,14 @@ function [ goodness ] = getHowGoodAreTheseCharacteristics(characteristics, label
 %     [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(characteristics, labels, 2);
 %     C = sinterluc/sintraluc;
 %     Ratio_pca(1, Niteracion) = trace(C);
+%     projection = eigenvectors' * characteristics;
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
     L = [ones(size(characteristics, 1), 1) characteristics] * W';
     [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, 2);
     C = sinterluc/sintraluc;
     goodness = trace(C);
+    projection = L;
 %     %% ---- TuMetodo ----%
 %     res = fitcdiscr(characteristics, labels');
 %     resClass = resubPredict(res);

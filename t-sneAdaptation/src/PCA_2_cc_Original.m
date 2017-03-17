@@ -100,11 +100,11 @@ for cc1=1:n_cc_totales-1
         
         V=Vectors(:,1:2);
         
-        W{1,Niteracion}=V'*X;  %Proyecciones
+        %W{1,Niteracion}=V'*X;  %Proyecciones
         
         label=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
         
-        Ratio_pca(1,Niteracion)= getHowGoodAreTheseCharacteristics(vectores_caracteristicas, label);
+        [Ratio_pca(1,Niteracion), W{1,Niteracion}] = getHowGoodAreTheseCharacteristics(vectores_caracteristicas, label, V);
         Ratio_pca(2,Niteracion)=cc1;
         Ratio_pca(3,Niteracion)=cc2;
         eigenvectors{Niteracion} = V;
