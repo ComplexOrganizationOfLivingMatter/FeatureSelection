@@ -60,21 +60,7 @@ for paso=1:size(Mejores,1)
                 
                 label=[ones(1, n_imagenes_tipo1), 2*ones(1,n_imagenes_tipo2)];
                 
-                %% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
-                %[T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(W{1,Niteracion}',label,2);
-%                 C=sinterluc/sintraluc;
-%                 Ratio_pca(1,Niteracion)=abs(trace(C));
-                %
-                %% ---- Discriminant analysis with PCA Proy ----%
-                res = fitcdiscr(W{1,Niteracion}', categorization');
-                %% ---- Discriminant analysis ------------------%
-                %res = fitcdiscr(vector_caracteristicas_defi, categorization');
-                resClass = resubPredict(res);
-                [resResubCM,grpOrder] = confusionmat(categorization', resClass);
-                sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
-                specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
-                Ratio_pca(1,Niteracion) = specifity + sensitivity;
-                %Ratio_pca(1,Niteracion)=1-resubLoss(res);
+                Ratio_pca(1,Niteracion)= getHowGoodAreTheseCharacteristics(vector_caracteristicas_defi, label);
                 Ratio_pca(2,Niteracion)=caract;
                 eigenvectors{1,Niteracion} = V;
                 
