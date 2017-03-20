@@ -84,8 +84,8 @@ for cc1=1:n_cc_totales-1
           
         % Cálculo de los autovalores/autovesctores
         [Vectors,Values] = eig(L);
-        [~,ind]=sort(diag(Values),'descend');   % se ordenan los autovalores
-        V=Vectors(:,ind);
+        [~,ind] = sort(diag(Values),'descend');   % se ordenan los autovalores
+        V = Vectors(:,ind);
         
         
         
@@ -120,7 +120,7 @@ end
 %% Calculamos las 10 mejores PCA y sus 3 cc iniciales
 
 auxiliar=Ratio_pca(1,:);
-for i=1:10
+for i = 1:Niteracion
     [Mejores(i,1) num]=max(auxiliar);
     Mejores(i,2)=Ratio_pca(2,num);
     Mejores(i,3)=Ratio_pca(3,num);
@@ -251,7 +251,7 @@ Proy = proyEachStep{numIter};
 % stringres=strcat('PCA','------->Caracteristicas seleccionadas:',num2str(indice_cc_seleccionadas),' Descriptor: ',num2str(Mejor_pca));
 % title(stringres)
 %%Representar formato Luisma
-Proyecc=Proy{1,1};
+Proyecc=Proy{1,1}';
 h=figure; plot(Proyecc(1,1:n_img_tipo1),Proyecc(2,1:n_img_tipo1),'.g','MarkerSize',30)
 hold on, plot(Proyecc(1,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),Proyecc(2,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),'.r','MarkerSize',30)
 legend(n_t1,n_t2)
