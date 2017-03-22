@@ -62,7 +62,7 @@ for paso=1:size(Mejores,1)
                 
                 [Ratio_pca(1,Niteracion), W{1,Niteracion}] = getHowGoodAreTheseCharacteristics(vector_caracteristicas_defi, label, V);
                 Ratio_pca(2,Niteracion)=caract;
-                eigenvectors{1,Niteracion} = V;
+                eigenvectors{Niteracion} = W{1,Niteracion}' * vector_caracteristicas_defi;
                 
                 Niteracion=Niteracion+1;
             end
