@@ -15,6 +15,8 @@ function [ weightCC ] = calculateWeightOfSelectedCC( OriginalMatrix, Points, ind
         Points(y, :) = Points(y, :)/norm(Points(y, :));
     end
     
-    weightCC = OriginalMatrix' * Points';
+    %It may has an error here! but you should only change the transpose not
+    %the variables nor the operation itself.
+    weightCC = OriginalMatrix' \ Points';
 end
 
