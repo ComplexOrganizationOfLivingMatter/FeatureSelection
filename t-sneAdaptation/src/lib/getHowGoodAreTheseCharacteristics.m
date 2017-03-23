@@ -2,10 +2,10 @@ function [ goodness, projection ] = getHowGoodAreTheseCharacteristics(characteri
 %GETHOWGOODARETHESECHARACTERISTICS Summary of this function goes here
 %   Detailed explanation goes here
     %% ---- PCA feature selection -----%
-%     %% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
+    %% Obtencion de numeros a partir de graficas metodo3 (LUCIANO)
 %     [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(characteristics, labels, 2);
 %     C = sinterluc/sintraluc;
-%     Ratio_pca(1, Niteracion) = trace(C);
+%     goodness = trace(C);
 %     projection = eigenvectors' * characteristics;
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
@@ -13,7 +13,8 @@ function [ goodness, projection ] = getHowGoodAreTheseCharacteristics(characteri
     [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, 2);
     C = sinterluc/sintraluc;
     goodness = trace(C);
-    projection = L;
+    weights = characteristics \ L;
+    projection = characteristics * weights;
 %     %% ---- TuMetodo ----%
 %     res = fitcdiscr(characteristics, labels');
 %     resClass = resubPredict(res);
