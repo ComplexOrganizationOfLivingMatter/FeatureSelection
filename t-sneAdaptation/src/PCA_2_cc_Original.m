@@ -254,7 +254,7 @@ Proy = proyEachStep{numIter};
 Proyecc=Proy{1,1}';
 h=figure; plot(Proyecc(1,1:n_img_tipo1),Proyecc(2,1:n_img_tipo1),'.g','MarkerSize',30)
 hold on, plot(Proyecc(1,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),Proyecc(2,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),'.r','MarkerSize',30)
-legend(n_t1,n_t2)
+legend(n_t1,n_t2, 'Location', 'best')
 
 categorization(1:n_img_tipo1) = {n_t1};
 categorization(n_img_tipo1+1:n_imagenes) = {n_t2};
