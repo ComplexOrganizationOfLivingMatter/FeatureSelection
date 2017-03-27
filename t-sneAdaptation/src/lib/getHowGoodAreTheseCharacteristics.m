@@ -14,7 +14,7 @@ function [ goodness, projection ] = getHowGoodAreTheseCharacteristics(characteri
     C = sinterluc/sintraluc;
     goodness = trace(C);
     weights = characteristics \ L;
-    projection = characteristics * weights;
+    projection = characteristics * normalizeVector(weights);
 %     %% ---- TuMetodo ----%
 %     res = fitcdiscr(characteristics, labels');
 %     resClass = resubPredict(res);
