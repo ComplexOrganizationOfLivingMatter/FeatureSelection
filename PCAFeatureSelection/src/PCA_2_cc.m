@@ -1,12 +1,14 @@
 %%PCA_2_cc
 function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
-
-    %Summary of process:
-    % 1-Calculate 10 betters trios
-    % 2-Compare each individual cc VS each of 10 trios. Getting 5 betters descriptors by trio, with a total of 50 quartets of cc (5x10)
-    % 3-Repeat process before saving 2 best cc for quartets (5x10x2). Total of 100 quintets
-    % Finally, adding a 'cc' until 7 ccs or until get lower descriptor of PCA
-    % than step before.
+%
+% Summary of process:
+% 1-Calculate 10 betters trios
+% 2-Compare each individual cc VS each of 10 trios. Getting 5 betters descriptors by trio, with a total of 50 quartets of cc (5x10)
+% 3-Repeat process before saving 2 best cc for quartets (5x10x2). Total of 100 quintets
+% Finally, adding a 'cc' until 7 ccs or until get lower descriptor of PCA
+% than step before.
+% 
+% Developed by Pedro Gomez-Galvez
 
     %Define expansion in process
     expansion=[5 2 1 1];
