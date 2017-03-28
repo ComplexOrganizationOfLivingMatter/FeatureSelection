@@ -7,8 +7,8 @@ for rowCCs=1:size(BetterPCAs_bef,1)
     ccsRow=BetterPCAs_bef(rowCCs,2:size(BetterPCAs_bef,2));
     
     for nCC=1:size(matrixAllCCs,2)
-       matrixChosenCcs = matrixAllCCs(:,ccsRow);
-        if isempty(find(nCC==ccsRow))==1
+        if sum(nCC == ccsRow) == 0 && sum(0 == ccsRow) == 0
+            matrixChosenCcs = matrixAllCCs(:,ccsRow);
             p1=sum(matrixAllCCs(:,nCC));
             % all ccs nan or 0. PCA & eigenvectors = 0
             if p1==0
@@ -28,7 +28,7 @@ for rowCCs=1:size(BetterPCAs_bef,1)
                 
                 %% PCA
                 [W,eigenvectors,Ratio_pca] = calculateProjectionValues(matrixChosenCcs, Niteration, nImgType1,nImgType2, W, eigenvectors, Ratio_pca, [ccsRow,nCC], usedMethod);
-                    
+                
             end
             Niteration=Niteration+1;
         end
