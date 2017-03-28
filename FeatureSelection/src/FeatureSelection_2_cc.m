@@ -125,16 +125,17 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
     Proy = proyEachStep{numIter};
     Proy = Proy{numRow};
 
-
-    mkdir('results');
-    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'weightsOfCharacteristics')
-
     %%Represent Luisma format
     Proyecc=Proy';
     h=figure; plot(Proyecc(1,1:nImgType1),Proyecc(2,1:nImgType1),'.g','MarkerSize',30)
     hold on, plot(Proyecc(1,nImgType1+1:nImgType1+nImgType2),Proyecc(2,nImgType1+1:nImgType1+nImgType2),'.r','MarkerSize',30)
     legend(name_t1, name_t2, 'Location', 'Best');
 
+    [sensitivity, specifity, classifierResult] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
+    
+    mkdir('results');
+    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classifierResult');
+    
     stringres=strcat(num2str(indexesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
     title(stringres)
     saveas(h,['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '.jpg'])
