@@ -1,4 +1,4 @@
-function [BetterPCAs,Proy, eigenvectorsF]=add_cc_original(BetterPCAs_bef,matrixAllCCs,expansion,nImgType1,nImgType2)
+function [BetterPCAs,Proy, eigenvectorsF]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion,nImgType1,nImgType2, usedMethod)
 count=0;
 Niteration=1;
 BetterPCAs=[];
@@ -20,17 +20,17 @@ for rowCCs=1:size(BetterPCAs_bef,1)
                 
                 %Include CC to CCs before
                 matrixChosenCcs=[matrixChosenCcs,matrixAllCCs(:,nCC)];
-
+                
                 %normalize matrixes
                 for charac=1:size(matrixChosenCcs,2)
                     matrixChosenCcs(:,charac)=matrixChosenCcs(:,charac)-min(matrixChosenCcs(:,charac));
                     matrixChosenCcs(:,charac)=matrixChosenCcs(:,charac)/max(matrixChosenCcs(:,charac));
                 end
                 matrixChosenCcs(isnan(matrixChosenCcs))=0;% 0 NaNs
-
+                
                 %% PCA
-                [W,eigenvectors,Ratio_pca] = calculatePCAValues(matrixChosenCcs, Niteration, nImgType1,nImgType2, W, eigenvectors, Ratio_pca, [ccsRow,nCC]);
-            
+                [W,eigenvectors,Ratio_pca] = calculateProjectionValues(matrixChosenCcs, Niteration, nImgType1,nImgType2, W, eigenvectors, Ratio_pca, [ccsRow,nCC], usedMethod);
+                    
             end
             Niteration=Niteration+1;
         end
@@ -49,7 +49,7 @@ for rowCCs=1:size(BetterPCAs_bef,1)
             
             %Checked former rows comparing with new row
             r=1;
-            while r<size(BetterPCAs,1)+1                  
+            while r<size(BetterPCAs,1)+1
                 if length(find(sort(BetterPCAs(r,2:end))==sort(newPCARow(1,2:end))))==size(BetterPCAs,2)-1
                     auxiliar(1,maxPcaIndex)=0;
                     [~, maxPcaIndex]=max(auxiliar);
@@ -71,10 +71,10 @@ for rowCCs=1:size(BetterPCAs_bef,1)
                 auxiliar(1,maxPcaIndex)=0;
             end
             
-        %When BetterPCAs isempty add row
+            %When BetterPCAs isempty add row
         else
             [BetterPCAs(count+i,1) maxPcaIndex]=max(auxiliar);
-
+            
             for j=2:size(BetterPCAs_bef,2)
                 BetterPCAs(count+i,j)=BetterPCAs_bef(rowCCs,j);
             end
@@ -86,7 +86,7 @@ for rowCCs=1:size(BetterPCAs_bef,1)
         end
     end
     
-   
+    
     count=count+expansion;
     clear W Ratio_pca
 end

@@ -1,4 +1,4 @@
-function [W, weightsOfCharacteristics, Ratio_pca] = calculatePCAValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,weightsOfCharacteristics,Ratio_pca,ccsChosen)
+function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,weightsOfCharacteristics,Ratio_pca,ccsChosen)
             
         %Operations to calculate PCA ratio and weight
         X=matrixChosenCcs';
@@ -9,7 +9,7 @@ function [W, weightsOfCharacteristics, Ratio_pca] = calculatePCAValues(matrixCho
         end
         
         L = X'*X;
-          
+        
         %Calculate autovectors/eigenvalues
         [eigenvectors,eigenvalues] = eig(L);
         [sortedEigenvalues, ind]=sort(diag(eigenvalues),'descend');   % sort eigenvalues
@@ -31,8 +31,8 @@ function [W, weightsOfCharacteristics, Ratio_pca] = calculatePCAValues(matrixCho
         [goodnessOfMethod, W{1,nIteration}] = getHowGoodAreTheseCharacteristics(matrixChosenCcs, label, V);
 
         %ratio pca,cc1,cc2,cc3
-        Ratio_pca(:,nIteration)=[goodnessOfMethod; ccsChosen(:)];
+        Ratio_pca(:, nIteration)=[goodnessOfMethod; ccsChosen(:)];
 
         %% Store eigenvectors
-        weightsOfCharacteristics{nIteration} = matrixChosenCcs \ W{1,nIteration}; 
+        weightsOfCharacteristics{nIteration} = matrixChosenCcs \ W{1, nIteration}; 
 end

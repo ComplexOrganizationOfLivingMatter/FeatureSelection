@@ -1,5 +1,5 @@
 %%PCA_2_cc
-function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
+function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMethod)
 %
 % Summary of process:
 % 1-Calculate 10 betters trios
@@ -7,9 +7,8 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
 % 3-Repeat process before saving 2 best cc for quartets (5x10x2). Total of 100 quintets
 % Finally, adding a 'cc' until 7 ccs or until get lower descriptor of PCA
 % than step before.
-% 
+%
 % Developed by Pedro Gomez-Galvez
-
     %Define expansion in process
     expansion=[10 10 5 1];
     maxExpansion=4; %exted expansion array for more complexity
@@ -46,21 +45,21 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
     for cc1=1:n_totalCcs-2
         for cc2=cc1+1:n_totalCcs-1
             for cc3=cc2+1:n_totalCcs
-                 %Include trio of ccs for all images
-                 matrixChosenCcs(:,1:3)=[matrixAllCCs(:,cc1) ,matrixAllCCs(:,cc2),matrixAllCCs(:,cc3)];
+                %Include trio of ccs for all images
+                matrixChosenCcs(:,1:3)=[matrixAllCCs(:,cc1) ,matrixAllCCs(:,cc2),matrixAllCCs(:,cc3)];
 
-                 %Normalizing each cc
-                 for cc=1:3
+                %Normalizing each cc
+                for cc=1:3
                     matrixChosenCcs(:,cc)=matrixChosenCcs(:,cc)-min(matrixChosenCcs(:,cc));
-                    matrixChosenCcs(:,cc)=matrixChosenCcs(:,cc)/max(matrixChosenCcs(:,cc));  
-                 end
+                    matrixChosenCcs(:,cc)=matrixChosenCcs(:,cc)/max(matrixChosenCcs(:,cc));
+                end
 
-                 %3 cc for all images
-                 matrixChosenCcs(isnan(matrixChosenCcs))=0;% Do 0 all NaN
+                %3 cc for all images
+                matrixChosenCcs(isnan(matrixChosenCcs))=0;% Do 0 all NaN
 
                 %Calculate proyections, eigenvectors and ratios of PCA
                 %accumulative
-                [W,weightsOfCharacteristics,Ratio_pca]=calculatePCAValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,weightsOfCharacteristics,Ratio_pca,[cc1,cc2,cc3]);
+                [W,weightsOfCharacteristics,Ratio_pca]=calculateProjectionValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,weightsOfCharacteristics,Ratio_pca,[cc1,cc2,cc3], usedMethod);
 
                 %counter + 1
                 nIteration=nIteration+1;
@@ -94,7 +93,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
         expansionIndex
         BetterPCAs_bef=BetterPCAs;
         clear Proy
-        [BetterPCAs,Proy, weightsOfCharacteristics]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion(expansionIndex),nImgType1,nImgType2);
+        [BetterPCAs,Proy, weightsOfCharacteristics]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion(expansionIndex),nImgType1,nImgType2, usedMethod);
 
         % Sort BetterPCAs from best to worst PCA
         [BetterPCAs rowOrder]=sortrows(BetterPCAs,-1);
@@ -128,17 +127,17 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
 
 
     mkdir('results');
-    save( ['results\PCAFeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'weightsOfCharacteristics')
+    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'weightsOfCharacteristics')
 
     %%Represent Luisma format
-    Proyecc=Proy;
+    Proyecc=Proy';
     h=figure; plot(Proyecc(1,1:nImgType1),Proyecc(2,1:nImgType1),'.g','MarkerSize',30)
     hold on, plot(Proyecc(1,nImgType1+1:nImgType1+nImgType2),Proyecc(2,nImgType1+1:nImgType1+nImgType2),'.r','MarkerSize',30)
     legend(name_t1, name_t2, 'Location', 'Best');
-    
+
     stringres=strcat(num2str(indexesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
     title(stringres)
-    saveas(h,['results\PCAFeatureSelection_' name_t1 '_' name_t2 '.jpg'])
+    saveas(h,['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '.jpg'])
 
     close all
 end
