@@ -17,7 +17,7 @@ elseif isequal(lower(usedMethod), lower('DA'))
     C = sinterluc/sintraluc;
     goodness = trace(C);
     weights = characteristics \ L;
-    projection = characteristics * weights;
+    projection = characteristics * normalizeVector(weights);
 end
 %     %% ---- TuMetodo ----%
 %     res = fitcdiscr(characteristics, labels');
