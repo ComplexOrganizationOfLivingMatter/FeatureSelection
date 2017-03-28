@@ -9,7 +9,7 @@ if isequal(lower(usedMethod), lower('PCA'))
     [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(projection, labels, 2);
     C = sinterluc/sintraluc;
     goodness = trace(C);
-elseif isequal(lower(method), lower('DA'))
+elseif isequal(lower(usedMethod), lower('DA'))
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
     L = [ones(size(characteristics, 1), 1) characteristics] * W';
