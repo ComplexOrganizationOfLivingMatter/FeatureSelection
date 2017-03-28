@@ -119,7 +119,7 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
     [~, numIter] = max(cellfun(@(x) max(x(:,1)), BettersPCAEachStep));
     bestIterationPCA = BettersPCAEachStep{numIter};
     [bestPCA, numRow] = max(bestIterationPCA(:, 1));
-    indexesCcsSelected=bestIterationPCA(numRow, 2:size(bestIterationPCA,2));
+    indicesCcsSelected=bestIterationPCA(numRow, 2:size(bestIterationPCA,2));
     weightsOfCharacteristics = weightsEachStep{numIter};
     weightsOfCharacteristics = weightsOfCharacteristics{numRow};
     Proy = proyEachStep{numIter};
@@ -134,9 +134,9 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
     [sensitivity, specifity, classifierResult] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
     
     mkdir('results');
-    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classifierResult');
+    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classifierResult');
     
-    stringres=strcat(num2str(indexesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
+    stringres=strcat(num2str(indicesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
     title(stringres)
     saveas(h,['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '.jpg'])
 
