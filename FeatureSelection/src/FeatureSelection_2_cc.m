@@ -134,7 +134,7 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
      [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
     
     mkdir('results');
-    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classifierResult', 'AUC', 'VPpositive', 'VPnegative');
+    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
     
     stringres=strcat(num2str(indicesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
     title(stringres)

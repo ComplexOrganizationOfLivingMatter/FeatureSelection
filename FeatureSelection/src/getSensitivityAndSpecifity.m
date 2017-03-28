@@ -14,8 +14,8 @@ hold off;
 
 sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
 specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
-[~, score] = resubPredict(classificationInfo);
-[~, ~, ~, AUC] = perfcurve(classificationInfo.Y, score(:, 2), name_t2);
+[~, score] = resubPredict(res);
+[~, ~, ~, AUC] = perfcurve(res.Y, score(:, 2), name_t2);
 
 VPpositive = resResubCM(2, 2) / (resResubCM(2, 2) + resResubCM(1, 2)) * 100;
 VPnegative = resResubCM(1, 1) / (resResubCM(1, 1) + resResubCM(2, 1)) * 100;
