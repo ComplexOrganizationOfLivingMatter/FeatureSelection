@@ -34,5 +34,5 @@ function [W, weightsOfCharacteristics, Ratio_pca] = calculatePCAValues(matrixCho
         Ratio_pca(:,nIteration)=[goodnessOfMethod; ccsChosen(:)];
 
         %% Store eigenvectors
-        weightsOfCharacteristics{nIteration} = V; 
+        weightsOfCharacteristics{nIteration} = matrixChosenCcs \ W{1,nIteration}; 
 end

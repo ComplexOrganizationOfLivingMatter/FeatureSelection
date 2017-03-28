@@ -11,7 +11,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
 % Developed by Pedro Gomez-Galvez
 
     %Define expansion in process
-    expansion=[10 10 10 5];
+    expansion=[10 10 5 1];
     maxExpansion=4; %exted expansion array for more complexity
 
     %% Parameters Initialization
@@ -42,7 +42,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
 
     %% Calculate all trios of characteristics
     nIteration=1;
-    W={};eigenvectors={};Ratio_pca=[];
+    W={};weightsOfCharacteristics={};Ratio_pca=[];
     for cc1=1:n_totalCcs-2
         for cc2=cc1+1:n_totalCcs-1
             for cc3=cc2+1:n_totalCcs
@@ -60,7 +60,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
 
                 %Calculate proyections, eigenvectors and ratios of PCA
                 %accumulative
-                [W,eigenvectors,Ratio_pca]=calculatePCAValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,eigenvectors,Ratio_pca,[cc1,cc2,cc3]);
+                [W,weightsOfCharacteristics,Ratio_pca]=calculatePCAValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,weightsOfCharacteristics,Ratio_pca,[cc1,cc2,cc3]);
 
                 %counter + 1
                 nIteration=nIteration+1;
@@ -75,8 +75,8 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
     [~, indexBetter]=sort(auxiliar,'descend');
     indexBetter=indexBetter(1:nOfBest);
     BetterPCAs(1:nOfBest,1:4)=[Ratio_pca(1,indexBetter);Ratio_pca(2,indexBetter);Ratio_pca(3,indexBetter);Ratio_pca(4,indexBetter)]';
-    best_eigenvectors = eigenvectors(indexBetter);
-    eigenvectors = best_eigenvectors;
+    best_weights = weightsOfCharacteristics(indexBetter);
+    weightsOfCharacteristics = best_weights;
     Proy=W(1,indexBetter);
 
 
@@ -86,7 +86,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
 
 
     BettersPCAEachStep{1} = BetterPCAs;
-    eigenvectorsEachStep{1} = best_eigenvectors;
+    weightsEachStep{1} = best_weights;
     proyEachStep{1} = Proy';
 
     %Max of 4 expansions.
@@ -94,17 +94,17 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
         expansionIndex
         BetterPCAs_bef=BetterPCAs;
         clear Proy
-        [BetterPCAs,Proy, eigenvectors]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion(expansionIndex),nImgType1,nImgType2);
+        [BetterPCAs,Proy, weightsOfCharacteristics]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion(expansionIndex),nImgType1,nImgType2);
 
         % Sort BetterPCAs from best to worst PCA
         [BetterPCAs rowOrder]=sortrows(BetterPCAs,-1);
 
         for i=1:size(rowOrder,1)
             Proyb{i,1}=Proy{rowOrder(i),1};
-            eigenvectorsb{i,1} = eigenvectors(rowOrder(i), 1);
+            weightssb{i,1} = weightsOfCharacteristics(rowOrder(i), 1);
         end
         Proy=Proyb;
-        eigenvectors = eigenvectorsb;
+        weightsOfCharacteristics = weightssb;
         clear eigenvectorsb
         clear Proyb
 
@@ -112,7 +112,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
         expansionIndex=expansionIndex+1;
 
         BettersPCAEachStep{expansionIndex} = BetterPCAs;
-        eigenvectorsEachStep{expansionIndex} = eigenvectors;
+        weightsEachStep{expansionIndex} = weightsOfCharacteristics;
         proyEachStep{expansionIndex} = Proy;
     end
 
@@ -121,14 +121,14 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
     bestIterationPCA = BettersPCAEachStep{numIter};
     [bestPCA, numRow] = max(bestIterationPCA(:, 1));
     indexesCcsSelected=bestIterationPCA(numRow, 2:size(bestIterationPCA,2));
-    eigenvectors = eigenvectorsEachStep{numIter};
-    eigenvectors = eigenvectors{numRow};
+    weightsOfCharacteristics = weightsEachStep{numIter};
+    weightsOfCharacteristics = weightsOfCharacteristics{numRow};
     Proy = proyEachStep{numIter};
     Proy = Proy{numRow};
 
 
     mkdir('results');
-    save( ['results\PCAFeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'eigenvectors')
+    save( ['results\PCAFeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'weightsOfCharacteristics')
 
     %%Represent Luisma format
     Proyecc=Proy;
@@ -136,7 +136,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
     hold on, plot(Proyecc(1,nImgType1+1:nImgType1+nImgType2),Proyecc(2,nImgType1+1:nImgType1+nImgType2),'.r','MarkerSize',30)
     legend(name_t1, name_t2, 'Location', 'Best');
     
-    stringres=strcat(num2str(indexesCcsSelected));
+    stringres=strcat(num2str(indexesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
     title(stringres)
     saveas(h,['results\PCAFeatureSelection_' name_t1 '_' name_t2 '.jpg'])
 
