@@ -11,7 +11,7 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
 % Developed by Pedro Gomez-Galvez
 
     %Define expansion in process
-    expansion=[5 2 1 1];
+    expansion=[10 10 10 5];
     maxExpansion=4; %exted expansion array for more complexity
 
     %% Parameters Initialization
@@ -127,17 +127,18 @@ function PCA_2_cc(matrix_t1, matrix_t2, name_t1, name_t2)
     Proy = Proy{numRow};
 
 
-    save( ['D:\Pedro\Mouse muscle SOD1\PCA_data\PCA_data_by_groups\PCA_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'eigenvectors')
+    mkdir('results');
+    save( ['results\PCAFeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indexesCcsSelected', 'eigenvectors')
 
     %%Represent Luisma format
     Proyecc=Proy;
     h=figure; plot(Proyecc(1,1:nImgType1),Proyecc(2,1:nImgType1),'.g','MarkerSize',30)
     hold on, plot(Proyecc(1,nImgType1+1:nImgType1+nImgType2),Proyecc(2,nImgType1+1:nImgType1+nImgType2),'.r','MarkerSize',30)
-    legend(
+    legend(name_t1, name_t2, 'Location', 'Best');
     
     stringres=strcat(num2str(indexesCcsSelected));
     title(stringres)
-    saveas(h,['D:\Pedro\Mouse muscle SOD1\PCA_data\PCA_data_by_groups\PCA_' name_t1 '_' name_t2 '.jpg'])
+    saveas(h,['results\PCAFeatureSelection_' name_t1 '_' name_t2 '.jpg'])
 
     close all
 end

@@ -29,7 +29,7 @@ for rowCCs=1:size(BetterPCAs_bef,1)
                 matrixChosenCcs(isnan(matrixChosenCcs))=0;% 0 NaNs
 
                 %% PCA
-                [W,eigenvectors,Ratio_pca]=calculaPCAforMatrix(matrixChosenCcs,Niteration,nImgType1,nImgType2,W,eigenvectors,Ratio_pca,[ccsRow,nCC]);
+                [W,eigenvectors,Ratio_pca] = calculatePCAValues(matrixChosenCcs, Niteration, nImgType1,nImgType2, W, eigenvectors, Ratio_pca, [ccsRow,nCC]);
             
             end
             Niteration=Niteration+1;
