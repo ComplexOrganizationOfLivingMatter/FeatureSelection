@@ -131,10 +131,10 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
     hold on, plot(Proyecc(1,nImgType1+1:nImgType1+nImgType2),Proyecc(2,nImgType1+1:nImgType1+nImgType2),'.r','MarkerSize',30)
     legend(name_t1, name_t2, 'Location', 'Best');
 
-    [sensitivity, specifity, classifierResult] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
+     [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
     
     mkdir('results');
-    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classifierResult');
+    save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs)], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classifierResult', 'AUC', 'VPpositive', 'VPnegative');
     
     stringres=strcat(num2str(indicesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
     title(stringres)

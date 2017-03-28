@@ -1,4 +1,4 @@
-function [ sensitivity, specifity, res] = getSensitivityAndSpecifity( length_t1, name_t1, totalImages, name_t2, projection)
+function [ sensitivity, specifity, res, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( length_t1, name_t1, totalImages, name_t2, projection)
 %GETSENSITIVITYANDSPECIFITY Summary of this function goes here
 %   Detailed explanation goes here
 categorization(1:length_t1) = {name_t1};
@@ -14,5 +14,10 @@ hold off;
 
 sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
 specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+[~, score] = resubPredict(classificationInfo);
+[~, ~, ~, AUC] = perfcurve(classificationInfo.Y, score(:, 2), name_t2);
+
+VPpositive = resResubCM(2, 2) / (resResubCM(2, 2) + resResubCM(1, 2)) * 100;
+VPnegative = resResubCM(1, 1) / (resResubCM(1, 1) + resResubCM(2, 1)) * 100;
 end
 
