@@ -89,3 +89,6 @@ for rowCCs=1:size(BetterPCAs_bef,1)
     clear W Ratio_pca
 end
 
+BetterPCAs(BetterPCAs(:, 1) <= 0, :) = [];
+end
+
