@@ -18,18 +18,24 @@ elseif isequal(lower(usedMethod), lower('DA'))
     goodness = trace(C);
     weights = characteristics \ L;
     projection = characteristics * normalizeVector(weights);
+elseif isequal(lower(usedMethod), lower('DANoProjections'))
+    res = fitcdiscr(characteristics, labels');
+    resClass = resubPredict(res);
+    [resResubCM, ~] = confusionmat(labels', resClass);
+    sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
+    specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+    
+    if (sensitivity < 20 || specifity < 20)
+        goodness = min(sensitivity, specifity);
+    else
+        goodness = pow2(specifity) + pow2(sensitivity);
+    end
+    
+    W = LDA(characteristics, labels');
+    L = [ones(size(characteristics, 1), 1) characteristics] * W';
+    weights = characteristics \ L;
+    projection = characteristics * normalizeVector(weights);
 end
-%     %% ---- TuMetodo ----%
-%     res = fitcdiscr(characteristics, labels');
-%     resClass = resubPredict(res);
-%     [resResubCM, ~] = confusionmat(labels', resClass);
-%     sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
-%     specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
-%     
-%     if (sensitivity < 20 || specifity < 20)
-%         goodness = min(sensitivity, specifity);
-%     else
-%         goodness = pow2(specifity) + pow2(sensitivity);
-%     end
+
 end
 
