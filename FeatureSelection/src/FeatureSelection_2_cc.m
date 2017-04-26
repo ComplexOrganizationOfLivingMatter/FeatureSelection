@@ -19,6 +19,7 @@ function FeatureSelection_2_cc(matrixAllCCs, labels, usedMethod)
     labelsCat = grp2idx(categorical(labels));
     labels = labels(isnan(labelsCat) == 0);
     matrixAllCCs = matrixAllCCs(isnan(labelsCat) == 0, :);
+    labelsCat = labelsCat(isnan(labelsCat)==0);
     
     %Selection of specified ccs
     totalCharactsIndexes=1:size(matrixAllCCs, 2); %num of columns
@@ -115,11 +116,24 @@ function FeatureSelection_2_cc(matrixAllCCs, labels, usedMethod)
 
     %%Represent Luisma format
     Proyecc=Proy';
-    h=figure; plot(Proyecc(1,1:nImgType1),Proyecc(2,1:nImgType1),'.g','MarkerSize',30)
-    hold on, plot(Proyecc(1,nImgType1+1:nImgType1+nImgType2),Proyecc(2,nImgType1+1:nImgType1+nImgType2),'.r','MarkerSize',30)
+    h=figure;
+    vColors = [0.0 0.2 0.0
+        1.0 0.4 0.0
+        0.2 0.8 1.0
+        0.0 0.6 0.0
+        1.0 0.0 0.0
+        0.8 0.8 0.8
+        0.2 0.6 0.6
+        0.0 0.0 0.6];
+    
+    for i = 1:max(labelsCat)
+        plot(Proyecc(1, labelsCat == i), Proyecc(2, labelsCat == i),'MarkerFaceColor', vColors(i, :), 'Marker', '.','MarkerSize',30, 'LineStyle', 'none')
+        hold on;
+    end
+    
     legend(name_t1, name_t2, 'Location', 'Best');
-
-     [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
+    
+    [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
     
     mkdir('results');
     save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
