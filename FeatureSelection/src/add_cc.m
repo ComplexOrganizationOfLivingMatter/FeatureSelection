@@ -1,4 +1,4 @@
-function [BetterPCAs,Proy, eigenvectorsF]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion,nImgType1,nImgType2, usedMethod)
+function [BetterPCAs,Proy, eigenvectorsF]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion, labels, usedMethod)
 count=0;
 Niteration=1;
 BetterPCAs=[];
@@ -27,7 +27,7 @@ for rowCCs=1:size(BetterPCAs_bef,1)
                 matrixChosenCcs(isnan(matrixChosenCcs))=0;% 0 NaNs
                 
                 %% PCA
-                [W,eigenvectors,Ratio_pca] = calculateProjectionValues(matrixChosenCcs, Niteration, nImgType1,nImgType2, W, eigenvectors, Ratio_pca, [ccsRow,nCC], usedMethod);
+                [W,eigenvectors,Ratio_pca] = calculateProjectionValues(matrixChosenCcs, Niteration, labels, W, eigenvectors, Ratio_pca, [ccsRow,nCC], usedMethod);
                     
             end
             Niteration=Niteration+1;
