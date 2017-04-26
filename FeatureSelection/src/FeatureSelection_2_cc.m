@@ -135,7 +135,7 @@ function FeatureSelection_2_cc(matrixAllCCs, labels, usedMethod)
     
     mkdir('results');
     if max(labelsCat) == 2
-        [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
+        [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity(labels , Proyecc);
         save( ['results\' lower(usedMethod) 'FeatureSelection_' strjoin(unique(labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
     else
         save( ['results\' lower(usedMethod) 'FeatureSelection_' strjoin(unique(labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics');
