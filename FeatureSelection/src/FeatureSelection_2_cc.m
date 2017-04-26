@@ -143,7 +143,7 @@ function FeatureSelection_2_cc(matrixAllCCs, labels, usedMethod)
     
     stringres=strcat(num2str(indicesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
     title(stringres)
-    saveas(h,['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs) '_' date '.jpg'])
+    saveas(h,['results\' lower(usedMethod) 'FeatureSelection_' strjoin(unique(labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date '.jpg'])
 
     close all
 end
