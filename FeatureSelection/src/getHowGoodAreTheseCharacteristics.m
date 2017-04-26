@@ -13,6 +13,7 @@ elseif isequal(lower(usedMethod), lower('DA'))
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
     L = [ones(size(characteristics, 1), 1) characteristics] * W';
+    L = L(:, 1:2);
     [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, max(labels));
     C = sinterluc/sintraluc;
     goodness = trace(C);
