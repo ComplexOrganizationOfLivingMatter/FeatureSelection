@@ -1,4 +1,4 @@
-function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,weightsOfCharacteristics,Ratio_pca,ccsChosen, usedMethod)
+function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(matrixChosenCcs,nIteration, labels,W,weightsOfCharacteristics,Ratio_pca,ccsChosen, usedMethod)
             
         %Operations to calculate PCA ratio and weight
         X=matrixChosenCcs';
@@ -27,8 +27,8 @@ function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(ma
         
 
         %% Getting numbers from method3 graphics (LUCIANO) and Storing PCA Ratio for chosen ccs
-        label=[ones(1, nImgType1), 2*ones(1,nImgType2)];
-        [goodnessOfMethod, W{1,nIteration}] = getHowGoodAreTheseCharacteristics(matrixChosenCcs, label, V, usedMethod);
+        labelsCat = grp2idx(categorical(labels));
+        [goodnessOfMethod, W{1,nIteration}] = getHowGoodAreTheseCharacteristics(matrixChosenCcs, labelsCat, V, usedMethod);
 
         %ratio pca,cc1,cc2,cc3
         Ratio_pca(:, nIteration)=[goodnessOfMethod; ccsChosen(:)];

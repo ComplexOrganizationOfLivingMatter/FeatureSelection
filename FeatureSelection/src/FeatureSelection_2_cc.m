@@ -1,5 +1,5 @@
 %%PCA_2_cc
-function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMethod)
+function FeatureSelection_2_cc(matrixAllCCs, labels, usedMethod)
 %
 % Summary of process:
 % 1-Calculate 10 betters trios
@@ -14,30 +14,18 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
     maxExpansion=4; %exted expansion array for more complexity
 
     %% Parameters Initialization
+    
+    %Removing uncategorized rows
+    labelsCat = grp2idx(categorical(labels));
+    labels = labels(isnan(labelsCat) == 0);
+    matrixAllCCs = matrixAllCCs(isnan(labelsCat) == 0, :);
+    
     %Selection of specified ccs
-    totalCharactsIndexes=1:size(matrix_t1, 2); %num of columns
-
-    %Asignation to groups by matrixes
-    % Group 1
-    matrixT1=matrix_t1;
-    nImgType1=size(matrixT1,1);
-
-    % Group 2
-    matrixT2=matrix_t2;
-    nImgType2=size(matrixT2,1);
-
-    %All ccs matrix
-    matrixAllCCs=[matrixT1;matrixT2];
+    totalCharactsIndexes=1:size(matrixAllCCs, 2); %num of columns
 
     %Number of images and ccs
-    n_images=nImgType1+nImgType2;
+    n_images = size(matrixAllCCs, 1);
     n_totalCcs=length(totalCharactsIndexes);
-
-
-    %Unitary matrix by type. A column by class
-    unitaryMatrixByType=zeros([n_images,2]);
-    unitaryMatrixByType(1:nImgType1,1)=1;
-    unitaryMatrixByType(nImgType1+1:n_images,2)=1;
 
     %% Calculate all trios of characteristics
     nIteration=1;
@@ -59,7 +47,7 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
 
                 %Calculate proyections, eigenvectors and ratios of PCA
                 %accumulative
-                [W,weightsOfCharacteristics,Ratio_pca]=calculateProjectionValues(matrixChosenCcs,nIteration,nImgType1,nImgType2,W,weightsOfCharacteristics,Ratio_pca,[cc1,cc2,cc3], usedMethod);
+                [W,weightsOfCharacteristics,Ratio_pca]=calculateProjectionValues(matrixChosenCcs,nIteration, labels, W,weightsOfCharacteristics,Ratio_pca,[cc1,cc2,cc3], usedMethod);
 
                 %counter + 1
                 nIteration=nIteration+1;

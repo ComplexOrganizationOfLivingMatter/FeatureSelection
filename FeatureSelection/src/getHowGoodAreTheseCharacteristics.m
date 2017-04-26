@@ -6,14 +6,14 @@ if isequal(lower(usedMethod), lower('PCA'))
     % Luciano's Method: As grouped and clusters go further from each other
     % the better.
     projection = characteristics * weightsOfCharac;
-    [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(projection, labels, 2);
+    [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(projection, labels, max(labels));
     C = sinterluc/sintraluc;
     goodness = trace(C);
 elseif isequal(lower(usedMethod), lower('DA'))
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
     L = [ones(size(characteristics, 1), 1) characteristics] * W';
-    [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, 2);
+    [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, max(labels));
     C = sinterluc/sintraluc;
     goodness = trace(C);
     weights = characteristics \ L;
