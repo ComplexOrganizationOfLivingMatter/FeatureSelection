@@ -81,7 +81,7 @@ function FeatureSelection_2_cc(matrixAllCCs, labels, usedMethod)
         expansionIndex
         BetterPCAs_bef=BetterPCAs;
         clear Proy
-        [BetterPCAs,Proy, weightsOfCharacteristics]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion(expansionIndex),nImgType1,nImgType2, usedMethod);
+        [BetterPCAs,Proy, weightsOfCharacteristics]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion(expansionIndex), labels, usedMethod);
 
         % Sort BetterPCAs from best to worst PCA
         [BetterPCAs rowOrder]=sortrows(BetterPCAs,-1);
