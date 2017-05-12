@@ -6,17 +6,30 @@ if isequal(lower(usedMethod), lower('PCA'))
     % Luciano's Method: As grouped and clusters go further from each other
     % the better.
     projection = characteristics * weightsOfCharac;
-    [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(projection, labels, max(labels));
+    [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(projection, labels, max(labels));
     C = sinterluc/sintraluc;
     goodness = trace(C);
 elseif isequal(lower(usedMethod), lower('DA'))
+    %% ----- Neighborhood component analysis (NCA)------%
+    mdl = fscnca(characteristics, labels);
+    [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(L, labels, max(labels));
+    C = sinterluc/sintraluc;
+    goodness = trace(C);
+    %clustered = evalclusters(L, labels, 'silhouette');
+    %seperated = evalclusters(L, labels, 'CalinskiHarabasz');
+    weights = characteristics \ L;
+    projection = characteristics * normalizeVector(weights);
+elseif isequal(lower(usedMethod), lower('NCA'))
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
     L = [ones(size(characteristics, 1), 1) characteristics] * W';
     L = L(:, 1:2);
-    [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, max(labels));
+    [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(L, labels, max(labels));
     C = sinterluc/sintraluc;
     goodness = trace(C);
+    %clustered = evalclusters(L, labels, 'silhouette');
+    %seperated = evalclusters(L, labels, 'CalinskiHarabasz');
+    goodness = clustered.CriterionValues + seperated.CriterionValues/100;
     weights = characteristics \ L;
     projection = characteristics * normalizeVector(weights);
 elseif isequal(lower(usedMethod), lower('DANoProjections'))
