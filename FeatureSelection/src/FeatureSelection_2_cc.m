@@ -131,7 +131,25 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
     hold on, plot(Proyecc(1,nImgType1+1:nImgType1+nImgType2),Proyecc(2,nImgType1+1:nImgType1+nImgType2),'.r','MarkerSize',30)
     legend(name_t1, name_t2, 'Location', 'Best');
 
-     [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc);
+    if isequal(lower(usedMethod), lower('LogisticRegression'))
+        categorization(1:nImgType1) = 0;
+        categorization(nImgType1+1:nImgType1+nImgType2) = 1;
+        characteristics = matrixAllCCs(:, indicesCcsSelected);
+        [b,~,~] = glmfit(characteristics, categorization', 'binomial','logit'); % Logistic regression
+        yfit = 1 ./ (1 + exp(-(b(1) + characteristics * (b(2:end))))); % Same as  yfit = glmval(b, characteristics, 'logit')';
+        resClass = (yfit > 0.5); %0.35 works better
+        [resResubCM, ~] = confusionmat(logical(categorization'), resClass);
+        sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
+        specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+        
+        AUC = -1;
+
+        VPpositive = resResubCM(2, 2) / (resResubCM(2, 2) + resResubCM(1, 2)) * 100;
+        VPnegative = resResubCM(1, 1) / (resResubCM(1, 1) + resResubCM(2, 1)) * 100;
+    else
+        [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity( nImgType1, name_t1, n_images, name_t2, Proyecc, usedMethod);
+    end
+     
     
     mkdir('results');
     save( ['results\' lower(usedMethod) 'FeatureSelection_' name_t1 '_' name_t2 '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
