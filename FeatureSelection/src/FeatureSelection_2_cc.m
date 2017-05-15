@@ -143,6 +143,7 @@ function FeatureSelection_2_cc(matrix_t1, matrix_t2, name_t1, name_t2, usedMetho
         specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
         
         AUC = -1;
+        classificationResult = -1;
 
         VPpositive = resResubCM(2, 2) / (resResubCM(2, 2) + resResubCM(1, 2)) * 100;
         VPnegative = resResubCM(1, 1) / (resResubCM(1, 1) + resResubCM(2, 1)) * 100;
