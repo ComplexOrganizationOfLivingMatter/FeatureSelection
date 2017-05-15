@@ -162,7 +162,7 @@ classdef FeatureSelectionClass
             BetterPCAs(BetterPCAs(:, 1) <= 0, :) = [];
         end
         
-        function executeFeatureSelection(obj, usedCases)
+        function obj = executeFeatureSelection(obj, usedCases)
             %Removing uncategorized rows
             labelsCat = grp2idx(categorical(obj.labels));
             usedLabels = obj.labels(isnan(labelsCat) == 0);
@@ -271,10 +271,16 @@ classdef FeatureSelectionClass
                 indices = crossvalind('Kfold', obj.labels, maxFolds);
                 for numFold = 1:maxFolds
                     testSet = (indices == numFold); trainSet = ~testSet;
+                    obj = obj.executeFeatureSelection(trainSet);
+                    
                     labelsTest = obj.labels(testSet);
                     matrixTest = obj.matrixAllCases(testSet, :);
-                    obj.executeFeatureSelection(trainSet);
-                    resultsOfCrossValidation(numShuffle, numFold) = {obj.bestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest(:, obj.indicesCcsSelected), labelsTest, obj.weightsOfCharacteristics, obj.usedMethod)};
+                    %Removing uncategorized rows
+                    labelsTestCat = grp2idx(categorical(labelsTest));
+                    labelsTest = obj.labels(isnan(labelsTestCat) == 0);
+                    matrixTest = matrixTest(isnan(labelsTestCat) == 0, obj.indicesCcsSelected);
+                    labelsTestCat = grp2idx(categorical(labelsTest));
+                    resultsOfCrossValidation(numShuffle, numFold) = {obj.bestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest, labelsTestCat, obj.weightsOfCharacteristics, obj.usedMethod)};
                 end
             end
         end
