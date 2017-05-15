@@ -28,6 +28,12 @@ classdef FeatureSelectionClass
             obj.matrixAllCases = matrixAllCCs;
             obj.usedMethod = usedMethod;
             obj.matrixAllCases(isnan(obj.matrixAllCases) )= 0;% Do 0 all NaN
+            %normalize matrixes
+            for charac=1:size(obj.matrixAllCases,2)
+                obj.matrixAllCases(:,charac)=obj.matrixAllCases(:,charac)-min(obj.matrixAllCases(:,charac));
+                obj.matrixAllCases(:,charac)=obj.matrixAllCases(:,charac)/max(obj.matrixAllCases(:,charac));
+            end
+            obj.matrixAllCases(isnan(obj.matrixAllCases))=0;% 0 NaNs
         end
         
         function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(obj, matrixChosenCcs,nIteration, labels,W,weightsOfCharacteristics,Ratio_pca,ccsChosen, usedMethod)
@@ -269,20 +275,22 @@ classdef FeatureSelectionClass
         
         function resultsOfCrossValidation = crossValidation(obj, maxShuffles, maxFolds)
             resultsOfCrossValidation = cell(maxShuffles, maxFolds);
-            for numShuffle = 1:maxShuffles
-                indices = crossvalind('Kfold', obj.labels, maxFolds);
+            labels = obj.labels;
+            parfor numShuffle = 1:maxShuffles
+                indices = crossvalind('Kfold', labels, maxFolds);
                 for numFold = 1:maxFolds
                     testSet = (indices == numFold); trainSet = ~testSet;
-                    obj = obj.executeFeatureSelection(trainSet);
+                    objResults = obj.executeFeatureSelection(trainSet);
                     
-                    labelsTest = obj.labels(testSet);
-                    matrixTest = obj.matrixAllCases(testSet, :);
+                    labelsTest = objResults.labels(testSet);
+                    matrixTest = objResults.matrixAllCases(testSet, :);
                     %Removing uncategorized rows
                     labelsTestCat = grp2idx(categorical(labelsTest));
-                    labelsTest = obj.labels(isnan(labelsTestCat) == 0);
-                    matrixTest = matrixTest(isnan(labelsTestCat) == 0, obj.indicesCcsSelected);
+                    labelsTest = objResults.labels(isnan(labelsTestCat) == 0);
+                    matrixTest = matrixTest(isnan(labelsTestCat) == 0, objResults.indicesCcsSelected);
                     labelsTestCat = grp2idx(categorical(labelsTest));
-                    resultsOfCrossValidation(numShuffle, numFold) = {obj.bestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest, labelsTestCat, obj.weightsOfCharacteristics, obj.usedMethod)};
+                    
+                    resultsOfCrossValidation(numShuffle, numFold) = {objResults.bestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest, labelsTestCat, objResults.weightsOfCharacteristics, objResults.usedMethod)};
                 end
             end
         end
