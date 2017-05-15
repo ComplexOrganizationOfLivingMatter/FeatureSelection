@@ -27,6 +27,7 @@ classdef FeatureSelectionClass
             obj.labels = labels;
             obj.matrixAllCases = matrixAllCCs;
             obj.usedMethod = usedMethod;
+            obj.matrixAllCases(isnan(obj.matrixAllCases) )= 0;% Do 0 all NaN
         end
         
         function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(obj, matrixChosenCcs,nIteration, labels,W,weightsOfCharacteristics,Ratio_pca,ccsChosen, usedMethod)
@@ -261,6 +262,7 @@ classdef FeatureSelectionClass
             obj.indicesCcsSelected = obj.usedCharacteristics(bestIterationPCA(numRow, 2:size(bestIterationPCA,2)));
             weightsOfCharacteristics = weightsEachStep{numIter};
             obj.weightsOfCharacteristics = weightsOfCharacteristics{numRow};
+            obj.weightsOfCharacteristics = obj.weightsOfCharacteristics{1};
             Proy = proyEachStep{numIter};
             obj.projection = Proy{numRow};
         end
