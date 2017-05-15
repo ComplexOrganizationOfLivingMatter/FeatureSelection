@@ -290,7 +290,7 @@ classdef FeatureSelectionClass
                     matrixTest = matrixTest(isnan(labelsTestCat) == 0, objResults.indicesCcsSelected);
                     labelsTestCat = grp2idx(categorical(labelsTest));
                     
-                    resultsOfCrossValidation(numShuffle, numFold) = {objResults.bestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest, labelsTestCat, objResults.weightsOfCharacteristics, objResults.usedMethod)};
+                    resultsOfCrossValidation(numShuffle, numFold) = {{objResults.bestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest, labelsTestCat, objResults.weightsOfCharacteristics, objResults.usedMethod)}};
                 end
             end
         end
