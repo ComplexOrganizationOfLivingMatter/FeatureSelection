@@ -13,16 +13,30 @@ elseif isequal(lower(usedMethod), lower('DA'))
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
     L = [ones(size(characteristics, 1), 1) characteristics] * W';
-    [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, 2);
+    L = L(:, 1:2);
+    [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(L, labels, max(labels));
     C = sinterluc/sintraluc;
     goodness = trace(C);
+    %clustered = evalclusters(L, labels, 'silhouette');
+    %seperated = evalclusters(L, labels, 'CalinskiHarabasz');
+    %goodness = clustered.CriterionValues + seperated.CriterionValues/100;
+    weights = characteristics \ L;
+    projection = characteristics * normalizeVector(weights);
+elseif isequal(lower(usedMethod), lower('NCA'))
+    %% ----- Neighborhood component analysis (NCA)------%
+    mdl = fscnca(characteristics, labels);
+    [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(mdl, labels, max(labels));
+    C = sinterluc/sintraluc;
+    goodness = trace(C);
+    %clustered = evalclusters(L, labels, 'silhouette');
+    %seperated = evalclusters(L, labels, 'CalinskiHarabasz');
     weights = characteristics \ L;
     projection = characteristics * normalizeVector(weights);
 elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     labels = labels - 1 ;
-    [b,~,~] = glmfit(characteristics, labels', 'binomial','logit'); % Logistic regression
+    [b,~,~] = glmfit(characteristics, labels, 'binomial', 'logit'); % Logistic regression
     yfit = 1 ./ (1 + exp(-(b(1) + characteristics * (b(2:end))))); % Same as  yfit = glmval(b, characteristics, 'logit')';
-    [resResubCM, ~] = confusionmat(logical(labels'), (yfit > 0.5)); %0.35 works better
+    [resResubCM, ~] = confusionmat(logical(labels), (yfit > 0.5)); %0.35 works better
     sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
     specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
     if (sensitivity < 20 || specifity < 20)
