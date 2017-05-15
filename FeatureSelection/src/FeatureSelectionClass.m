@@ -29,7 +29,7 @@ classdef FeatureSelectionClass
             obj.usedMethod = usedMethod;
         end
         
-        function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(matrixChosenCcs,nIteration, labels,W,weightsOfCharacteristics,Ratio_pca,ccsChosen, usedMethod)
+        function [W, weightsOfCharacteristics, Ratio_pca] = calculateProjectionValues(obj, matrixChosenCcs,nIteration, labels,W,weightsOfCharacteristics,Ratio_pca,ccsChosen, usedMethod)
             
             %Operations to calculate PCA ratio and weight
             X=matrixChosenCcs';
@@ -97,7 +97,7 @@ classdef FeatureSelectionClass
                             matrixChosenCcs(isnan(matrixChosenCcs))=0;% 0 NaNs
                             
                             %% PCA
-                            [W,eigenvectors,Ratio_pca] = calculateProjectionValues(matrixChosenCcs, Niteration, labels, W, eigenvectors, Ratio_pca, [ccsRow,nCC], usedMethod);
+                            [W,eigenvectors,Ratio_pca] = obj.calculateProjectionValues(matrixChosenCcs, Niteration, labels, W, eigenvectors, Ratio_pca, [ccsRow,nCC], usedMethod);
                             
                         end
                         Niteration=Niteration+1;
@@ -198,7 +198,7 @@ classdef FeatureSelectionClass
                         
                         %Calculate proyections, eigenvectors and ratios of PCA
                         %accumulative
-                        [W,weightsOfCharacteristics,Ratio_pca] = calculateProjectionValues(matrixChosenCcs,nIteration, usedLabels, W, weightsOfCharacteristics, Ratio_pca,[cc1,cc2,cc3], obj.usedMethod);
+                        [W,weightsOfCharacteristics,Ratio_pca] = obj.calculateProjectionValues(matrixChosenCcs,nIteration, usedLabels, W, weightsOfCharacteristics, Ratio_pca,[cc1,cc2,cc3], obj.usedMethod);
                         
                         %counter + 1
                         nIteration=nIteration+1;
