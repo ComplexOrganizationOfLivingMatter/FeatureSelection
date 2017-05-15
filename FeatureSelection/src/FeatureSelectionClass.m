@@ -9,6 +9,7 @@ classdef FeatureSelectionClass
         maxExpansion
         matrixAllCases
         labels
+        usedCharacteristics
         %Results of execution
         indicesCcsSelected
         projection
@@ -17,27 +18,31 @@ classdef FeatureSelectionClass
     end
     
     methods
-        function obj = FeatureSelectionClass(labels, matrixAllCCs)
+        function obj = FeatureSelectionClass(labels, matrixAllCCs, usedMethod, usedCharacteristics)
             % all initializations, calls to base class, etc. here,
-               %Define expansion in process
-            obj.expansion=[1 1 1 1];
+            %Define expansion in process
+            obj.expansion=[10 10 5 1];
             obj.maxExpansion=4; %exted expansion array for more complexity
+            obj.usedCharacteristics = usedCharacteristics;
             obj.labels = labels;
-            obj.matrixAllCCs = matrixAllCCs;
+            obj.matrixAllCases = matrixAllCCs;
+            obj.usedMethod = usedMethod;
         end
         
-        function executeFeatureSelection(obj, usedCharacteristics)
+        function executeFeatureSelection(obj, usedCases)
             %Removing uncategorized rows
             labelsCat = grp2idx(categorical(obj.labels));
-            labels = obj.labels(isnan(labelsCat) == 0);
-            matrixAllCCs = obj.matrixAllCases(isnan(labelsCat) == 0, usedCharacteristics);
-            labelsCat = labelsCat(isnan(labelsCat)==0);
+            usedLabels = obj.labels(isnan(labelsCat) == 0);
+            usedMatrix = obj.matrixAllCases(isnan(labelsCat) == 0, obj.usedCharacteristics);
+            
+            %Filtering by usedCases
+            usedLabels = usedLabels(usedCases);
+            usedMatrix = usedMatrix(usedCases, :);
 
             %Selection of specified ccs
-            totalCharactsIndexes=1:size(matrixAllCCs, 2); %num of columns
+            totalCharactsIndexes=1:size(usedMatrix, 2); %num of columns
 
             %Number of images and ccs
-            n_images = size(matrixAllCCs, 1);
             n_totalCcs=length(totalCharactsIndexes);
 
             %% Calculate all trios of characteristics
@@ -47,7 +52,7 @@ classdef FeatureSelectionClass
                 for cc2=cc1+1:n_totalCcs-1
                     for cc3=cc2+1:n_totalCcs
                         %Include trio of ccs for all images
-                        matrixChosenCcs(:,1:3)=[matrixAllCCs(:,cc1) ,matrixAllCCs(:,cc2),matrixAllCCs(:,cc3)];
+                        matrixChosenCcs(:,1:3)=[usedMatrix(:,cc1) ,usedMatrix(:,cc2),usedMatrix(:,cc3)];
 
                         %Normalizing each cc
                         for cc=1:3
@@ -60,7 +65,7 @@ classdef FeatureSelectionClass
 
                         %Calculate proyections, eigenvectors and ratios of PCA
                         %accumulative
-                        [W,weightsOfCharacteristics,Ratio_pca]=calculateProjectionValues(matrixChosenCcs,nIteration, labels, W,weightsOfCharacteristics,Ratio_pca,[cc1,cc2,cc3], usedMethod);
+                        [W,weightsOfCharacteristics,Ratio_pca] = calculateProjectionValues(matrixChosenCcs,nIteration, usedLabels, W, weightsOfCharacteristics, Ratio_pca,[cc1,cc2,cc3], obj.usedMethod);
 
                         %counter + 1
                         nIteration=nIteration+1;
@@ -90,14 +95,14 @@ classdef FeatureSelectionClass
             proyEachStep{1} = Proy';
 
             %Max of 4 expansions.
-            while expansionIndex <= maxExpansion
+            while expansionIndex <= obj.maxExpansion
                 expansionIndex
                 BetterPCAs_bef=BetterPCAs;
                 clear Proy
-                [BetterPCAs,Proy, weightsOfCharacteristics]=add_cc(BetterPCAs_bef,matrixAllCCs,expansion(expansionIndex), labels, usedMethod);
+                [BetterPCAs,Proy, weightsOfCharacteristics]=add_cc(BetterPCAs_bef,usedMatrix, obj.expansion(expansionIndex), usedLabels, obj.usedMethod);
 
                 % Sort BetterPCAs from best to worst PCA
-                [BetterPCAs rowOrder]=sortrows(BetterPCAs,-1);
+                [BetterPCAs, rowOrder]=sortrows(BetterPCAs,-1);
 
                 for i=1:size(rowOrder,1)
                     Proyb{i,1}=Proy{rowOrder(i),1};
@@ -120,25 +125,23 @@ classdef FeatureSelectionClass
             [~, numIter] = max(cellfun(@(x) max(x(:,1)), BettersPCAEachStep));
             bestIterationPCA = BettersPCAEachStep{numIter};
             [obj.bestDescriptor, numRow] = max(bestIterationPCA(:, 1));
-            obj.indicesCcsSelected=bestIterationPCA(numRow, 2:size(bestIterationPCA,2));
+            obj.indicesCcsSelected = usedCharacteristics(bestIterationPCA(numRow, 2:size(bestIterationPCA,2)));
             weightsOfCharacteristics = weightsEachStep{numIter};
             obj.weightsOfCharacteristics = weightsOfCharacteristics{numRow};
             Proy = proyEachStep{numIter};
             obj.projection = Proy{numRow};
         end
         
-        function crossValidation(obj, maxShuffles, maxFolds)
+        function resultsOfCrossValidation = crossValidation(obj, maxShuffles, maxFolds)
             resultsOfCrossValidation = cell(maxShuffles, maxFolds);
             for numShuffle = 1:maxShuffles
-                indices = crossvalind('Kfold', class1, maxFolds);
+                indices = crossvalind('Kfold', obj.labels, maxFolds);
                 for numFold = 1:maxFolds
-                    test = (indices == numFold); train = ~test;
-                    class1Train = class1(train);
-                    class1Test = class1(test);
-                    matrixTrain = obj.matrixAllCCs(train, :);
-                    matrixTest = obj.matrixAllCCs(test, :);
-                    [valueOfBest, indicesCcsSelected] = FeatureSelection_2_cc(matrixTrain(class1Train, :), matrixTrain(class1Train == 0, :), nameFirstClass, nameSecondClass, obj.usedMethod);
-                    resultsOfCrossValidation(numShuffle, numFold) = {valueOfBest, getHowGoodAreTheseCharacteristics(matrixTest(:, indicesCcsSelected), class1Test, weightsOfCharac, obj.usedMethod)};
+                    testSet = (indices == numFold); trainSet = ~testSet;
+                    labelsTest = obj.labels(testSet);
+                    matrixTest = obj.matrixAllCases(testSet, :);
+                    obj.executeFeatureSelection(trainSet);
+                    resultsOfCrossValidation(numShuffle, numFold) = {obj.BestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest(:, obj.indicesCcsSelected), labelsTest, obj.weightsOfCharacteristics, obj.usedMethod)};
                 end
             end
         end
@@ -178,6 +181,5 @@ classdef FeatureSelectionClass
             close all
         end
     end
-    
 end
 
