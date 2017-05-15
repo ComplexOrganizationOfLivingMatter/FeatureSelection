@@ -258,7 +258,7 @@ classdef FeatureSelectionClass
             [~, numIter] = max(cellfun(@(x) max(x(:,1)), BettersPCAEachStep));
             bestIterationPCA = BettersPCAEachStep{numIter};
             [obj.bestDescriptor, numRow] = max(bestIterationPCA(:, 1));
-            obj.indicesCcsSelected = usedCharacteristics(bestIterationPCA(numRow, 2:size(bestIterationPCA,2)));
+            obj.indicesCcsSelected = obj.usedCharacteristics(bestIterationPCA(numRow, 2:size(bestIterationPCA,2)));
             weightsOfCharacteristics = weightsEachStep{numIter};
             obj.weightsOfCharacteristics = weightsOfCharacteristics{numRow};
             Proy = proyEachStep{numIter};
@@ -274,7 +274,7 @@ classdef FeatureSelectionClass
                     labelsTest = obj.labels(testSet);
                     matrixTest = obj.matrixAllCases(testSet, :);
                     obj.executeFeatureSelection(trainSet);
-                    resultsOfCrossValidation(numShuffle, numFold) = {obj.BestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest(:, obj.indicesCcsSelected), labelsTest, obj.weightsOfCharacteristics, obj.usedMethod)};
+                    resultsOfCrossValidation(numShuffle, numFold) = {obj.bestDescriptor, obj.indicesCcsSelected, getHowGoodAreTheseCharacteristics(matrixTest(:, obj.indicesCcsSelected), labelsTest, obj.weightsOfCharacteristics, obj.usedMethod)};
                 end
             end
         end
