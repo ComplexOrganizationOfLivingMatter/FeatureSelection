@@ -68,7 +68,7 @@ classdef FeatureSelectionClass
             weightsOfCharacteristics{nIteration} = matrixChosenCcs \ W{1, nIteration};
         end
         
-        function [BetterPCAs,Proy, eigenvectorsF] = add_cc(BetterPCAs_bef, matrixAllCCs, expansion, labels, usedMethod)
+        function [BetterPCAs,Proy, eigenvectorsF] = add_cc(obj, BetterPCAs_bef, matrixAllCCs, expansion, labels, usedMethod)
             count=0;
             Niteration=1;
             BetterPCAs=[];
