@@ -3,28 +3,34 @@ classdef FeatureSelectionClass
     %   Detailed explanation goes here
     
     properties
+        %Properties of feature selection
         usedMethod
         expansion
         maxExpansion
-        matrixAllCCs
+        matrixAllCases
         labels
+        %Results of execution
         indicesCcsSelected
         projection
+        weightsOfCharacteristics
+        bestDescriptor
     end
     
     methods
-        function obj = FeatureSelectionClass()
+        function obj = FeatureSelectionClass(labels, matrixAllCCs)
             % all initializations, calls to base class, etc. here,
                %Define expansion in process
             obj.expansion=[1 1 1 1];
             obj.maxExpansion=4; %exted expansion array for more complexity
+            obj.labels = labels;
+            obj.matrixAllCCs = matrixAllCCs;
         end
         
         function executeFeatureSelection(obj, usedCharacteristics)
             %Removing uncategorized rows
-            labelsCat = grp2idx(categorical(labels));
-            labels = labels(isnan(labelsCat) == 0);
-            matrixAllCCs = matrixAllCCs(isnan(labelsCat) == 0, usedCharacteristics);
+            labelsCat = grp2idx(categorical(obj.labels));
+            labels = obj.labels(isnan(labelsCat) == 0);
+            matrixAllCCs = obj.matrixAllCases(isnan(labelsCat) == 0, usedCharacteristics);
             labelsCat = labelsCat(isnan(labelsCat)==0);
 
             %Selection of specified ccs
@@ -113,12 +119,12 @@ classdef FeatureSelectionClass
             %% Final evaluation
             [~, numIter] = max(cellfun(@(x) max(x(:,1)), BettersPCAEachStep));
             bestIterationPCA = BettersPCAEachStep{numIter};
-            [bestPCA, numRow] = max(bestIterationPCA(:, 1));
-            indicesCcsSelected=bestIterationPCA(numRow, 2:size(bestIterationPCA,2));
+            [obj.bestDescriptor, numRow] = max(bestIterationPCA(:, 1));
+            obj.indicesCcsSelected=bestIterationPCA(numRow, 2:size(bestIterationPCA,2));
             weightsOfCharacteristics = weightsEachStep{numIter};
-            weightsOfCharacteristics = weightsOfCharacteristics{numRow};
+            obj.weightsOfCharacteristics = weightsOfCharacteristics{numRow};
             Proy = proyEachStep{numIter};
-            projection = Proy{numRow};
+            obj.projection = Proy{numRow};
         end
         
         function crossValidation(obj, maxShuffles, maxFolds)
@@ -155,19 +161,19 @@ classdef FeatureSelectionClass
                 hold on;
             end
 
-            legend(unique(labels), 'Location', 'Best');
+            legend(unique(obj.labels), 'Location', 'Best');
 
             mkdir('results');
             if max(labelsCat) == 2
                 [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity(labels , Proyecc);
-                save( ['results\' lower(usedMethod) 'FeatureSelection_' strjoin(unique(labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
+                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
             else
-                save( ['results\' lower(usedMethod) 'FeatureSelection_' strjoin(unique(labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics');
+                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics');
             end
 
-            stringres=strcat(num2str(indicesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
+            stringres=strcat(num2str(obj.indicesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
             title(stringres)
-            saveas(h,['results\' lower(usedMethod) 'FeatureSelection_' strjoin(unique(labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date '.jpg'])
+            saveas(h,['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date '.jpg'])
 
             close all
         end
