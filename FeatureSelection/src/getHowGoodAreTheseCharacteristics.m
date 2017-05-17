@@ -1,4 +1,4 @@
-function [ goodness, projection, sensitivity, specifity] = getHowGoodAreTheseCharacteristics(characteristics, labels, weightsOfCharac, usedMethod)
+function [ goodness, projection, sensitivity, specificity] = getHowGoodAreTheseCharacteristics(characteristics, labels, weightsOfCharac, usedMethod)
 %GETHOWGOODARETHESECHARACTERISTICS Summary of this function goes here
 %   Detailed explanation goes here
 if isequal(lower(usedMethod), lower('PCA'))
@@ -38,14 +38,14 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     yfit = 1 ./ (1 + exp(-(b(1) + characteristics * (b(2:end))))); % Same as  yfit = glmval(b, characteristics, 'logit')';
     [resResubCM, ~] = confusionmat(logical(labels), (yfit > 0.5)); %0.35 works better
     sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
-    specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+    specificity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
     
     %One way of measure the goodness of fit
-    %But it is not good since its based on sensitivity and specifity
-%     if (sensitivity < 20 || specifity < 20)
-%         goodness = min(sensitivity, specifity);
+    %But it is not good since its based on sensitivity and specificity
+%     if (sensitivity < 20 || specificity < 20)
+%         goodness = min(sensitivity, specificity);
 %     else
-%         goodness = specifity*2 + sensitivity*2;
+%         goodness = specificity*2 + sensitivity*2;
 %     end
     
     % AIC: Akkaike information criterion
@@ -53,7 +53,7 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     % The samellest AIC is the best
     logLikelihood = sum(log( binopdf(labels, ones(size(labels, 1), 1), yfit)));
     AIC = -2*logLikelihood + 2*numel(b);
-    goodness = 100 - AIC;
+    %goodness = 100 - AIC;
     
     % Another simple way is using the Normalized mean square error (NMSE)
     % NMSE costs vary between -Inf (bad fit) to 1 (perfect fit). If the
@@ -73,12 +73,12 @@ elseif isequal(lower(usedMethod), lower('DANoProjections'))
     resClass = resubPredict(res);
     [resResubCM, ~] = confusionmat(labels', resClass);
     sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
-    specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+    specificity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
     
-    if (sensitivity < 20 || specifity < 20)
-        goodness = min(sensitivity, specifity);
+    if (sensitivity < 20 || specificity < 20)
+        goodness = min(sensitivity, specificity);
     else
-        goodness = pow2(specifity) + pow2(sensitivity);
+        goodness = pow2(specificity) + pow2(sensitivity);
     end
     
     W = LDA(characteristics, labels');
