@@ -1,4 +1,4 @@
-function [ goodness, projection ] = getHowGoodAreTheseCharacteristics(characteristics, labels, weightsOfCharac, usedMethod)
+function [ goodness, projection, sensitivity, specifity] = getHowGoodAreTheseCharacteristics(characteristics, labels, weightsOfCharac, usedMethod)
 %GETHOWGOODARETHESECHARACTERISTICS Summary of this function goes here
 %   Detailed explanation goes here
 if isequal(lower(usedMethod), lower('PCA'))
