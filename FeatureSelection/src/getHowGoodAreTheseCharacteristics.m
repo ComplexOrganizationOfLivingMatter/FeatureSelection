@@ -39,11 +39,34 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     [resResubCM, ~] = confusionmat(logical(labels), (yfit > 0.5)); %0.35 works better
     sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
     specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
-    if (sensitivity < 20 || specifity < 20)
-        goodness = min(sensitivity, specifity);
-    else
-        goodness = specifity*2 + sensitivity*2;
-    end
+    
+    %One way of measure the goodness of fit
+    %But it is not good since its based on sensitivity and specifity
+%     if (sensitivity < 20 || specifity < 20)
+%         goodness = min(sensitivity, specifity);
+%     else
+%         goodness = specifity*2 + sensitivity*2;
+%     end
+    
+    % AIC: Akkaike information criterion
+    % It provides an estimate of the test error curve
+    % The samellest AIC is the best
+    logLikelihood = sum(log( binopdf(labels, ones(size(labels, 1), 1), yfit)));
+    AIC = -2*logLikelihood + 2*numel(b);
+    goodness = 100 - AIC;
+    
+    % Another simple way is using the Normalized mean square error (NMSE)
+    % NMSE costs vary between -Inf (bad fit) to 1 (perfect fit). If the
+    % cost function is equal to zero, then x is no better than a straight
+    % line at matching xref.
+    goodness = goodnessOfFit(yfit, logical(labels), 'NMSE');
+    
+    % We could also minimize the deviance (it is a generalization of the
+    % residual sum of squares). This criterion is reasonable if the
+    % training observations represnet independent randmo draws from their
+    % population.
+    %goodness = 100 - dev;
+    
     projection = characteristics * weightsOfCharac;
 elseif isequal(lower(usedMethod), lower('DANoProjections'))
     res = fitcdiscr(characteristics, labels');
