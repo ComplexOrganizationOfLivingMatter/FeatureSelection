@@ -15,6 +15,8 @@ classdef FeatureSelectionClass
         projection
         weightsOfCharacteristics
         bestDescriptor
+        sensitivity
+        specificity
     end
     
     methods
@@ -170,6 +172,7 @@ classdef FeatureSelectionClass
         end
         
         function obj = executeFeatureSelection(obj, usedCases)
+            usedCases = usedCases == 1;
             %Removing uncategorized rows
             labelsCat = grp2idx(categorical(obj.labels));
             usedLabels = obj.labels(isnan(labelsCat) == 0);
@@ -271,6 +274,8 @@ classdef FeatureSelectionClass
             obj.weightsOfCharacteristics = obj.weightsOfCharacteristics{1};
             Proy = proyEachStep{numIter};
             obj.projection = Proy{numRow};
+            labelsCat = grp2idx(categorical(usedLabels));
+            [~, ~, obj.sensitivity, obj.specificity] = getHowGoodAreTheseCharacteristics(usedMatrix(:, obj.indicesCcsSelected), labelsCat, obj.weightsOfCharacteristics, obj.usedMethod);
         end
         
         function resultsOfCrossValidation = crossValidation(obj, maxShuffles, maxFolds)
@@ -318,8 +323,8 @@ classdef FeatureSelectionClass
             
             mkdir('results');
             if max(labelsCat) == 2
-                [ sensitivity, specifity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity(labels , Proyecc);
-                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specifity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
+                [ sensitivity, specificity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity(labels , Proyecc);
+                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specificity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
             else
                 save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics');
             end
