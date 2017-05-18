@@ -23,7 +23,7 @@ elseif isequal(lower(usedMethod), lower('DA'))
     weights = characteristics \ L;
     projection = characteristics * normalizeVector(weights);
 elseif isequal(lower(usedMethod), lower('NCA'))
-    %% ----- Neighborhood component analysis (NCA)------%
+    %% ----- Neighborhood component analysis (NCA) NOT SUPPORTED YET ------%
     mdl = fscnca(characteristics, labels);
     [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(mdl, labels, max(labels));
     C = sinterluc/sintraluc;
@@ -53,12 +53,13 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     % The samellest AIC is the best
     logLikelihood = sum(log( binopdf(labels, ones(size(labels, 1), 1), yfit)));
     AIC = -2*logLikelihood + 2*numel(b);
-    %goodness = 100 - AIC;
+    %goodness = - AIC;
     
     % Another simple way is using the Normalized mean square error (NMSE)
     % NMSE costs vary between -Inf (bad fit) to 1 (perfect fit). If the
     % cost function is equal to zero, then x is no better than a straight
-    % line at matching xref.
+    % line at matching xref. It is normalized in order to compare it with
+    % others NMSE.
     goodness = goodnessOfFit(yfit, logical(labels), 'NMSE');
     
     % We could also minimize the deviance (it is a generalization of the
@@ -66,6 +67,9 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     % training observations represnet independent randmo draws from their
     % population.
     %goodness = 100 - dev;
+    
+    %sum of squared errors of prediction (SSE)
+    %SSE_GLM = sum(stats.resid.^2)
     
     projection = characteristics * weightsOfCharac;
 elseif isequal(lower(usedMethod), lower('DANoProjections'))
