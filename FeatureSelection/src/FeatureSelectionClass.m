@@ -304,7 +304,7 @@ classdef FeatureSelectionClass
         
         function saveResults(obj)
             %%Represent Luisma format
-            Proyecc=Proy';
+            Proyecc=obj.projection';
             h=figure;
             vColors = [0.0 0.2 0.0
                 1.0 0.4 0.0
@@ -315,6 +315,7 @@ classdef FeatureSelectionClass
                 0.2 0.6 0.6
                 0.0 0.0 0.6];
             
+            labelsCat = grp2idx(categorical(obj.labels));
             for i = 1:max(labelsCat)
                 plot(Proyecc(1, labelsCat == i), Proyecc(2, labelsCat == i),'MarkerFaceColor', vColors(i, :), 'Marker', '.','MarkerSize',30, 'LineStyle', 'none')
                 hold on;
