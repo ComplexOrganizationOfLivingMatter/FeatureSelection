@@ -282,7 +282,7 @@ classdef FeatureSelectionClass
             resultsOfCrossValidation = cell(maxShuffles, maxFolds);
             labels = obj.labels;
             parfor numShuffle = 1:maxShuffles
-                maxShuffle
+                numShuffle
                 indices = crossvalind('Kfold', labels, maxFolds);
                 for numFold = 1:maxFolds
                     testSet = (indices == numFold); trainSet = ~testSet;
