@@ -36,9 +36,9 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     labels = labels - 1 ;
     [b,dev,stats] = glmfit(characteristics, labels, 'binomial', 'logit'); % Logistic regression
     yfit = 1 ./ (1 + exp(-(b(1) + characteristics * (b(2:end))))); % Same as  yfit = glmval(b, characteristics, 'logit')';
-    [resResubCM, ~] = confusionmat(logical(labels), (yfit > 0.5)); %0.35 works better
-    sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
-    specificity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+    [resResubCM, order] = confusionmat(logical(labels), (yfit > 0.5)); %0.35 works better
+    specificity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
+    sensitivity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
     
     %One way of measure the goodness of fit
     %But it is not good since its based on sensitivity and specificity
