@@ -61,7 +61,7 @@ for cc1=1:n_cc_totales-1
          for cc=1:2
              
             vectores_caracteristicas(:,cc)=vectores_caracteristicas(:,cc)-min(vectores_caracteristicas(:,cc));
-            vectores_caracteristicas(:,cc)=vectores_caracteristicas(:,cc)/max(vectores_caracteristicas(:,cc));  
+            vectores_caracteristicas(:,cc)=vectores_caracteristicas(:,cc)/max(vectores_caracteristicas(:,cc));
              
          end
          
@@ -110,15 +110,10 @@ for cc1=1:n_cc_totales-1
         eigenvectors{Niteracion} = vectores_caracteristicas \ W{1,Niteracion};
         
         Niteracion=Niteracion+1;
-        
-          
-        %%%%-----$$$$------PROBAR DIRECTAMENTE EL COMANDO PCA DE MATLAB y  observar DIFERENCIAS-----$$$$----%%%%
-
     end
 end
 
 %% Calculamos las 10 mejores PCA y sus 3 cc iniciales
-
 auxiliar=Ratio_pca(1,:);
 for i = 1:Niteracion
     [Mejores(i,1) num]=max(auxiliar);
@@ -236,7 +231,26 @@ eigenvectors = eigenvectorsEachStep{numIter};
 eigenvectors = eigenvectors{numRow,1}{1};
 Proy = proyEachStep{numIter};
 
-
+arrayToNormalized = vector_todas_caracteristicas(:, indice_cc_seleccionadas);
+    for numCol = 1:size(arrayToNormalized, 2)
+            arrayNormalized(:,numCol) = arrayToNormalized(:, numCol) - min(arrayToNormalized(:, numCol));
+            arrayNormalized(:,numCol) = arrayNormalized(:, numCol) / max(arrayNormalized(:, numCol));
+    end
+    arrayNormalized(isnan(arrayNormalized)) = 0;
+    characteristics = arrayNormalized;
+    labels=[ones(1, n_img_tipo1), 2*ones(1,n_img_tipo2)];
+    W = LDA(characteristics, labels');
+    L = [ones(size(characteristics, 1), 1) characteristics] * W';
+    [~, sintraluc, sinterluc, ~, ~] = valid_sumsqures(L, labels, 2);
+    C = sinterluc/sintraluc;
+    goodness = trace(C);
+    weights = characteristics \ L;
+    resClass = resubPredict(res);
+    [resResubCM,grpOrder] = confusionmat(categorization', resClass);
+    sensitivity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
+    specifity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+    Proyecc = characteristics * eigenvectors;
+    Proyecc = Proyecc';
 %save( ['PCA_' n_t1 '_' n_t2 '_seleccion_cc_' num2str(n_cc_totales)], 'mejoresEachStep', 'mejores_desEachStep', 'Proy', 'Mejor_pca','indice_cc_seleccionadas', 'eigenvectors')
 
 
@@ -251,7 +265,7 @@ Proy = proyEachStep{numIter};
 % stringres=strcat('PCA','------->Caracteristicas seleccionadas:',num2str(indice_cc_seleccionadas),' Descriptor: ',num2str(Mejor_pca));
 % title(stringres)
 %%Representar formato Luisma
-Proyecc=Proy{1,1}';
+%Proyecc=Proy{1,1}';
 h=figure; plot(Proyecc(1,1:n_img_tipo1),Proyecc(2,1:n_img_tipo1),'.g','MarkerSize',30)
 hold on, plot(Proyecc(1,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),Proyecc(2,n_img_tipo1+1:n_img_tipo1+n_img_tipo2),'.r','MarkerSize',30)
 legend(n_t1,n_t2, 'Location', 'best')
