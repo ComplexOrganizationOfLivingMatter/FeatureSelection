@@ -17,17 +17,16 @@ allData = pd.read_csv("/home/ubuntu/vboxshare/Neuroblastoma/Results/graphletsCou
 allDataAsMatrix = allData.as_matrix();
 selectedChar = np.array([47, 19, 17, 16, 18, 50, 26], dtype=np.intp);
 selectedChar = selectedChar - 1 #Because it starts at 0
-columNames = allData.columns.values[8:];
+columNames = allData.columns.values[7:];
 columNames = columNames[selectedChar.tolist()];
-columNames.tolist()
 #selectedChar = 1:59;
-onlyData = allDataAsMatrix[:, 8:]
+onlyData = allDataAsMatrix[:, 7:]
 labels = allData['Risk']
 categoricalLabels = [0] * labels.size
 categoricalLabelsFinal = [];
 onlyDataFinal = [];
 
-for numLabel in xrange(1, labels.size):
+for numLabel in xrange(0, labels.size):
 	if labels[numLabel] == 'HR' or labels[numLabel] == 'UHR':
 		categoricalLabels[numLabel] = 1
 		onlyDataFinal.append(onlyData[numLabel, selectedChar.tolist()])
@@ -48,12 +47,12 @@ sklearn.metrics.accuracy_score(labels_test, rf.predict(test))
 explainer = lime.lime_tabular.LimeTabularExplainer(trainNoNaNs, feature_names=columNames, class_names=['NoRisk', 'HighRisk'], discretize_continuous=True)
 
 
-for x in xrange(1,len(test)):
+for x in xrange(0,len(test)):
 	exp = explainer.explain_instance(test[x], rf.predict_proba, num_features=len(selectedChar))
 	#exp.show_in_notebook(show_table=True, show_all=True)
 	exp.save_to_file('../results/explanationOfTest' + str(x) + '_RealLabel_' + ('HighRisk' if labels_test[x] else 'NoRisk') + '.html')
 
-for x in xrange(1,len(train)):
+for x in xrange(0,len(train)):
 	exp = explainer.explain_instance(trainNoNaNs[x], rf.predict_proba, num_features=len(selectedChar))
 	#exp.show_in_notebook(show_table=True, show_all=True)
 	exp.save_to_file('../results/explanationOfTrain' + str(x) + '_RealLabel_' + ('HighRisk' if labels_train[x] else 'NoRisk') + '.html')
