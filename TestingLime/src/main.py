@@ -16,8 +16,9 @@ np.random.seed(1)
 allData = pd.read_csv("/home/ubuntu/vboxshare/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/Characteristics_GDDA_AgainstControl_ToClassify_24_04_2017.csv", sep=';')
 allDataAsMatrix = allData.as_matrix();
 selectedChar = np.array([47, 19, 17, 16, 18, 50, 26], dtype=np.intp);
+selectedChar = selectedChar - 1 #Because it starts at 0
 columNames = allData.columns.values[8:];
-columNames = columNames[selectedChar[:, np.newaxis]];
+columNames = columNames[selectedChar.tolist()];
 columNames.tolist()
 #selectedChar = 1:59;
 onlyData = allDataAsMatrix[:, 8:]
@@ -29,13 +30,13 @@ onlyDataFinal = [];
 for numLabel in xrange(1, labels.size):
 	if labels[numLabel] == 'HR' or labels[numLabel] == 'UHR':
 		categoricalLabels[numLabel] = 1
-		onlyDataFinal.append(onlyData[numLabel, selectedChar[:, np.newaxis]])
+		onlyDataFinal.append(onlyData[numLabel, selectedChar.tolist()])
 		categoricalLabelsFinal.append(categoricalLabels[numLabel])
 	elif labels[numLabel] != labels[numLabel]: #This is a NaN! wtf!?
 		categoricalLabels[numLabel] = -1
 	else:
-		onlyDataFinal.append(onlyData[numLabel])
-		categoricalLabelsFinal.append(categoricalLabels[numLabel, selectedChar[:, np.newaxis]])
+		onlyDataFinal.append(onlyData[numLabel, selectedChar.tolist()])
+		categoricalLabelsFinal.append(categoricalLabels[numLabel])
 
 
 
