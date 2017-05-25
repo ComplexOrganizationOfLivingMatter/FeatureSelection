@@ -41,13 +41,7 @@ sklearn.metrics.accuracy_score(labels_test, rf.predict(test))
 explainer = lime.lime_tabular.LimeTabularExplainer(trainNoNaNs, feature_names=allData.columns.values.tolist(), class_names=['NoRisk', 'HighRisk'], discretize_continuous=True)
 
 i = np.random.randint(0, len(test))
-exp = explainer.explain_instance(test[i], rf.predict_proba, num_features=2, top_labels=1)
+exp = explainer.explain_instance(test[i], rf.predict_proba, num_features=59, top_labels=1)
 
-display(HTML(exp.show_in_notebook(show_table=True, show_all=False)))
-# data = np.genfromtxt('/Users/marcotcr/phd/datasets/mushroom/agaricus-lepiota.data', delimiter=',', dtype='<U20')
-# labels = data[:,0]
-# le= sklearn.preprocessing.LabelEncoder()
-# le.fit(labels)
-# labels = le.transform(labels)
-# class_names = le.classes_
-# data = data[:,1:]
+exp.show_in_notebook(show_table=True, show_all=False)
+exp.save_to_file('oi.html')
