@@ -51,9 +51,9 @@ explainer = lime.lime_tabular.LimeTabularExplainer(trainNoNaNs, feature_names=co
 for x in xrange(1,len(test)):
 	exp = explainer.explain_instance(test[x], rf.predict_proba, num_features=len(selectedChar))
 	#exp.show_in_notebook(show_table=True, show_all=True)
-	exp.save_to_file('../results/explanationOfTest' + str(x) +'.html')
+	exp.save_to_file('../results/explanationOfTest' + str(x) + '_RealLabel_' + ('HighRisk' if labels_test[x] else 'NoRisk') + '.html')
 
 for x in xrange(1,len(train)):
 	exp = explainer.explain_instance(trainNoNaNs[x], rf.predict_proba, num_features=len(selectedChar))
 	#exp.show_in_notebook(show_table=True, show_all=True)
-	exp.save_to_file('../results/explanationOfTrain' + str(x) +'.html')
+	exp.save_to_file('../results/explanationOfTrain' + str(x) + '_RealLabel_' + ('HighRisk' if labels_train[x] else 'NoRisk') + '.html')
