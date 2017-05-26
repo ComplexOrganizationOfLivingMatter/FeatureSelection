@@ -26,3 +26,5 @@
 */data/*
 */results/*
 */LIME/*
+*/.*
+TestingLime/src/.ipynb_checkpoints/main-checkpoint.ipynb
