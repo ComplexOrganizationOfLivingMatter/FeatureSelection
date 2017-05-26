@@ -40,10 +40,13 @@ for numLabel in xrange(0, labels.size):
 
 
 train, test, labels_train, labels_test = sklearn.model_selection.train_test_split(onlyDataFinal, categoricalLabelsFinal, train_size=0.80)
-rf = sklearn.ensemble.RandomForestClassifier(n_estimators=500)
+rf = sklearn.linear_model.LogisticRegression();
+#rf = sklearn.ensemble.RandomForestClassifier(n_estimators=500)
 trainNoNaNs = imp.fit_transform(train)
 rf.fit(trainNoNaNs, labels_train)
-sklearn.metrics.accuracy_score(labels_test, rf.predict(test))
+print('MSError when predicting the mean mean', np.mean((np.asarray(labels_train).mean() - labels_test) ** 2))
+print('Logistic Regression MSError', np.mean((rf.predict(test) - labels_test) ** 2))
+print('Accuracy of predicted test: ', sklearn.metrics.accuracy_score(labels_test, rf.predict(test)))
 explainer = lime.lime_tabular.LimeTabularExplainer(trainNoNaNs, feature_names=columNames, class_names=['NoRisk', 'HighRisk'], discretize_continuous=True)
 
 
