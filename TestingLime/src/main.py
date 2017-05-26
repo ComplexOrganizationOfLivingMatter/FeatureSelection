@@ -10,6 +10,16 @@ import math
 from sklearn.preprocessing import Imputer
 from IPython.display import display, HTML
 
+import matplotlib
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Adapted from https://marcotcr.github.io/lime/tutorials/Tutorial%20-%20continuous%20and%20categorical%20features.html
+# https://github.com/marcotcr/lime
+# You should use jupyter notebook and execute main.ipynb 
+#
+# Developed by Pablo Vicente-Munuera
+
 imp=Imputer(missing_values='NaN',strategy='mean',axis=0)
 
 np.random.seed(1)
@@ -40,6 +50,7 @@ for numLabel in xrange(0, labels.size):
 
 
 train, test, labels_train, labels_test = sklearn.model_selection.train_test_split(onlyDataFinal, categoricalLabelsFinal, train_size=0.80)
+#http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression
 rf = sklearn.linear_model.LogisticRegression();
 #rf = sklearn.ensemble.RandomForestClassifier(n_estimators=500)
 trainNoNaNs = imp.fit_transform(train)
@@ -48,14 +59,17 @@ print('MSError when predicting the mean mean', np.mean((np.asarray(labels_train)
 print('Logistic Regression MSError', np.mean((rf.predict(test) - labels_test) ** 2))
 print('Accuracy of predicted test: ', sklearn.metrics.accuracy_score(labels_test, rf.predict(test)))
 explainer = lime.lime_tabular.LimeTabularExplainer(trainNoNaNs, feature_names=columNames, class_names=['NoRisk', 'HighRisk'], discretize_continuous=True)
+#exp = explainer.explain_instance(test[0], rf.predict_proba, num_features=len(selectedChar))
 
-
+# Exporting all the output info to pdfs and htmls
 for x in xrange(0,len(test)):
 	exp = explainer.explain_instance(test[x], rf.predict_proba, num_features=len(selectedChar))
-	#exp.show_in_notebook(show_table=True, show_all=True)
+	fig = exp.as_pyplot_figure()
+	fig.savefig('../results/explanationOfTest' + str(x) + '_RealLabel_' + ('HighRisk' if labels_test[x] else 'NoRisk') + '.pdf', bbox_inches='tight')
 	exp.save_to_file('../results/explanationOfTest' + str(x) + '_RealLabel_' + ('HighRisk' if labels_test[x] else 'NoRisk') + '.html')
 
 for x in xrange(0,len(train)):
 	exp = explainer.explain_instance(trainNoNaNs[x], rf.predict_proba, num_features=len(selectedChar))
-	#exp.show_in_notebook(show_table=True, show_all=True)
+	fig = exp.as_pyplot_figure()
+	fig.savefig('../results/explanationOfTrain' + str(x) + '_RealLabel_' + ('HighRisk' if labels_train[x] else 'NoRisk') + '.pdf', bbox_inches='tight')
 	exp.save_to_file('../results/explanationOfTrain' + str(x) + '_RealLabel_' + ('HighRisk' if labels_train[x] else 'NoRisk') + '.html')
