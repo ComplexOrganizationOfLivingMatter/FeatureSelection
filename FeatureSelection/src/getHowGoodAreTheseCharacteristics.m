@@ -51,20 +51,21 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     % AIC: Akkaike information criterion
     % It provides an estimate of the test error curve
     % The samellest AIC is the best
-    logLikelihood = sum(log( binopdf(labels, ones(size(labels, 1), 1), yfit)));
-    AIC = -2*logLikelihood + 2*numel(b);
+    %logLikelihood = sum(log( binopdf(labels, ones(size(labels, 1), 1), yfit)));
+    %AIC = -2*logLikelihood + 2*numel(b);
     %goodness = - AIC;
     
     % Another simple way is using the Normalized mean square error (NMSE)
     % NMSE costs vary between -Inf (bad fit) to 1 (perfect fit). If the
     % cost function is equal to zero, then x is no better than a straight
     % line at matching xref. It is normalized in order to compare it with
-    % others NMSE.
+    % others NMSE. It also represents the sample standard deviation of the 
+    % differences between predicted values and observed values
     goodness = goodnessOfFit(yfit, logical(labels), 'NMSE');
     
     % We could also minimize the deviance (it is a generalization of the
     % residual sum of squares). This criterion is reasonable if the
-    % training observations represnet independent randmo draws from their
+    % training observations represent independent random draws from their
     % population.
     %goodness = 100 - dev;
     

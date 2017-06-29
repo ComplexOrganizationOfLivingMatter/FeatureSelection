@@ -325,7 +325,7 @@ classdef FeatureSelectionClass
             
             mkdir('results');
             if max(labelsCat) == 2
-                [ sensitivity, specificity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity(labels , Proyecc);
+                [ sensitivity, specificity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity(obj.labels , Proyecc);
                 save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specificity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
             else
                 save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics');
