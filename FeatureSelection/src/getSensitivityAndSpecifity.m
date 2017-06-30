@@ -3,6 +3,7 @@ function [ sensitivity, specifity, res, AUC, VPpositive, VPnegative] = getSensit
 %   Detailed explanation goes here
 categorization(1:length_t1) = {name_t1};
 categorization(length_t1+1 : totalImages) = {name_t2};
+%res = fitcdiscr(projection, categorization', 'DiscrimType', 'linear', 'Prior', 'uniform');
 res = fitcdiscr(projection', categorization');
 resClass = resubPredict(res);
 [resResubCM, ~] = confusionmat(categorization', resClass);
