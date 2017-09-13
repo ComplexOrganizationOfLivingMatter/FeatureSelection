@@ -12,6 +12,7 @@ classdef FeatureSelectionClass
         usedCharacteristics
         %Results of execution
         indicesCcsSelected
+        ccsSelected
         projection
         weightsOfCharacteristics
         bestDescriptor
