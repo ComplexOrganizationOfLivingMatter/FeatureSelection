@@ -33,10 +33,16 @@ elseif isequal(lower(usedMethod), lower('NCA'))
     weights = characteristics \ L;
     projection = characteristics * normalizeVector(weights);
 elseif isequal(lower(usedMethod), lower('LogisticRegression'))
+    lastwarn('')
     labels = labels - 1 ;
     [b,dev,stats] = glmfit(characteristics, labels, 'binomial', 'logit'); % Logistic regression
+%     msgWarn = lastwarn();
+%     if isempty(strfind(msgWarn, 'The estimated coefficients perfectly separate failures from successes')) == 0
+%         disp('yuhuuu');
+%     end
     yfit = 1 ./ (1 + exp(-(b(1) + characteristics * (b(2:end))))); % Same as  yfit = glmval(b, characteristics, 'logit')';
-    [resResubCM, order] = confusionmat(logical(labels), (yfit > 0.5)); %0.35 works better
+    %[resResubCM, order] = confusionmat(logical(labels), (yfit > 0.5));
+    [resResubCM, order] = confusionmat(logical(labels), (yfit > mean([mean(yfit(labels == 0)), mean(yfit(labels == 1))]))); %0.35 works better
     specificity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
     sensitivity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
     
@@ -71,7 +77,7 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     
     %sum of squared errors of prediction (SSE)
     %SSE_GLM = sum(stats.resid.^2)
-    
+    %projection = 1;
     projection = characteristics * weightsOfCharac;
 elseif isequal(lower(usedMethod), lower('DANoProjections'))
     res = fitcdiscr(characteristics, labels');
