@@ -272,7 +272,9 @@ classdef FeatureSelectionClass
             obj.indicesCcsSelected = obj.usedCharacteristics(bestIterationPCA(numRow, 2:size(bestIterationPCA,2)));
             weightsOfCharacteristics = weightsEachStep{numIter};
             obj.weightsOfCharacteristics = weightsOfCharacteristics{numRow};
-            obj.weightsOfCharacteristics = obj.weightsOfCharacteristics{1};
+            if iscell(obj.weightsOfCharacteristics)
+                obj.weightsOfCharacteristics = obj.weightsOfCharacteristics{1};
+            end
             Proy = proyEachStep{numIter};
             obj.projection = Proy{numRow};
             labelsCat = grp2idx(categorical(usedLabels));
