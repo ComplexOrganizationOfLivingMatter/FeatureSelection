@@ -127,52 +127,53 @@ ftcInstabilityLowVsVeryLow.ccsSelected = columnNames(ftcInstabilityLowVsVeryLow.
 %getHowGoodAreTheseCharacteristics(ftcRiskReal.matrixAllCases(:, 47), cellfun(@(x) isempty(strfind(x, 'HighRisk')) == 0, ftcRiskReal.labels) + 1, ones(size(matrixChar, 1), 1), 'LogisticRegression')
 
 %% ONLY VTN
+vtnChar = find(cellfun(@(x) isempty(strfind(lower(x), 'vtn')) == 0, columnNames));
 %RiskReal
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.RiskReal);
-matrix2 = matrix2(emptyCells == 0, :);
+matrix2 = matrixInit(emptyCells == 0, :);
 matrixChar = table2array(matrix2(:, initialIndex:end));
 labelsUsed = matrix2.RiskReal;
 noRiskLabels = cellfun(@(x) isequal(x, 'NoRisk'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'HighRisk'};
-ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', 29:50);
+ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', vtnChar);
 ftcRiskRealVTN = ftc.executeFeatureSelection(ones(size(ftc.matrixAllCases, 1), 1)');
 
 %RiskCalculated
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.RiskCalculated);
-matrix2 = matrix2(emptyCells == 0, :);
+matrix2 = matrixInit(emptyCells == 0, :);
 matrixChar = table2array(matrix2(:, initialIndex:end));
 labelsUsed = matrix2.RiskCalculated;
 noRiskLabels = cellfun(@(x) isequal(x, 'NoRisk'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'HighRisk'};
-ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', 29:50);
+ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', vtnChar);
 ftcRiskCalculatedVTN = ftc.executeFeatureSelection(ones(size(ftc.matrixAllCases, 1), 1)');
 
 %High Instability vs Rest
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.Instability);
-matrix2 = matrix2(emptyCells == 0, :);
+matrix2 = matrixInit(emptyCells == 0, :);
 matrixChar = table2array(matrix2(:, initialIndex:end));
 labelsUsed = matrix2.Instability;
 noRiskLabels = cellfun(@(x) isequal(x, 'High'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'Rest'};
-ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', 29:50);
+ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', vtnChar);
 ftc.expansion = [1 1 1 1];
 ftcInstabilityVTN = ftc.executeFeatureSelection(ones(size(ftc.matrixAllCases, 1), 1)');
 
 %High Instability vs Very Low
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.Instability);
-matrix2 = matrix2(emptyCells == 0, :);
+matrix2 = matrixInit(emptyCells == 0, :);
 matrixChar = table2array(matrix2(:, initialIndex:end));
 labelsUsed = matrix2.Instability;
-ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', 29:50);
+ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', vtnChar);
 ftc.expansion = [1 1 1 1];
 ftcInstabilityHighVsVeryLowVTN = ftc.executeFeatureSelection(cellfun(@(x) isequal(x, 'High') | isequal(x, 'VeryLow'), labelsUsed));
 
 %Low Instability vs Very Low
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.Instability);
-matrix2 = matrix2(emptyCells == 0, :);
+matrix2 = matrixInit(emptyCells == 0, :);
 matrixChar = table2array(matrix2(:, initialIndex:end));
 labelsUsed = matrix2.Instability;
-ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', 29:50);
+ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', vtnChar);
 ftcInstabilityLowVsVeryLowVTN = ftc.executeFeatureSelection(cellfun(@(x) isequal(x, 'Low') | isequal(x, 'VeryLow'), labelsUsed));
 
 
