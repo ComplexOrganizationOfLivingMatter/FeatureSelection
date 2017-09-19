@@ -76,7 +76,7 @@ for numLabel in xrange(0, labels.size):
 
 #NoDivision
 # rf = sklearn.linear_model.LogisticRegression(class_weight='balanced', solver='liblinear', penalty='l1', max_iter=100000, tol=0.00000000001)
-# allDataNoNaNs = np.asarray(onlyDataFinal)
+allDataNoNaNs = np.asarray(onlyDataFinal)
 # rf.fit(allDataNoNaNs, categoricalLabelsFinal)
 explainer = lime.lime_tabular.LimeTabularExplainer(np.asarray(onlyDataFinal), feature_names=columNames, class_names=['NoRisk', 'HighRisk'])
 # predictedValues = rf.predict(allDataNoNaNs);
@@ -174,7 +174,7 @@ predictedProbabilities = np.array([[0.0241880475361168, 0.975811952463883],
 [0.000739899987452490, 0.999260100012548], 
 [0.226746381087853, 0.773253618912147]])
 
-p_function = lambda x: predictedProbabilities
+p_function = lambda x: predictedProbabilities[x]
 
 
 for x in xrange(0,len(categoricalLabelsFinal)):
