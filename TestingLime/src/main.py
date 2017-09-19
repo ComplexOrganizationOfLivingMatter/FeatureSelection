@@ -78,7 +78,7 @@ for numLabel in xrange(0, labels.size):
 rf = sklearn.linear_model.LogisticRegression();
 allDataNoNaNs = onlyDataFinal
 rf.fit(allDataNoNaNs, categoricalLabelsFinal)
-explainer = lime.lime_tabular.LimeTabularExplainer(allDataNoNaNs, feature_names=columNames, class_names=['NoRisk', 'HighRisk'])
+explainer = lime.lime_tabular.LimeTabularExplainer(np.asarray(onlyDataFinal), feature_names=columNames, class_names=['NoRisk', 'HighRisk'])
 predictedValues = rf.predict(allDataNoNaNs);
 print('Accuracy of predicted test: ', sklearn.metrics.accuracy_score(categoricalLabelsFinal, predictedValues))
 
