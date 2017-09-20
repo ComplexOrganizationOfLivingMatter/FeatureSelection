@@ -41,10 +41,17 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
 %         disp('yuhuuu');
 %     end
     yfit = 1 ./ (1 + exp(-(b(1) + characteristics * (b(2:end))))); % Same as  yfit = glmval(b, characteristics, 'logit')';
-    %[resResubCM, order] = confusionmat(logical(labels), (yfit > 0.5));
-    [resResubCM, order] = confusionmat(logical(labels), (yfit > mean([mean(yfit(labels == 0)), mean(yfit(labels == 1))]))); %0.35 works better
+    [resResubCM, order] = confusionmat(logical(labels), (yfit > 0.5));
+    %[resResubCM, order] = confusionmat(logical(labels), (yfit > mean([mean(yfit(labels == 0)), mean(yfit(labels == 1))]))); %0.35 works better
     specificity = resResubCM(2, 2) / sum(resResubCM(2, :)) * 100;
     sensitivity = resResubCM(1, 1) / sum(resResubCM(1, :)) * 100;
+    [~, ~, ~, AUC] = perfcurve(labels, yfit, 1);
+    VPpositive = resResubCM(2, 2) / (resResubCM(2, 2) + resResubCM(1, 2)) * 100;
+    VPnegative = resResubCM(1, 1) / (resResubCM(1, 1) + resResubCM(2, 1)) * 100;
+    
+    %Getting the failing cases:
+    %failingIndices = find(xor((yfit > mean([mean(yfit(labels == 0)), mean(yfit(labels == 1))])), logical(labels)));
+    
     
     %One way of measure the goodness of fit
     %But it is not good since its based on sensitivity and specificity
