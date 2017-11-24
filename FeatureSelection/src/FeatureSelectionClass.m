@@ -18,6 +18,7 @@ classdef FeatureSelectionClass
         bestDescriptor
         sensitivity
         specificity
+        BettersPCAEachStep
     end
     
     methods
@@ -267,6 +268,7 @@ classdef FeatureSelectionClass
             
             %% Final evaluation
             [~, numIter] = max(cellfun(@(x) max(x(:,1)), BettersPCAEachStep));
+            obj.BettersPCAEachStep = BettersPCAEachStep;
             bestIterationPCA = BettersPCAEachStep{numIter};
             [obj.bestDescriptor, numRow] = max(bestIterationPCA(:, 1));
             obj.indicesCcsSelected = obj.usedCharacteristics(bestIterationPCA(numRow, 2:size(bestIterationPCA,2)));
@@ -329,14 +331,14 @@ classdef FeatureSelectionClass
             mkdir('results');
             if max(labelsCat) == 2
                 [ sensitivity, specificity, classificationResult, AUC, VPpositive, VPnegative] = getSensitivityAndSpecifity(obj.labels , Proyecc);
-                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics', 'sensitivity', 'specificity', 'classificationResult', 'AUC', 'VPpositive', 'VPnegative');
+                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(size(obj.matrixAllCases, 1)) '_' date ], 'obj', 'classificationResult');
             else
-                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date ], 'BettersPCAEachStep', 'Proy', 'bestPCA','indicesCcsSelected', 'weightsOfCharacteristics');
+                save( ['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(size(obj.matrixAllCases, 1)) '_' date ], 'obj');
             end
             
-            stringres=strcat(num2str(obj.indicesCcsSelected), ' - Descriptor: ', num2str(bestPCA));
+            stringres=strcat(num2str(obj.indicesCcsSelected), ' - Descriptor: ', num2str(obj.bestDescriptor));
             title(stringres)
-            saveas(h,['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(n_totalCcs) '_' date '.jpg'])
+            saveas(h,['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(size(obj.matrixAllCases, 1)) '_' date '.jpg'])
             
             close all
         end
