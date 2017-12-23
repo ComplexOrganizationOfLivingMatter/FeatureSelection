@@ -9,6 +9,8 @@ if isequal(lower(usedMethod), lower('PCA'))
     [T, sintraluc, sinterluc, Sintra, Sinter] = valid_sumsqures(projection, labels, 2);
     C = sinterluc/sintraluc;
     goodness = trace(C);
+    sensitivity = -1;
+    specificity = -1;
 elseif isequal(lower(usedMethod), lower('DA'))
     %% ----- Discriminant analysis feature selection ------%
     W = LDA(characteristics, labels');
@@ -22,6 +24,9 @@ elseif isequal(lower(usedMethod), lower('DA'))
     %goodness = clustered.CriterionValues + seperated.CriterionValues/100;
     weights = characteristics \ L;
     projection = characteristics * normalizeVector(weights);
+    
+    sensitivity = -1;
+    specificity = -1;
 elseif isequal(lower(usedMethod), lower('NCA'))
     %% ----- Neighborhood component analysis (NCA) NOT SUPPORTED YET ------%
     mdl = fscnca(characteristics, labels);
@@ -34,7 +39,7 @@ elseif isequal(lower(usedMethod), lower('NCA'))
     projection = characteristics * normalizeVector(weights);
 elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     lastwarn('')
-    labels = labels - 1 ;
+    labels = labels - 1;
     [b,dev,stats] = glmfit(characteristics, labels, 'binomial', 'logit'); % Logistic regression
 %     msgWarn = lastwarn();
 %     if isempty(strfind(msgWarn, 'The estimated coefficients perfectly separate failures from successes')) == 0

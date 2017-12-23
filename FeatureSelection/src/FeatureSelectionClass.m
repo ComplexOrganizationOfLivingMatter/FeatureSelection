@@ -25,6 +25,8 @@ classdef FeatureSelectionClass
         function obj = FeatureSelectionClass(labels, matrixAllCCs, usedMethod, usedCharacteristics)
             % all initializations, calls to base class, etc. here,
             %Define expansion in process
+%             obj.expansion=[1 1 1 1];
+%             obj.maxExpansion=3; %exted expansion array for more complexity
             obj.expansion=[10 10 5 1];
             obj.maxExpansion=4; %exted expansion array for more complexity
             obj.usedCharacteristics = usedCharacteristics;
