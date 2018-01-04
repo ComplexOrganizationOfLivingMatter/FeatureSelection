@@ -75,9 +75,13 @@ matrixChar = table2array(matrix2(:, initialIndex:end));
 labelsUsed = matrix2.RiskReal;
 noRiskLabels = cellfun(@(x) isequal(x, 'NoRisk'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'HighRisk'};
-ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', 1:size(matrixChar, 2));
-ftcRiskReal = ftc.executeFeatureSelection(ones(size(ftc.matrixAllCases, 1), 1)');
-ftcRiskReal.ccsSelected = columnNames(ftcRiskReal.indicesCcsSelected);
+% ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', 1:size(matrixChar, 2));
+% ftcRiskReal = ftc.executeFeatureSelection(ones(size(ftc.matrixAllCases, 1), 1)');
+% ftcRiskReal.ccsSelected = columnNames(ftcRiskReal.indicesCcsSelected);
+ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', bestFeatures);
+ftcRiskRealOnlyBestFeatures = ftc.executeFeatureSelection(ones(size(ftc.matrixAllCases, 1), 1)');
+ftcRiskRealOnlyBestFeatures.ccsSelected = columnNames(ftcRiskRealOnlyBestFeatures.indicesCcsSelected);
+
 
 %RiskCalculated
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.RiskCalculated);
