@@ -283,6 +283,8 @@ classdef FeatureSelectionClass
             obj.projection = Proy{numRow};
             labelsCat = grp2idx(categorical(usedLabels));
             [~, ~, obj.sensitivity, obj.specificity] = getHowGoodAreTheseCharacteristics(usedMatrix(:, bestIterationPCA(numRow, 2:size(bestIterationPCA,2))), labelsCat, obj.weightsOfCharacteristics, obj.usedMethod);
+
+            disp('------done------')
         end
         
         function resultsOfCrossValidation = crossValidation(obj, maxShuffles, maxFolds)
