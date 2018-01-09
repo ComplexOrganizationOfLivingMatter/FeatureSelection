@@ -19,6 +19,7 @@ classdef FeatureSelectionClass
         sensitivity
         specificity
         BettersPCAEachStep
+        preSelectedFeature
     end
     
     methods
@@ -34,6 +35,7 @@ classdef FeatureSelectionClass
             obj.matrixAllCases = matrixAllCCs;
             obj.usedMethod = usedMethod;
             obj.matrixAllCases(isnan(obj.matrixAllCases) )= 0;% Do 0 all NaN
+            obj.preSelectedFeature = -1;
             %normalize matrixes
             for charac=1:size(obj.matrixAllCases,2)
                 obj.matrixAllCases(:,charac)=obj.matrixAllCases(:,charac)-min(obj.matrixAllCases(:,charac));
@@ -195,10 +197,20 @@ classdef FeatureSelectionClass
             %% Calculate all trios of characteristics
             nIteration=1;
             W={};weightsOfCharacteristics={};Ratio_pca=[];
-            for cc1=1:n_totalCcs-2
+            if obj.preSelectedFeature ~= -1
+                recorringFeatures = 3;
+            else
+                recorringFeatures = n_totalCcs;
+            end
+            
+            for cc1=1:recorringFeatures - 2
                 for cc2=cc1+1:n_totalCcs-1
                     for cc3=cc2+1:n_totalCcs
                         %Include trio of ccs for all images
+                        if obj.preSelectedFeature ~= -1
+                            cc1 = find(arrayfun(@(x) isequal(x, obj.preSelectedFeature), obj.usedCharacteristics));
+                        end
+                        
                         matrixChosenCcs(:,1:3)=[usedMatrix(:,cc1) ,usedMatrix(:,cc2),usedMatrix(:,cc3)];
                         
                         %Normalizing each cc
