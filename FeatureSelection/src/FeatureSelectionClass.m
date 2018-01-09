@@ -204,8 +204,8 @@ classdef FeatureSelectionClass
             end
             
             for cc1=1:recorringFeatures - 2
-                for cc2=cc1+1:n_totalCcs-1
-                    for cc3=cc2+1:n_totalCcs
+                for cc2=cc1:n_totalCcs-1
+                    for cc3=cc2:n_totalCcs
                         %Include trio of ccs for all images
                         if obj.preSelectedFeature ~= -1
                             cc1 = find(arrayfun(@(x) isequal(x, obj.preSelectedFeature), obj.usedCharacteristics));
