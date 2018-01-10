@@ -199,13 +199,15 @@ classdef FeatureSelectionClass
             W={};weightsOfCharacteristics={};Ratio_pca=[];
             if obj.preSelectedFeature ~= -1
                 recorringFeatures = 3;
+                offset = 0;
             else
                 recorringFeatures = n_totalCcs;
+                offset = 1;
             end
             
             for cc1=1:recorringFeatures - 2
-                for cc2=cc1:n_totalCcs-1
-                    for cc3=cc2:n_totalCcs
+                for cc2=cc1+offset:n_totalCcs-1
+                    for cc3=cc2+1+offset:n_totalCcs
                         %Include trio of ccs for all images
                         if obj.preSelectedFeature ~= -1
                             cc1 = find(arrayfun(@(x) isequal(x, obj.preSelectedFeature), obj.usedCharacteristics));
