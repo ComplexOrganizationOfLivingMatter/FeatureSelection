@@ -89,7 +89,6 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     
     %sum of squared errors of prediction (SSE)
     %SSE_GLM = sum(stats.resid.^2)
-    %projection = 1;
     projection = characteristics * weightsOfCharac;
 elseif isequal(lower(usedMethod), lower('DANoProjections'))
     res = fitcdiscr(characteristics, labels');

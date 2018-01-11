@@ -7,9 +7,11 @@ classdef FeatureSelectionClass
         usedMethod
         expansion
         maxExpansion
+        initialMatrix
         matrixAllCases
         labels
         usedCharacteristics
+        featuresNames
         %Results of execution
         indicesCcsSelected
         ccsSelected
@@ -23,7 +25,7 @@ classdef FeatureSelectionClass
     end
     
     methods
-        function obj = FeatureSelectionClass(labels, matrixAllCCs, usedMethod, usedCharacteristics)
+        function obj = FeatureSelectionClass(labels, matrixAllCCs, usedMethod, usedCharacteristics, columnNames)
             % all initializations, calls to base class, etc. here,
             %Define expansion in process
 %             obj.expansion=[1 1 1 1];
@@ -32,6 +34,8 @@ classdef FeatureSelectionClass
             obj.maxExpansion=4; %exted expansion array for more complexity
             obj.usedCharacteristics = usedCharacteristics;
             obj.labels = labels;
+            obj.featuresNames = columnNames;
+            obj.initialMatrix = matrixAllCCs;
             obj.matrixAllCases = matrixAllCCs;
             obj.usedMethod = usedMethod;
             obj.matrixAllCases(isnan(obj.matrixAllCases) )= 0;% Do 0 all NaN
@@ -288,6 +292,7 @@ classdef FeatureSelectionClass
             bestIterationPCA = BettersPCAEachStep{numIter};
             [obj.bestDescriptor, numRow] = max(bestIterationPCA(:, 1));
             obj.indicesCcsSelected = obj.usedCharacteristics(bestIterationPCA(numRow, 2:size(bestIterationPCA,2)));
+            obj.ccsSelected = obj.featuresNames(obj.indicesCcsSelected);
             weightsOfCharacteristics = weightsEachStep{numIter};
             obj.weightsOfCharacteristics = weightsOfCharacteristics{numRow};
             if iscell(obj.weightsOfCharacteristics)
@@ -297,7 +302,7 @@ classdef FeatureSelectionClass
             obj.projection = Proy{numRow};
             labelsCat = grp2idx(categorical(usedLabels));
             [~, ~, obj.sensitivity, obj.specificity] = getHowGoodAreTheseCharacteristics(usedMatrix(:, bestIterationPCA(numRow, 2:size(bestIterationPCA,2))), labelsCat, obj.weightsOfCharacteristics, obj.usedMethod);
-
+            
             disp('------done------')
         end
         
@@ -359,6 +364,22 @@ classdef FeatureSelectionClass
             saveas(h,['results\' lower(obj.usedMethod) 'FeatureSelection_' strjoin(unique(obj.labels), '_') '_selection_cc_' num2str(size(obj.matrixAllCases, 1)) '_' date '.jpg'])
             
             close all
+        end
+        
+        function [ res,  bestFeatures, indicesNames] = getBestFeatures(obj, numBestFeatures, condition )
+            %GETBESTFEATURES Summary of this function goes here
+            %   Detailed explanation goes here
+            res = [];
+            noRiskLabels = cellfun(@(x) isequal(x, condition), obj.labels);
+            for idChar = obj.usedCharacteristics
+                [ goodness, ~, sensitivity1, specificity1] = getHowGoodAreTheseCharacteristics(obj.matrixAllCases(:, idChar), noRiskLabels + 1, -1, 'LogisticRegression');
+                [h,p,~,~] = ttest2(obj.initialMatrix(noRiskLabels == 0, idChar), obj.initialMatrix(noRiskLabels, idChar), 'Vartype', 'unequal', 'Alpha', 0.1);
+                res(idChar, :) = [idChar, specificity1, sensitivity1, 1 - goodness, p, h];
+            end
+            [res, indices] = sortrows(res, 4);
+            indicesNames = obj.featuresNames(indices);
+            
+            bestFeatures = indices(1:numBestFeatures);
         end
     end
 end
