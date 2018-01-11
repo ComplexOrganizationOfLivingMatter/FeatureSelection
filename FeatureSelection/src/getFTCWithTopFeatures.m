@@ -1,4 +1,4 @@
-function [ ftcOnlyTopFeatures, newFtc ] = getFTCWithTopFeatures( ftc, labelsUsed, matrixChar, columnNames, condition, usedChars )
+function [ ftcOnlyTopFeatures, newFtc ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, condition, usedChars )
 %GETFTCWITHTOPFEATURES Summary of this function goes here
 %   Detailed explanation goes here
     ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', usedChars, columnNames, condition);
