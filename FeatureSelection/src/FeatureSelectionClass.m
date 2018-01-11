@@ -12,6 +12,8 @@ classdef FeatureSelectionClass
         labels
         usedCharacteristics
         featuresNames
+        preSelectedFeature
+        worstCondition
         %Results of execution
         indicesCcsSelected
         ccsSelected
@@ -21,11 +23,11 @@ classdef FeatureSelectionClass
         sensitivity
         specificity
         BettersPCAEachStep
-        preSelectedFeature
+        featuresMeans
     end
     
     methods
-        function obj = FeatureSelectionClass(labels, matrixAllCCs, usedMethod, usedCharacteristics, columnNames)
+        function obj = FeatureSelectionClass(labels, matrixAllCCs, usedMethod, usedCharacteristics, columnNames, condition)
             % all initializations, calls to base class, etc. here,
             %Define expansion in process
 %             obj.expansion=[1 1 1 1];
@@ -35,6 +37,7 @@ classdef FeatureSelectionClass
             obj.usedCharacteristics = usedCharacteristics;
             obj.labels = labels;
             obj.featuresNames = columnNames;
+            obj.worstCondition = condition;
             obj.initialMatrix = matrixAllCCs;
             obj.matrixAllCases = matrixAllCCs;
             obj.usedMethod = usedMethod;
@@ -303,6 +306,7 @@ classdef FeatureSelectionClass
             labelsCat = grp2idx(categorical(usedLabels));
             [~, ~, obj.sensitivity, obj.specificity] = getHowGoodAreTheseCharacteristics(usedMatrix(:, bestIterationPCA(numRow, 2:size(bestIterationPCA,2))), labelsCat, obj.weightsOfCharacteristics, obj.usedMethod);
             
+            obj.getFeaturesMeans();
             disp('------done------')
         end
         
@@ -370,7 +374,7 @@ classdef FeatureSelectionClass
             %GETBESTFEATURES Summary of this function goes here
             %   Detailed explanation goes here
             res = [];
-            noRiskLabels = cellfun(@(x) isequal(x, condition), obj.labels);
+            noRiskLabels = cellfun(@(x) isequal(x, obj.worstCondition), obj.labels);
             for idChar = obj.usedCharacteristics
                 [ goodness, ~, sensitivity1, specificity1] = getHowGoodAreTheseCharacteristics(obj.matrixAllCases(:, idChar), noRiskLabels + 1, -1, 'LogisticRegression');
                 [h,p,~,~] = ttest2(obj.initialMatrix(noRiskLabels == 0, idChar), obj.initialMatrix(noRiskLabels, idChar), 'Vartype', 'unequal', 'Alpha', 0.1);
@@ -380,6 +384,18 @@ classdef FeatureSelectionClass
             indicesNames = obj.featuresNames(indices);
             
             bestFeatures = indices(1:numBestFeatures);
+        end
+        
+        function getFeaturesMeans(obj)
+            obj.featuresMeans = [];
+            noRiskLabels = cellfun(@(x) isequal(x, obj.worstCondition), obj.labels);
+            obj.featuresMeans(:, 1) = obj.indicesCcsSelected;
+            obj.featuresMeans(:, 2) = mean(matrixChar(noRiskLabels, obj.indicesCcsSelected))';
+            obj.featuresMeans(:, 3) = std(matrixChar(noRiskLabels, obj.indicesCcsSelected))';
+            obj.featuresMeans(:, 4) = mean(matrixChar(noRiskLabels == 0, obj.indicesCcsSelected))';
+            obj.featuresMeans(:, 5) = std(matrixChar(noRiskLabels == 0, obj.indicesCcsSelected))';
+            [~,p,~,~] = ttest2(obj.initialMatrix(noRiskLabels == 0, obj.indicesCcsSelected), obj.initialMatrix(noRiskLabels, obj.indicesCcsSelected), 'Vartype', 'unequal');
+            obj.featuresMeans(:, 6) = p';
         end
     end
 end
