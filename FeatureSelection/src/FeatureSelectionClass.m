@@ -43,6 +43,7 @@ classdef FeatureSelectionClass
             obj.usedMethod = usedMethod;
             obj.matrixAllCases(isnan(obj.matrixAllCases) )= 0;% Do 0 all NaN
             obj.preSelectedFeature = -1;
+            obj.featuresMeans = [];
             %normalize matrixes
             for charac=1:size(obj.matrixAllCases,2)
                 obj.matrixAllCases(:,charac)=obj.matrixAllCases(:,charac)-min(obj.matrixAllCases(:,charac));
@@ -306,7 +307,7 @@ classdef FeatureSelectionClass
             labelsCat = grp2idx(categorical(usedLabels));
             [~, ~, obj.sensitivity, obj.specificity] = getHowGoodAreTheseCharacteristics(usedMatrix(:, bestIterationPCA(numRow, 2:size(bestIterationPCA,2))), labelsCat, obj.weightsOfCharacteristics, obj.usedMethod);
             
-            obj.getFeaturesMeans();
+            obj.featuresMeans = obj.getFeaturesMeans();
             disp('------done------')
         end
         
@@ -386,16 +387,16 @@ classdef FeatureSelectionClass
             bestFeatures = indices(1:numBestFeatures);
         end
         
-        function getFeaturesMeans(obj)
-            obj.featuresMeans = [];
+        function [featuresMeans] = getFeaturesMeans(obj)
+            featuresMeans = [];
             noRiskLabels = cellfun(@(x) isequal(x, obj.worstCondition), obj.labels);
-            obj.featuresMeans(:, 1) = obj.indicesCcsSelected;
-            obj.featuresMeans(:, 2) = mean(matrixChar(noRiskLabels, obj.indicesCcsSelected))';
-            obj.featuresMeans(:, 3) = std(matrixChar(noRiskLabels, obj.indicesCcsSelected))';
-            obj.featuresMeans(:, 4) = mean(matrixChar(noRiskLabels == 0, obj.indicesCcsSelected))';
-            obj.featuresMeans(:, 5) = std(matrixChar(noRiskLabels == 0, obj.indicesCcsSelected))';
+            featuresMeans(:, 1) = obj.indicesCcsSelected;
+            featuresMeans(:, 2) = mean(obj.initialMatrix(noRiskLabels, obj.indicesCcsSelected))';
+            featuresMeans(:, 3) = std(obj.initialMatrix(noRiskLabels, obj.indicesCcsSelected))';
+            featuresMeans(:, 4) = mean(obj.initialMatrix(noRiskLabels == 0, obj.indicesCcsSelected))';
+            featuresMeans(:, 5) = std(obj.initialMatrix(noRiskLabels == 0, obj.indicesCcsSelected))';
             [~,p,~,~] = ttest2(obj.initialMatrix(noRiskLabels == 0, obj.indicesCcsSelected), obj.initialMatrix(noRiskLabels, obj.indicesCcsSelected), 'Vartype', 'unequal');
-            obj.featuresMeans(:, 6) = p';
+            featuresMeans(:, 6) = p';
         end
     end
 end
