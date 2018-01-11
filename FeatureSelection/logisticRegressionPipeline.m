@@ -35,4 +35,6 @@ labelsUsed(noRiskLabels == 0) = {'Rest'};
 [ ftcInstabilityVTNOnlyTopFeatures ] = getFTCWithTopFeatures( ftc, labelsUsed, matrixChar, columnNames, 'High', vtnChar );
 [ ftcInstabilityNotVTNOnlyTopFeatures ] = getFTCWithTopFeatures( ftc, labelsUsed, matrixChar, columnNames, 'High', notVtnChar );
 
+save(strcat('newNBResultsWithTopFeatures_', date), 'ftcRiskRealOnlyTopFeatures', 'ftcRiskRealVTNOnlyTopFeatures', 'ftcRiskRealNotVTNOnlyTopFeatures', 'ftcInstabilityOnlyTopFeatures', 'ftcInstabilityVTNOnlyTopFeatures', 'ftcInstabilityNotVTNOnlyTopFeatures');
+
 warning('on', 'all')
