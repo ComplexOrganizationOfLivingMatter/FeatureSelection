@@ -371,7 +371,7 @@ classdef FeatureSelectionClass
             close all
         end
         
-        function [ res,  bestFeatures, indicesNames] = getBestFeatures(obj, numBestFeatures, condition )
+        function [ res,  bestFeatures, indicesNames] = getBestFeatures(obj, numBestFeatures)
             %GETBESTFEATURES Summary of this function goes here
             %   Detailed explanation goes here
             res = [];
@@ -381,10 +381,11 @@ classdef FeatureSelectionClass
                 [h,p,~,~] = ttest2(obj.initialMatrix(noRiskLabels == 0, idChar), obj.initialMatrix(noRiskLabels, idChar), 'Vartype', 'unequal', 'Alpha', 0.1);
                 res(idChar, :) = [idChar, specificity1, sensitivity1, 1 - goodness, p, h];
             end
+            res(res(:, 1) == 0, :) = [];
             [res, indices] = sortrows(res, 4);
-            indicesNames = obj.featuresNames(indices);
+            indicesNames = obj.featuresNames(obj.usedCharacteristics(indices));
             
-            bestFeatures = indices(1:numBestFeatures);
+            bestFeatures = obj.usedCharacteristics(indices(1:numBestFeatures));
         end
         
         function [featuresMeans] = getFeaturesMeans(obj)
