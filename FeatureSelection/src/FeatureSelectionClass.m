@@ -378,7 +378,7 @@ classdef FeatureSelectionClass
             noRiskLabels = cellfun(@(x) isequal(x, obj.worstCondition), obj.labels);
             for idChar = obj.usedCharacteristics
                 [ goodness, ~, sensitivity1, specificity1] = getHowGoodAreTheseCharacteristics(obj.matrixAllCases(:, idChar), noRiskLabels + 1, -1, 'LogisticRegression');
-                [h,p,~,~] = ttest2(obj.initialMatrix(noRiskLabels == 0, idChar), obj.initialMatrix(noRiskLabels, idChar), 'Vartype', 'unequal', 'Alpha', 0.1);
+                [h,p,~,~] = ttest2(obj.initialMatrix(noRiskLabels == 0, idChar), obj.initialMatrix(noRiskLabels, idChar), 'Vartype', 'unequal');
                 res(idChar, :) = [idChar, specificity1, sensitivity1, 1 - goodness, p, h];
             end
             res(res(:, 1) == 0, :) = [];
