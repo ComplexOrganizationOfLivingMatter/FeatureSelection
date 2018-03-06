@@ -7,7 +7,7 @@ addpath(genpath('lib'))
 %uiopen('D:\Pablo\Neuroblastoma\Results\graphletsCount\NuevosCasos\Analysis\NewClinicClassification_NewControls_11_01_2018.xlsx',1);
 matrixInit = NewClinicClassificationNewControls11012018;
 %matrixInit.VTNHSCORE = [];
-initialIndex = 50;
+initialIndex = 51;
 columnNames = matrixInit.Properties.VariableNames(initialIndex:end);
 % Not VTN
 notVtnChar = find(cellfun(@(x) isempty(strfind(lower(x), 'vtn')), columnNames));
