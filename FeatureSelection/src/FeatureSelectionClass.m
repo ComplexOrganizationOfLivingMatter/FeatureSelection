@@ -144,7 +144,12 @@ classdef FeatureSelectionClass
                             if length(find(sort(BetterPCAs(r,2:end))==sort(newPCARow(1,2:end))))==size(BetterPCAs,2)-1
                                 auxiliar(1,maxPcaIndex)=0;
                                 [~, maxPcaIndex]=max(auxiliar);
+                                oldPCARow = newPCARow;
                                 newPCARow=Ratio_pca(:,maxPcaIndex)';
+                                if all(oldPCARow == newPCARow)
+                                    newPCARow = [];
+                                    break;
+                                end
                                 r=1;
                             else
                                 r=r+1;
