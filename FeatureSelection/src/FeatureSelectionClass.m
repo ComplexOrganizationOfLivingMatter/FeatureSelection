@@ -187,6 +187,8 @@ classdef FeatureSelectionClass
                 clear W Ratio_pca
             end
             
+            eigenvectorsF(BetterPCAs(:, 1) <= 0) = [];
+            Proy(BetterPCAs(:, 1) <= 0) = [];
             BetterPCAs(BetterPCAs(:, 1) <= 0, :) = [];
         end
         
