@@ -3,7 +3,7 @@ function [ results ] = testCombinationsOfFeatures( featuresCombinations, labelsU
 %   Detailed explanation goes here
 
     results = cell(length(featuresCombinations), 4);
-    for numCombination = 1:length(featuresCombinations)
+    parfor numCombination = 1:length(featuresCombinations)
         usedChars = featuresCombinations{numCombination};
         ftc = FeatureSelectionClass(labelsUsed, matrixChar, 'LogisticRegression', usedChars, columnNames, condition);
         [ goodness, projection, sensitivity, specificity] = getHowGoodAreTheseCharacteristics(ftc.matrixAllCases(:, usedChars), grp2idx(categorical(ftc.labels)), -1, 'LogisticRegression');
