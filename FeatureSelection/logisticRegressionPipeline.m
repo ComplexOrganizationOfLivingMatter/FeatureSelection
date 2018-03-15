@@ -175,9 +175,9 @@ labelsUsed = matrix2.RiskReal;
 noRiskLabels = cellfun(@(x) isequal(x, 'NoRisk'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'HighRisk'};
 
-for numDataset = 1:(size(bestCombinations, 1)/3)
+for numDataset = 1:(size(bestCombinations, 2)/3)
     actualDataset = ((numDataset-1)*3)+1;
-    [ ftcRiskRealBestCombination(numDataset) ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', horzcat(bestCombinations{actualDataset}, addedFeatures) );
+    [ ftcRiskRealBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', horzcat(bestCombinations{actualDataset}, addedFeatures) );
 end
 
 % % All the executions
@@ -204,6 +204,10 @@ labelsUsed = matrix2.RiskCalculated;
 noRiskLabels = cellfun(@(x) isequal(x, 'NoRisk'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'HighRisk'};
 
+for numDataset = 1:(size(bestCombinations, 2)/3)
+    actualDataset = ((numDataset-1)*3)+2;
+    [ ftcRiskCalculatedBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', horzcat(bestCombinations{actualDataset}, addedFeatures) );
+end
 
 % % All the executions
 % [ ftcRiskCalculatedVTNOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'HighRisk', vtnChar );
@@ -228,6 +232,11 @@ matrixChar = table2array(matrix2(:, initialIndex:end));
 labelsUsed = matrix2.Instability;
 noRiskLabels = cellfun(@(x) isequal(x, 'High'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'Rest'};
+
+for numDataset = 1:(size(bestCombinations, 2)/3)
+    actualDataset = numDataset*3;
+    [ ftcInstabilityBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'High', horzcat(bestCombinations{actualDataset}, addedFeatures) );
+end
 
 %% High+Mediium Instability vs Low+VeryLow Instability
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.Instability);
