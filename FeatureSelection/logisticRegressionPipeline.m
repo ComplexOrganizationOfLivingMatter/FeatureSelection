@@ -91,6 +91,7 @@ labelsUsed(noRiskLabels == 0) = {'GreaterAge'};
 
 disp('Age category');
 %[ ftcAgeTopologicalOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'GreaterAge', topologicalFeatures );
+%ftcAgeTopologicalOnlyTopFeaturesFinal = getBestFTC({ftcAgeTopologicalOnlyTopFeatures});
 resultsAge = testCombinationsOfFeatures(bestCombinations, labelsUsed, matrixChar, columnNames, 'GreaterAge');
 
 
@@ -106,6 +107,7 @@ labelsUsed(noRiskLabels == 0) = {'Metastasis'};
 
 disp('Location or Metastasis category');
 %[ ftcLocaVsMetaTopologicalOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'Metastasis', topologicalFeatures );
+ftcLocaVsMetaTopologicalOnlyTopFeaturesFinal = getBestFTC({ftcLocaVsMetaTopologicalOnlyTopFeatures});
 resultsLocaVsMeta = testCombinationsOfFeatures(bestCombinations, labelsUsed, matrixChar, columnNames, 'Metastasis');
 
 
@@ -120,7 +122,8 @@ labelsUsed(noRiskLabels) = {'BetterHisto'};
 labelsUsed(noRiskLabels == 0) = {'WorseHisto'};
 
 disp('Histopathology category');
-%[ ftcHistopathologyTopologicalOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'WorseHisto', topologicalFeatures );
+[ ftcHistopathologyTopologicalOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'WorseHisto', topologicalFeatures );
+ftcHistopathologyTopologicalOnlyTopFeaturesFinal = getBestFTC({ftcHistopathologyTopologicalOnlyTopFeatures});
 resultsHistopathology = testCombinationsOfFeatures(bestCombinations, labelsUsed, matrixChar, columnNames, 'WorseHisto');
 
 %% NMYC
@@ -135,6 +138,7 @@ labelsUsed(noRiskLabels == 0) = {'MYCN'};
 
 disp('NMYC category');
 [ ftcMYCNTopologicalOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'MYCN', topologicalFeatures );
+ftcMYCNTopologicalOnlyTopFeaturesFinal = getBestFTC({ftcMYCNTopologicalOnlyTopFeatures});
 resultsMYCN = testCombinationsOfFeatures(bestCombinations, labelsUsed, matrixChar, columnNames, 'MYCN');
 
 %% 11q
@@ -149,6 +153,7 @@ labelsUsed(noRiskLabels == 0) = {'11q'};
 
 disp('11q category');
 [ ftc11qTopologicalOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, '11q', topologicalFeatures );
+ftc11qTopologicalOnlyTopFeaturesFinal = getBestFTC({ftc11qTopologicalOnlyTopFeatures});
 results11q = testCombinationsOfFeatures(bestCombinations, labelsUsed, matrixChar, columnNames, '11q');
 
 %% SCA
@@ -163,6 +168,7 @@ labelsUsed(noRiskLabels == 0) = {'SCA'};
 
 disp('SCA category');
 [ ftcSCATopologicalOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'SCA', topologicalFeatures );
+ftcSCATopologicalOnlyTopFeaturesFinal = getBestFTC({ftcSCATopologicalOnlyTopFeatures});
 resultsSCA = testCombinationsOfFeatures(bestCombinations, labelsUsed, matrixChar, columnNames, 'SCA');
 
 %% RiskREAL
@@ -175,10 +181,11 @@ labelsUsed = matrix2.RiskReal;
 noRiskLabels = cellfun(@(x) isequal(x, 'NoRisk'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'HighRisk'};
 
-for numDataset = 1:(size(bestCombinations, 2)/3)
-    actualDataset = ((numDataset-1)*3)+1;
-    [ ftcRiskRealBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', horzcat(bestCombinations{actualDataset}, addedFeatures) );
-end
+% for numDataset = 1:(size(bestCombinations, 2)/3)
+%     actualDataset = ((numDataset-1)*3)+1;
+%     [ ftcRiskRealBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', horzcat(bestCombinations{actualDataset}, addedFeatures) );
+% end
+%ftcRiskRealBestCombinationFinal = getBestFTC(ftcRiskRealBestCombination);
 
 % % All the executions
 % [ ftcRiskRealOnlyTopFeatures ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', 1:size(matrixChar, 2) );
@@ -204,10 +211,11 @@ labelsUsed = matrix2.RiskCalculated;
 noRiskLabels = cellfun(@(x) isequal(x, 'NoRisk'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'HighRisk'};
 
-for numDataset = 1:(size(bestCombinations, 2)/3)
-    actualDataset = ((numDataset-1)*3)+2;
-    [ ftcRiskCalculatedBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', horzcat(bestCombinations{actualDataset}, addedFeatures) );
-end
+% for numDataset = 1:(size(bestCombinations, 2)/3)
+%     actualDataset = ((numDataset-1)*3)+2;
+%     [ ftcRiskCalculatedBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'HighRisk', horzcat(bestCombinations{actualDataset}, addedFeatures) );
+% end
+%ftcRiskCalculatedBestCombinationFinal = getBestFTC(ftcRiskCalculatedBestCombination);
 
 % % All the executions
 % [ ftcRiskCalculatedVTNOnlyTopFeatures ] = getFTCWithTopFeatures(labelsUsed, matrixChar, columnNames, 'HighRisk', vtnChar );
@@ -233,10 +241,12 @@ labelsUsed = matrix2.Instability;
 noRiskLabels = cellfun(@(x) isequal(x, 'High'), labelsUsed);
 labelsUsed(noRiskLabels == 0) = {'Rest'};
 
-for numDataset = 1:(size(bestCombinations, 2)/3)
-    actualDataset = numDataset*3;
-    [ ftcInstabilityBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'High', horzcat(bestCombinations{actualDataset}, addedFeatures) );
-end
+% for numDataset = 1:(size(bestCombinations, 2)/3)
+%     actualDataset = numDataset*3;
+%     [ ftcInstabilityBestCombination{numDataset} ] = getFTCWithTopFeatures( labelsUsed, matrixChar, columnNames, 'High', horzcat(bestCombinations{actualDataset}, addedFeatures) );
+% end
+%ftcInstabilityBestCombinationFinal = getBestFTC(ftcInstabilityBestCombination);
+
 
 %% High+Mediium Instability vs Low+VeryLow Instability
 emptyCells = cellfun(@(x) isequal('', x), matrixInit.Instability);
