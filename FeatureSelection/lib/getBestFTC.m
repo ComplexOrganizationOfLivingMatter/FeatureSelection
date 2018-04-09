@@ -3,7 +3,7 @@ function [ ftc ] = getBestFTC( ftc )
 %   Detailed explanation goes here
 
 
-    for numCombination = 1:length(ftc)
+    for numCombination = 1:size(ftc,1)*size(ftc,2)
         actualFTC = ftc{numCombination};
         bestValue = 0;
         best = 1;
