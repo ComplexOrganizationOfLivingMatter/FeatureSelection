@@ -53,7 +53,7 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     [~, ~, ~, AUC] = perfcurve(labels, yfit, 1);
     VPpositive = resResubCM(2, 2) / (resResubCM(2, 2) + resResubCM(1, 2)) * 100;
     VPnegative = resResubCM(1, 1) / (resResubCM(1, 1) + resResubCM(2, 1)) * 100;
-    
+    finalRes = [sensitivity, specificity, VPpositive, VPnegative];
     %Getting the failing cases:
     %failingIndices = find(xor((yfit > mean([mean(yfit(labels == 0)), mean(yfit(labels == 1))])), logical(labels)));
     

@@ -7,7 +7,7 @@ function [ ftcOnlyTopFeatures] = getFTCWithTopFeatures(labelsUsed, matrixChar, c
 %     [ goodness, projection, sensitivity, specificity] = getHowGoodAreTheseCharacteristics(ftc.matrixAllCases(:, usedChars), grp2idx(categorical(ftc.labels)), -1, 'LogisticRegression');
     % newFtc = ftc.executeFeatureSelection(ones(size(ftc.matrixAllCases, 1), 1)');
     if length(usedChars) > 10
-        [~, preSelectedFeatures] = ftc.getBestFeatures(10);
+        [res, preSelectedFeatures] = ftc.getBestFeatures(10);
     else
         [~, preSelectedFeatures] = ftc.getBestFeatures(length(usedChars));
     end
