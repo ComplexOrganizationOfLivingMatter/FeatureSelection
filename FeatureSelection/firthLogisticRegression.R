@@ -1,3 +1,5 @@
+
+#https://stats.stackexchange.com/questions/11109/how-to-deal-with-perfect-separation-in-logistic-regression
 characteristics <- file;
 x <- as.matrix(characteristics)
 y <- as.matrix(predictors)
