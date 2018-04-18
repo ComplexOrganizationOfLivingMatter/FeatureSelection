@@ -1,4 +1,4 @@
-function [ goodness, projection, sensitivity, specificity] = getHowGoodAreTheseCharacteristics(characteristics, labels, weightsOfCharac, usedMethod)
+function [ goodness, projection, sensitivity, specificity, oddsRatio] = getHowGoodAreTheseCharacteristics(characteristics, labels, weightsOfCharac, usedMethod)
 %GETHOWGOODARETHESECHARACTERISTICS Summary of this function goes here
 %   Detailed explanation goes here
 if isequal(lower(usedMethod), lower('PCA'))
@@ -40,7 +40,12 @@ elseif isequal(lower(usedMethod), lower('NCA'))
 elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     lastwarn('')
     labels = labels - 1;
-    [b,dev,stats] = glmfit(characteristics, labels, 'binomial', 'logit'); % Logistic regression
+    priorWeights = labels;
+    priorWeights(labels==0) = sum(labels == 1)/length(labels);
+    priorWeights(labels==1) = sum(labels == 0)/length(labels);
+    [B,FitInfo] = lassoglm(characteristics, labels, 'binomial');
+    b = vertcat(FitInfo.Intercept(1), B(:, 1));
+    [b,dev,stats] = glmfit(characteristics, labels, 'binomial', 'weights', priorWeights); % Logistic regression
 %     msgWarn = lastwarn();
 %     if isempty(strfind(msgWarn, 'The estimated coefficients perfectly separate failures from successes')) == 0
 %         disp('yuhuuu');
@@ -54,6 +59,7 @@ elseif isequal(lower(usedMethod), lower('LogisticRegression'))
     VPpositive = resResubCM(2, 2) / (resResubCM(2, 2) + resResubCM(1, 2)) * 100;
     VPnegative = resResubCM(1, 1) / (resResubCM(1, 1) + resResubCM(2, 1)) * 100;
     finalRes = [sensitivity, specificity, VPpositive, VPnegative];
+    oddsRatio = {b, stats};
     %Getting the failing cases:
     %failingIndices = find(xor((yfit > mean([mean(yfit(labels == 0)), mean(yfit(labels == 1))])), logical(labels)));
     
