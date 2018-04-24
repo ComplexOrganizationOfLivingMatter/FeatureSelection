@@ -1,0 +1,814 @@
+---
+title: "Logistic regression pipeline"
+author: "Juan Francisco Martín-Rodríguez"
+date: "24 de abril de 2018"
+output: html_document
+---
+
+Variables bioquímicas P**\>**0.15 en univariate analysis que entran en el
+multivariante**:**
+
+**-** ADMA; P **=** 0.116
+
+**-** Nitric oxide; P **=** 0.109
+
+**-** GSH**/**GSSG; P **=** 0.103
+
+También incluimos por su sentido teórico**:**
+
+**-** Edad
+
+**-** BMI
+
+**-** GH deficiency
+
+**-** TG
+
+**-** HDL
+
+**-** DM
+
+**-** HTA
+
+\# Multiple Linear Regression con todas las variables
+
+fit2 **\<-**lm**(**Log_AH **\~** Edad **+** IMC **+** tto_GH **+** TG **+** HDL
+**+** DM **+** HTA **+** oxido_nitrico **+** VCAM1 **+** GHS_GSSG **+** GPs,
+data **=** newdata**)**
+
+summary**(**fit2**)**
+
+Call**:**
+
+lm**(**formula **=** Log_AH **\~** Edad **+** IMC **+** tto_GH **+** TG **+**
+HDL **+** DM **+** HTA **+**
+
+ADMA **+** GHS_GSSG **+** oxido_nitrico, data **=** newdata**)**
+
+Residuals**:**
+
+Min 1Q Median 3Q Max
+
+**-**0.56646 **-**0.16515 0.07369 0.13152 0.38361
+
+Coefficients**:**
+
+Estimate Std. Error t value Pr**(\>\|**t**\|)**
+
+**(**Intercept**)** 2.959e**+**00 5.332e**-**01 5.550 6.97e**-**06 **\*\*\***
+
+Edad 1.072e**-**04 4.948e**-**03 0.022 0.9829
+
+IMC **-**5.589e**-**03 9.263e**-**03 **-**0.603 0.5513
+
+tto_GHSi **-**2.293e**-**01 1.304e**-**01 **-**1.759 0.0898 .
+
+TG **-**4.638e**-**05 9.471e**-**04 **-**0.049 0.9613
+
+HDL 2.826e**-**03 5.497e**-**03 0.514 0.6113
+
+DMSi 1.691e**-**01 1.471e**-**01 1.150 0.2603
+
+HTASi **-**2.477e**-**01 1.340e**-**01 **-**1.849 0.0755 .
+
+ADMA **-**6.634e**-**02 1.109e**-**01 **-**0.598 0.5546
+
+GHS_GSSG **-**2.384e**-**03 1.576e**-**03 **-**1.513 0.1020
+
+oxido_nitrico 4.723e**-**03 3.645e**-**03 1.296 0.2060
+
+**---**
+
+Signif. codes**:** 0 '**\*\*\***' 0.001 '**\*\***' 0.01 '**\***' 0.05 '.' 0.1 '
+' 1
+
+Residual standard error**:** 0.2637 on 27 degrees of freedom
+
+Multiple R**-**squared**:** 0.4286, Adjusted R**-**squared**:** 0.217
+
+F**-**statistic**:** 2.025 on 10 and 27 DF, p**-**value**:** 0.07062
+
+\# Como vemos el modelo no es óptimo (p-value = 0.070) y un poder explicativo
+bajo (Multiple R-squared: 0.4286). Esto puede deberse a que el modelo incluye
+muchas variables poco explicativa metiendo ruido en el error del modelo.
+
+\#Vamos a mejorarlo basándonos en la técnica all-subsets regression. Con esta
+técnica se prueban todos los modelos posibles (2p, donde p es el número de
+predictores). Para elegir las variables que finalmente conformarías el mejor
+modelo, nos podemos basar en dos criterios:
+
+1**)** Adjusted \\**(** R**\^**2 \\**)** y Mallow Cp, con la libería de R
+"leaps".
+
+\# All Subsets Regression
+
+library**(**leaps**)**
+
+leaps **\<-** regsubsets **(**bwt **\~** age **+** lwt **+** race.cat **+**
+smoke **+** preterm **+** ht **+** ui **+** ftv.cat,
+
+data **=** lbw,
+
+nbest **=** 1, \# 1 best model for each number of predictors
+
+nvmax **= NULL**, \# NULL for no limit on number of variables
+
+force.in **= NULL**, force.out **= NULL**,
+
+method **=** "exhaustive"**)**
+
+leaps
+
+Subset selection object
+
+Call**:** regsubsets.formula**(**Log_AH **\~** Edad **+** IMC **+** tto_GH **+**
+TG **+** HDL **+**
+
+DM **+** HTA **+** oxido_nitrico **+** VCAM1 **+** GHS_GSSG **+** GPs, data
+**=** newdata,
+
+nbest **=** 1, nvmax **= NULL**, force.in **= NULL**, force.out **= NULL**,
+
+method **=** "exhaustive"**)**
+
+11 Variables **(**and intercept**)**
+
+Forced **in** Forced out
+
+Edad **FALSE FALSE**
+
+IMC **FALSE FALSE**
+
+tto_GHSi **FALSE FALSE**
+
+TG **FALSE FALSE**
+
+HDL **FALSE FALSE**
+
+DMSi **FALSE FALSE**
+
+HTASi **FALSE FALSE**
+
+oxido_nitrico **FALSE FALSE**
+
+VCAM1 **FALSE FALSE**
+
+GHS_GSSG **FALSE FALSE**
+
+GPs **FALSE FALSE**
+
+1 subsets of each size up to 11
+
+Selection Algorithm**:** exhaustive
+
+**\>** summary.leaps**\<-**summary**(**leaps**)**
+
+**\>** as.data.frame**(**summary.leaps**\$**outmat**)**
+
+Edad IMC tto_GHSi TG HDL DMSi HTASi oxido_nitrico VCAM1 GHS_GSSG GPs
+
+1 ( 1 ) \*
+
+2 ( 1 ) \* \*
+
+3 ( 1 ) \* \* \*
+
+4 ( 1 ) \* \* \* \*
+
+5 ( 1 ) \* \* \* \* \*
+
+6 ( 1 ) \* \* \* \* \* \*
+
+7 ( 1 ) \* \* \* \* \* \* \*
+
+8 ( 1 ) \* \* \* \* \* \* \* \*
+
+9 ( 1 ) \* \* \* \* \* \* \* \* \*
+
+10 ( 1 ) \* \* \* \* \* \* \* \* \* \*
+
+11 ( 1 ) \* \* \* \* \* \* \* \* \* \* \*
+
+\> plot(summary.leaps, scale = "adjr2", main = "Adjusted R\^2")
+
+![](lib/logistRegressionResources/image1.png)
+
+\# Esta técnica detecta que las variables Edad, TG, HDL, y VCAM1 no aportan nada
+al modelo. Por el método de adjusted \\( R\^2 \\), el mejor modelo incluiría
+IMC, tto_GH, DM, HTA, ON, GHS/GSSG y GPs. Esto es, el modelo con estas 7
+variables tendría el mayor adjusted \\( R\^2 \\).
+
+\#Mallow Cp se usa también para decidir el número de predictores a incluir. Aquí
+lo comparo gráficamente con el método anterior de adjusted \\( R\^2 \\).
+
+library**(**car**)**
+
+layout**(**matrix**(**1**:**2, ncol **=** 2**))**
+
+\#\# Adjusted R2
+
+res.legend **\<-**
+
+subsets**(**leaps, statistic**=**"adjr2", legend **= FALSE**, min.size **=** 5,
+main **=** "Adjusted R\^2"**)**
+
+\#\# Mallow Cp
+
+res.legend **\<-**
+
+subsets**(**leaps, statistic**=**"cp", legend **= FALSE**, min.size **=** 5,
+main **=** "Mallow Cp"**)**
+
+abline**(**a **=** 1, b **=** 1, lty **=** 2**)**
+
+![](media/0a8bedae65f55816e4e36c847d2024af.png)
+
+**\>** res.legend
+
+Abbreviation
+
+Edad E
+
+IMC I
+
+tto_GHSi t
+
+TG T
+
+HDL HD
+
+DMSi D
+
+HTASi HT
+
+oxido_nitrico o
+
+VCAM1 V
+
+GHS_GSSG GH
+
+GPs GP
+
+\# Para Mallow (gráfico de la derecha) se coge el modelo con el menor
+estadístico (representado en eje Y). Este contiene IMC, tto_GH, HTA, ON,
+GFS/GSSG y GPs (no incluye DM que sí la incluía el otro).
+
+\# A continuación voy a realizar la regresión lineal con los dos modelos que se
+han seleccionado de estos métodos.
+
+1) Con las 7 variables del método adjusted \\( R\^2 \\).
+
+**\>** best_model1 **\<-**lm**(**Log_AH **\~** IMC **+** tto_GH **+** DM **+**
+HTA **+** GHS_GSSG **+** oxido_nitrico **+** GPs, data **=** newdata**)**
+
+**\>** summary**(**best_model1**)**
+
+Call**:**
+
+lm**(**formula **=** Log_AH **\~** IMC **+** tto_GH **+** DM **+** HTA **+**
+GHS_GSSG **+** oxido_nitrico **+**
+
+GPs, data **=** newdata**)**
+
+Residuals**:**
+
+Min 1Q Median 3Q Max
+
+**-**0.53325 **-**0.12244 0.07784 0.14887 0.28176
+
+Coefficients**:**
+
+Estimate Std. Error t value Pr**(\>\|**t**\|)**
+
+**(**Intercept**)** 2.931045 0.251518 11.653 1.16e**-**12 **\*\*\***
+
+IMC **-**0.012115 0.007384 **-**1.641 0.1113
+
+tto_GHSi **-**0.231468 0.098501 **-**2.350 0.0256 **\***
+
+DMSi 0.144852 0.122857 1.179 0.2477
+
+HTASi **-**0.250752 0.104462 **-**2.400 0.0228 **\***
+
+GHS_GSSG 0.002395 0.001315 1.821 0.0786 .
+
+oxido_nitrico 0.008479 0.003499 2.423 0.0216 **\***
+
+GPs 0.002743 0.001318 2.081 0.0461 **\***
+
+**---**
+
+Signif. codes**:** 0 '**\*\*\***' 0.001 '**\*\***' 0.01 '**\***' 0.05 '.' 0.1 '
+' 1
+
+Residual standard error**:** 0.2379 on 30 degrees of freedom
+
+Multiple R**-**squared**:** 0.483, Adjusted R**-**squared**:** 0.3624
+
+F**-**statistic**:** 4.004 on 7 and 30 DF, p**-**value**:** 0.003332
+
+\# Con este conjunto de variables sí sale el modelo significativo.
+
+2) Con las 6 variables del método Mallow
+
+**\>** best_model2 **\<-**lm**(**Log_AH **\~** IMC **+** tto_GH **+** HTA **+**
+GHS_GSSG **+** oxido_nitrico **+** GPs, data **=** newdata**)**
+
+**\>** summary**(**best_model2**)**
+
+Call**:**
+
+lm**(**formula **=** Log_AH **\~** IMC **+** tto_GH **+** HTA **+** GHS_GSSG
+**+** oxido_nitrico **+**
+
+GPs, data **=** newdata**)**
+
+Residuals**:**
+
+Min 1Q Median 3Q Max
+
+**-**0.60376 **-**0.11283 0.05778 0.14033 0.35711
+
+Coefficients**:**
+
+Estimate Std. Error t value Pr**(\>\|**t**\|)**
+
+**(**Intercept**)** 2.894658 0.251183 11.524 9.76e**-**13 **\*\*\***
+
+IMC **-**0.011607 0.007417 **-**1.565 0.1278
+
+tto_GHSi **-**0.196280 0.094460 **-**2.078 0.0461 **\***
+
+HTASi **-**0.181326 0.086826 **-**2.088 0.0451 **\***
+
+GHS_GSSG 0.002186 0.001311 1.667 0.1056
+
+oxido_nitrico 0.008627 0.003519 2.452 0.0200 **\***
+
+GPs 0.002860 0.001323 2.163 0.0384 **\***
+
+**---**
+
+Signif. codes**:** 0 '**\*\*\***' 0.001 '**\*\***' 0.01 '**\***' 0.05 '.' 0.1 '
+' 1
+
+Residual standard error**:** 0.2394 on 31 degrees of freedom
+
+Multiple R**-**squared**:** 0.4591, Adjusted R**-**squared**:** 0.3544
+
+F**-**statistic**:** 4.385 on 6 and 31 DF, p**-**value**:** 0.002561
+
+\# Vemos que la Adjusted R-squared no baja sensiblemente con respecto al otro
+método. Tengos mis dudas si dejar o no DM en el modelo. Si lo que se trata es de
+ser parsimonioso (explicar lo máximo posible con el menor número de variables)
+entonces se quitaría. Por el contrario, al sacar DM, la variable GSH/GSSG pierde
+un poco de peso específico en el modelo.
+
+\# Método 2: Best subset GLM (librería bestglm. Esta librería es un poco rara.
+Tiene que estar limpia de valores NA, no debe haber variables de sobra ni nada
+raro. También requiere que la variable dependiente se llame "y".
+
+require**(**leaps**)** \#\#bestglm requiere leaps
+
+**\>** library**(**bestglm**)**
+
+fluji2.for.bestglm **\<-** within**(**Flujimetria_Cushing, **{**
+
+quitotrioxidasa **\<- NULL** \# borramos las variables que no van en el analsisi
+
+IL6 **\<- NULL**
+
+pai **\<- NULL**
+
+SOD **\<- NULL**
+
+GRx **\<- NULL**
+
+ADMA **\<- NULL**
+
+y **\<-** Log_AH \# Convertimos Low_AH en y
+
+Log_AH **\<- NULL** \# Borramos Low_AH
+
+perox **\<- NULL**
+
+TAS **\<-NULL**
+
+GSSG **\<-NULL**
+
+GSH **\<- NULL**
+
+LDLoxidada **\<- NULL**
+
+PCRus **\<- NULL**
+
+adiponectina **\<-NULL**
+
+STNFR2 **\<- NULL**
+
+SCD40 **\<- NULL**
+
+perox **\<- NULL})**
+
+**\>** fluji2.for.bestglm **\<-**na.omit**(**fluji2.for.bestglm**)**
+\#\#Quitamos todos los NA
+
+**\>** fluji2.for.bestglm
+
+Edad IMC tto_GH TG HDL HTA DM oxido_nitrico VCAM1 GHS_GSSG GPs y
+
+1 54 27.14 Si 258 48 No No 32.26 880 12.71 42.95 2.88
+
+2 48 36.26 Si 98 63 Si Si 24.84 576 45.00 154.93 2.54
+
+3 32 27.78 No 68 38 No No 23.57 727 29.58 129.51 2.71
+
+4 19 19.15 No 88 65 No No 23.26 989 41.58 158.38 3.15
+
+5 64 27.12 No 157 43 Si Si 51.89 925 33.81 42.30 2.70
+
+6 60 30.68 Si 256 60 Si Si 26.21 931 21.85 35.05 2.64
+
+7 47 36.79 Si 158 53 Si No 43.26 722 17.86 52.95 2.53
+
+8 68 27.06 No 387 33 Si Si 30.10 872 44.29 51.56 2.88
+
+9 23 23.11 No 73 56 No No 36.94 1095 33.68 49.90 3.26
+
+10 43 27.39 Si 98 56 Si Si 42.73 1093 13.40 30.30 2.87
+
+11 52 30.00 Si 70 56 Si Si 54.21 1034 22.82 82.39 2.82
+
+12 58 22.04 No 100 53 Si No 37.15 819 67.14 47.23 2.78
+
+13 51 21.92 No 78 69 No No 49.68 848 48.46 36.75 2.81
+
+14 46 28.84 No 59 58 No No 40.10 904 15.20 53.40 2.92
+
+15 70 27.53 No 73 51 Si Si 41.15 893 5.16 99.76 3.38
+
+16 34 26.97 No 80 58 No No 92.30 847 7.13 28.56 3.73
+
+17 42 28.72 Si 154 77 No Si 34.30 437 6.98 52.23 2.73
+
+18 47 27.72 No 66 50 Si No 45.00 564 8.26 44.87 2.73
+
+19 70 23.56 Si 187 41 Si Si 29.70 824 3.92 44.51 2.58
+
+21 49 25.42 Si 221 55 No No 25.70 542 3.14 63.88 2.85
+
+22 38 22.77 No 88 75 No No 37.68 1231 61.95 57.01 2.48
+
+23 30 24.24 No 50 46 No No 25.70 1233 2.90 25.16 3.17
+
+24 42 30.86 No 89 45 No No 22.50 1259 40.57 88.78 3.00
+
+25 46 47.47 Si 184 38 No Si 27.78 931 15.00 90.74 2.51
+
+26 32 20.31 No 63 52 No No 21.57 872 25.88 60.88 3.28
+
+27 40 42.37 No 45 56 Si Si 29.30 731 196.00 97.80 2.55
+
+28 42 25.39 No 89 63 No No 33.89 811 39.58 54.67 2.84
+
+29 50 33.85 No 72 56 Si No 32.84 692 16.30 124.42 3.00
+
+30 23 28.44 No 48 70 No No 44.05 693 4.91 44.15 3.11
+
+31 43 28.86 No 70 68 No No 25.47 805 4.24 52.58 2.72
+
+32 33 40.25 Si 139 59 No No 25.15 565 45.29 152.00 2.93
+
+33 22 23.88 No 67 53 No No 34.66 1013 28.94 71.74 2.98
+
+34 39 27.94 No 57 66 No No 28.10 1117 45.00 52.09 3.03
+
+35 60 24.31 Si 92 85 No No 26.20 1041 70.00 95.67 2.87
+
+36 25 30.11 Si 208 44 No No 34.66 473 13.84 75.80 2.47
+
+37 35 33.83 No 70 43 Si No 47.15 805 46.42 30.68 2.11
+
+38 45 23.01 No 65 80 No No 43.05 722 11.87 53.62 3.32
+
+39 39 30.86 No 118 51 No No 23.80 594 39.09 101.58 3.06
+
+40 28 26.78 No 120 47 No No 23.60 613 15.50 63.70 3.04
+
+41 40 37.28 No 199 32 No No 29.05 560 48.33 87.38 2.96
+
+43 33 34.17 No 84 40 Si No 37.47 1206 11.87 32.53 2.78
+
+44 45 24.03 No 151 48 No No 26.73 1023 46.88 73.55 3.02
+
+45 58 29.04 No 70 61 Si No 25.92 597 21.87 75.58 2.74
+
+48 41 28.65 No 88 54 No No 18.52 1077 36.40 103.84 3.04
+
+49 54 35.88 No 115 47 No Si 36.00 920 22.24 48.34 2.93
+
+50 60 27.27 Si 71 83 No No 39.89 803 60.25 64.43 2.93
+
+\#\#Performeamos todos los subsets de regresion lineal (gausiano-con las dos
+manos)basándonos en el Akaike Information Criteria (AIC)
+
+**\>** res.bglm **\<-**
+bestglm**(**Xy**=**fluji2.for.bestglm,IC**=**"AIC",method **=**
+"exhaustive"**)**
+
+Note**:** binary categorical variables converted to 0**-**1 so 'leaps' could be
+used.
+
+**\>** res.bglm
+
+AIC
+
+BICq equivalent **for** q **in (**0.558094497949637, 0.771498003852842**)**
+
+Best Model**:**
+
+Estimate Std. Error t value Pr**(\>\|**t**\|)**
+
+**(**Intercept**)** 2.997498327 0.215981674 13.878485 1.133573e**-**16
+
+IMC **-**0.012776689 0.006424035 **-**1.988888 5.376187e**-**02
+
+tto_GHSi **-**0.181364913 0.076358584 **-**2.375174 2.255321e**-**02
+
+HTASi **-**0.183090789 0.073269548 **-**2.498866 1.677983e**-**02
+
+oxido_nitrico 0.007439192 0.003064797 2.427303 1.993040e**-**02
+
+GHS_GSSG **-**0.002007673 0.001167541 **-**1.719574 9.343808e**-**02
+
+GPs 0.002523343 0.001168722 2.159062 3.705711e**-**02
+
+\#\#El mejor modelo incluye las mismas variables que el basado en Mallow (sin
+DM)
+
+res.bglm**\$**BestModels
+
+Edad IMC tto_GH TG HDL HTA DM oxido_nitrico VCAM1 GHS_GSSG GPs Criterion
+
+1 **FALSE TRUE TRUE FALSE FALSE TRUE FALSE TRUE FALSE TRUE TRUE -**133.5197
+
+2 **FALSE TRUE TRUE FALSE FALSE TRUE TRUE TRUE FALSE TRUE TRUE -**132.9148
+
+3 **FALSE TRUE TRUE FALSE FALSE TRUE FALSE TRUE TRUE TRUE TRUE -**132.6904
+
+4 **TRUE TRUE TRUE FALSE FALSE TRUE FALSE TRUE FALSE TRUE TRUE -**132.4422
+
+5 **FALSE TRUE TRUE FALSE FALSE TRUE FALSE TRUE FALSE FALSE TRUE -**132.1579
+
+\#\# Aquí vemos que el modelo que incluye IMC, tto_GH,HTA,ON,GSH/GSSG,GPs es el
+criterio más bajo (modelo 1),
+
+\#\# mejor incluso que el 2 (que incluye DM).
+
+**\>** summary**(**res.bglm**\$**BestModel**)** \#\#Realizamos la regresion con
+el nuevo subser de variables
+
+Call**:**
+
+lm**(**formula **=** y **\~** ., data **=** data.frame**(**Xy**[**,
+c**(**bestset**[-**1**]**, **FALSE)**,
+
+drop **= FALSE]**, y **=** y**))**
+
+Residuals**:**
+
+Min 1Q Median 3Q Max
+
+**-**0.60715 **-**0.10214 0.04621 0.13549 0.36984
+
+Coefficients**:**
+
+Estimate Std. Error t value Pr**(\>\|**t**\|)**
+
+**(**Intercept**)** 2.997498 0.215982 13.878 **\<**2e**-**16 **\*\*\***
+
+IMC **-**0.012777 0.006424 **-**1.989 0.0538 .
+
+tto_GHSi **-**0.181365 0.076359 **-**2.375 0.0226 **\***
+
+HTASi **-**0.183091 0.073270 **-**2.499 0.0168 **\***
+
+oxido_nitrico 0.007439 0.003065 2.427 0.0199 **\***
+
+GHS_GSSG **-**0.002008 0.001168 **-**1.720 0.0934 .
+
+GPs 0.002523 0.001169 2.159 0.0371 **\***
+
+**---**
+
+Signif. codes**:** 0 '**\*\*\***' 0.001 '**\*\***' 0.01 '**\***' 0.05 '.' 0.1 '
+' 1
+
+Residual standard error**:** 0.2233 on 39 degrees of freedom
+
+Multiple R**-**squared**:** 0.4591, Adjusted R**-**squared**:** 0.3758
+
+F**-**statistic**:** 5.516 on 6 and 39 DF, p**-**value**:** 0.0003258
+
+\#\#El modelo explicativo es sensiblemente mejor (0.3758) al creado por Mallow y
+no pierde importancia relativa las variables
+
+\#\#Creo que nos deberíamos quedar con este. Además he leído por ahí que este
+método funciona mejor cuando hay variables categóricas en los datos
+
+\#\#...ni puta idea por qué
+
+\#\#Por último, el diagnóstico de colinearidad. Esto lo vamos a comprobar con el
+método más simple que conozco para ello que es estadístico Variance Inflaction
+Factor (VIF). Según Wikipedia: The variance inflation factor (VIF) quantifies
+the severity of multicollinearity in an ordinary least squares regression
+analysis. It provides an index that measures how much the variance (the square
+of the estimate's standard deviation) of an estimated regression coefficient is
+increased because of collinearity. En R se calcula con la libreria 'car'
+
+**\>** library**(**car**)**
+
+**\>**
+vif**(**lm**(**y**\~**IMC**+**tto_GH**+**HTA**+**oxido_nitrico**+**GHS_GSSG**+**GPs,data**=**fluji2.for.bestglm**))**
+
+IMC tto_GH HTA oxido_nitrico GHS_GSSG GPs
+
+1.261302 1.138731 1.123351 1.301160 1.183096 1.427787
+
+\#\# Se muestra como un parámetro que presenta colinealidad si el VIF es mayor
+de 5 (o 10 dependiendo de la referencia). En nuestro caso no existe este
+problema
+
+\#\#Finalmente el cálculo de la importancia relativa de cada predictor en el
+modelo (para adornar un poco el asunto).
+
+\#\# Se utiliza la librería 'relaimpo' (que no relimpio)
+
+**\>** library**(**relaimpo**)**
+
+calc.relimp**(**lm**(**y**\~**IMC**+**tto_GH**+**HTA**+**oxido_nitrico**+**GHS_GSSG**+**GPs,data**=**fluji2.for.bestglm,type**=**c**(**"lmg","last","first","pratt"**)**,
+
+rela**=TRUE)**
+
+Response variable**:** y
+
+Total response variance**:** 0.07989527
+
+Analysis based on 46 observations
+
+6 Regressors**:**
+
+IMC tto_GH HTA oxido_nitrico GHS_GSSG GPs
+
+Proportion of variance explained by model**:** 45.91%
+
+Metrics are not normalized **(**rela**=FALSE)**.
+
+Relative importance metrics**:**
+
+lmg
+
+IMC 0.10015489
+
+tto_GH 0.10232456
+
+HTA 0.12026874
+
+oxido_nitrico 0.05931146
+
+GHS_GSSG 0.04707878
+
+GPs 0.02992551
+
+Average coefficients **for** different model sizes**:**
+
+1X 2Xs 3Xs 4Xs 5Xs
+
+IMC **-**0.0192422555 **-**0.0177792942 **-**0.016337567 **-**0.014989451
+**-**0.013798611
+
+tto_GH **-**0.2190625000 **-**0.2082302327 **-**0.199706454 **-**0.192808221
+**-**0.186839833
+
+HTA **-**0.2307916667 **-**0.2217610038 **-**0.212504419 **-**0.202745306
+**-**0.192735101
+
+oxido_nitrico 0.0046942605 0.0049604670 0.005461378 0.006092327 0.006769254
+
+GHS_GSSG **-**0.0021597959 **-**0.0020414216 **-**0.001980027 **-**0.001963934
+**-**0.001977591
+
+GPs 0.0001443592 0.0006768413 0.001194706 0.001682365 0.002126623
+
+6Xs
+
+IMC **-**0.012776689
+
+tto_GH **-**0.181364913
+
+HTA **-**0.183090789
+
+oxido_nitrico 0.007439192
+
+GHS_GSSG **-**0.002007673
+
+GPs 0.002523343
+
+Warning message**:**
+
+In lm.fit**(**x, y, offset **=** offset, singular.ok **=** singular.ok, ...**)
+:**
+
+extra arguments c**(**"'type'", "'rela'"**)** are disregarded. \#\#No se porque
+me sale este warning, creo que sólo aplica el método "lmg"
+
+\# Los intervalos de confianzas no son exactos por lo que hay que boostrapear.
+Lo vamos a hacer 1000 veces. Esto nos permite también comparar directamente la
+contribución entre variables
+
+boot **\<-**
+boot.relimp**(**lm**(**y**\~**IMC**+**tto_GH**+**HTA**+**oxido_nitrico**+**GHS_GSSG**+**GPs,
+b **=** 1000, data**=**fluji2.for.bestglm, type **=** c**(**"lmg","last",
+"first", "pratt"**)**, rank **= TRUE**,
+
+diff **= TRUE**, rela **= TRUE))**
+
+booteval.relimp**(**boot**)** \#\#printeo resultados
+
+\#\#Quito farfolla
+
+Confidence interval information **(** 1000 bootstrap replicates, bty**=** perc
+**):**
+
+Relative Contributions with confidence intervals**:**
+
+Lower Upper
+
+percentage 0.95 0.95 0.95
+
+IMC.lmg 0.1002 ABCDEF 0.0166 0.2370
+
+tto_GH.lmg 0.1023 ABCDEF 0.0191 0.2596
+
+HTA.lmg 0.1203 ABCDEF 0.0138 0.2792
+
+oxido_nitrico.lmg 0.0593 ABCDEF 0.0048 0.2782
+
+GHS_GSSG.lmg 0.0471 ABCDEF 0.0078 0.1524
+
+GPs.lmg 0.0299 \_BCDEF 0.0064 0.1283
+
+Letters indicate the ranks covered by bootstrap CIs.
+
+**(**Rank bootstrap confidence intervals always obtained by percentile
+method**)**
+
+CAUTION**:** Bootstrap confidence intervals can be somewhat liberal.
+
+Differences between Relative Contributions**:**
+
+Lower Upper
+
+difference 0.95 0.95 0.95
+
+IMC**-**tto_GH.lmg **-**0.0022 **-**0.1762 0.1538
+
+IMC**-**HTA.lmg **-**0.0201 **-**0.1951 0.1665
+
+IMC**-**oxido_nitrico.lmg 0.0408 **-**0.2246 0.2122
+
+IMC**-**GHS_GSSG.lmg 0.0531 **-**0.0980 0.1971
+
+IMC**-**GPs.lmg 0.0702 **-**0.0471 0.2102
+
+tto_GH**-**HTA.lmg **-**0.0179 **-**0.2218 0.2058
+
+tto_GH**-**oxido_nitrico.lmg 0.0430 **-**0.1860 0.2195
+
+tto_GH**-**GHS_GSSG.lmg 0.0552 **-**0.0904 0.2264
+
+tto_GH**-**GPs.lmg 0.0724 **-**0.0701 0.2355
+
+HTA**-**oxido_nitrico.lmg 0.0610 **-**0.1855 0.2295
+
+HTA**-**GHS_GSSG.lmg 0.0732 **-**0.1073 0.2431
+
+HTA**-**GPs.lmg 0.0903 **-**0.0703 0.2529
+
+oxido_nitrico**-**GHS_GSSG.lmg 0.0122 **-**0.1222 0.2377
+
+oxido_nitrico**-**GPs.lmg 0.0294 **-**0.0928 0.2460
+
+GHS_GSSG**-**GPs.lmg 0.0172 **-**0.0657 0.1151
+
+**\*** indicates that CI **for** difference does not include 0.
+
+CAUTION**:** Bootstrap confidence intervals can be somewhat liberal.
+
+**\>** plot**(**booteval.relimp**(**boot,sort**=TRUE))** \# ploteo resultados
+
+![](media/4d1a5c8ff46e93fa6fb1a71c48433569.png)
+
+\#Como vemos las variables más importantes son HTA, tto_GH e IMC y después todas
+las de estrés oxidativo.
+
