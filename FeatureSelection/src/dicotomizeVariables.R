@@ -5,11 +5,11 @@ dicotomizeVariables <- function(initialInfo, initialIndex, columnStatus, healthy
   columnsUsed <- initialIndex:(length(initialInfo[1,])-8)
   
   if (cutoffMethod == 'Median'){
-    initialInfoDicotomized <- mapply(initialInfo[, columnsUsed], FUN=function(column)
+    initialInfoDicotomized[, columnsUsed] <- mapply(initialInfo[, columnsUsed], FUN=function(column)
       as.numeric(column < median(column)))
     
   } else if (cutoffMethod == '3rdQuartile'){
-    initialInfoDicotomized <- mapply(initialInfo[, columnsUsed], FUN=function(column)
+    initialInfoDicotomized[, columnsUsed] <- mapply(initialInfo[, columnsUsed], FUN=function(column)
       as.numeric(column < quantile(column, 0.75)))
     
   } else {## Option using ROC curve
