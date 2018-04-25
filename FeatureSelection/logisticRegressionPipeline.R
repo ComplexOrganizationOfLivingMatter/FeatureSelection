@@ -9,21 +9,19 @@ debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.
 library(readxl)
 initialInfo <- read_excel("D:/Pablo/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/NewClinicClassification_NewControls_11_01_2018.xlsx")
 
-#riskCalculatedLabels <- cut(initialInfo$RiskCalculated, breaks=c(-Inf, 0.5, 0.6, Inf), labels=c("low","middle","high"))
 riskCalculatedLabels <- initialInfo$RiskCalculated;
 
 initialIndex <- 41;
 
 ## First step: Dicotomize variables
 #Option 1: Younden's Index
-initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
+#initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
 
 #Option 2: Median
-initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Median")
+#initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Median")
 
 #Option 3: third quartile
 initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "3rdQuartile")
-
 
 
 initialInfoDicotomized$RiskCalculatedDicotomized <- as.numeric(initialInfoDicotomized$RiskCalculated == 'HighRisk')
@@ -52,18 +50,26 @@ univariateAnalysisPvalues[is.na(univariateAnalysisPvalues)] = 1;
 pValueThreshold = 0.01;
 significantCharacteristics <- characteristicsWithoutClinicVTN[,univariateAnalysisPvalues < pValueThreshold]
 
+colNamesOfFormula <- paste(colnames(characteristicsWithoutClinicVTN), collapse='` + `' );
+initialFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
+initialGLM <- glm(initialFormula, data=initialInfoDicotomized, family = binomial(logit))
+summary(initialGLM)
+
 ## Third step: Multiple logistic regression with all the variables
 
 significantAndClinicChars <- cbind(significantCharacteristics, characteristicsOnlyClinic)
 colNamesOfFormula <- paste(names(significantAndClinicChars), collapse='` + `' );
-formula <- paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep='')
+formula <- paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep='');
+allSignificantGLM <- glm(formula, data=initialInfoDicotomized, family = binomial(logit))
+summary(allSignificantGLM)
+
 
 #library(leaps)
 #leapsResults <- regsubsets(RiskCalculatedDicotomized ~ `VTN++ - meanPercentageOfFibrePerFilledCell` + `VTN++ - stdPercentageOfFibrePerFilledCell` + `VTN++ - meanQuantityOfBranchesFilledPerCell` + `VTN++ - eulerNumberPerFilledCell` + `INRG_EDAD` + `INRG_ESTADIO` + `INRG_HistoCat` + `INRG_HistoDif` + `INRG_SCA` + `INRG_MYCN` + `INRG_PLOIDIA` + `INRG_11q`, data = initialInfoDicotomized, nbest= 1, nvmax = NULL, force.in = NULL, force.out = NULL, method = "exhaustive")
 #summary.leaps<-summary(leapsResults)
 #plot(summary.leaps, scale = "adjr2", main = "Adjusted R^2")
 
-require(leaps) 
+require(leaps)
 library(bestglm)
 lbw.for.best.logistic <-
   cbind(significantAndClinicChars, initialInfoDicotomized$RiskCalculatedDicotomized)
@@ -97,25 +103,66 @@ glmulti.logistic.out <-
           family = binomial) 
 
 
+bestCharacteristics = res.best.logistic$BestModel$model[, 2:length(res.best.logistic$BestModel$model)];
+
 ## Forth step: Check collinearity and confusion/interaction
 
 # Collinearity
-colNamesOfFormula <- paste(colnames(res.best.logistic$BestModel$model[, 2:length(res.best.logistic$BestModel$model)]), collapse='` + `' );
+colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
 finalFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
 vif(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
 
 
 # Confusion and Interaction
-xtabs(finalFormula, data=initialInfoDicotomized)
+mytable <- xtabs(finalFormula, data=initialInfoDicotomized)
+ftable(mytable) # print table 
+summary(mytable) # chi-square test of indepedence 
 
 ## Fifth step: Calculate the relative importance of each predictor within the model
-library(relaimpo)
+library(relaimpo) #Only for linear models... Not Logistic regression
 calc.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rela=T)
-
 #Boostrapping 
 boot <- boot.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rank = TRUE, 
                     diff = TRUE, rela = TRUE)
-
 booteval.relimp(boot)
-
 plot(booteval.relimp(boot,sort=TRUE))
+
+library(relimp)
+allNumChars <- 1:length(bestCharacteristics)
+relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), set1 = allNumChars[-4], set=allNumChars)
+
+#https://www.researchgate.net/post/How_do_I_calculate_age_contribution_of_a_predictor_variable_for_logistic_regression_Have_used_varImp_function_but_it_does_not_give_percentage
+#In logistic regression, the log likelihood statistic can be used for comparison of nested models. 
+#So, run the full model (all IVs), and note the -2LL value (in general, smaller is better for this value). 
+#Then, run successive models, each omitting one of the IVs.  The omit-one run which results in the largest 
+# increase in log likelihood indicates the (omitted) IV that contributed most (given the other IVs) to the model.  
+#There are no guarantees, of course, that the same sequence of 'impact' would be observed in another sample.
+
+library(rcompanion)
+require(lmtest)
+
+colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
+finalFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
+finalGLM <- glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit));
+referenceGLM <- nagelkerke(finalGLM)
+
+results.glmWithoutActualChar <- c()
+results.glmWithoutActualChar.negelker <- c();
+results.comparisonWithReference <- c();
+for (numChar in 1:length(bestCharacteristics)){
+  actualDF <- bestCharacteristics
+  actualDF <- actualDF[-numChar]
+  colNamesOfFormula <- paste(colnames(actualDF), collapse='` + `' );
+  finalFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
+  actualGLM <- glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit))
+  actualNagelkerke <- nagelkerke(actualGLM);
+  results.glmWithoutActualChar[numChar] <- actualNagelkerke
+  results.glmWithoutActualChar.negelker[numChar] <- actualNagelkerke$Pseudo.R.squared.for.model.vs.null[3]
+  comparison <- lrtest(finalGLM, actualGLM)
+  results.comparisonWithReference[numChar] <- comparison$LogLik[2];
+  anova(my.mod1, my.mod2, test="LRT")
+}
+
+referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker
+
+
