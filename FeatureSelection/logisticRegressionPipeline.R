@@ -17,11 +17,16 @@ initialIndex <- 41;
 ## First step: Dicotomize variables
 #Option 1: Younden's Index
 initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
-initialInfoDicotomized$RiskCalculatedDicotomized <- as.numeric(initialInfoDicotomized$RiskCalculated == 'HighRisk')
 
 #Option 2: Median
+initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Median")
 
 #Option 3: third quartile
+initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "3rdQuartile")
+
+
+
+initialInfoDicotomized$RiskCalculatedDicotomized <- as.numeric(initialInfoDicotomized$RiskCalculated == 'HighRisk')
 
 ## Second step: Univariate analysis to remove non-significant variables
 require(rms)
