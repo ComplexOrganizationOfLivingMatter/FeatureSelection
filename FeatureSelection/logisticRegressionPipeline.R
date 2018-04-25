@@ -1,7 +1,9 @@
 #Based on the pipeline of Juan Francisco Martín-Rodríguez
 
 #Source functions
-source('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.R', echo=TRUE)
+debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.R', echo=TRUE)
+
+
 
 #Import data
 library(readxl)
@@ -14,17 +16,75 @@ initialIndex <- 41;
 
 ## First step: Dicotomize variables
 #Option 1: Younden's Index
-initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Youden")
+initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
+initialInfoDicotomized$RiskCalculatedDicotomized <- as.numeric(initialInfoDicotomized$RiskCalculated == 'HighRisk')
 
 #Option 2: Median
 
 #Option 3: third quartile
 
 ## Second step: Univariate analysis to remove non-significant variables
-characteristicsAll <- initialInfo[, initialIndex:length(initialInfo[1,])];
-characteristicsWithoutClinic <- initialInfo[,initialIndex:(length(initialInfo[1,])-8)];
-characteristicsOnlyClinic <- initialInfo[,(length(initialInfo[1,])-7):length(initialInfo[1,])];
+require(rms)
 
+characteristicsAll <- initialInfoDicotomized[, initialIndex:length(initialInfo[1,])];
+characteristicsWithoutClinic <- initialInfoDicotomized[,initialIndex:(length(initialInfo[1,])-8)];
+characteristicsOnlyClinic <- initialInfoDicotomized[,(length(initialInfo[1,])-7):length(initialInfo[1,])];
 
+characteristicsWithoutClinicVTN <- characteristicsWithoutClinic[,grepl( "VTN" , colnames(characteristicsWithoutClinic) )]
 
+univariateAnalysisPvalues <- lapply(colnames(characteristicsWithoutClinicVTN),
+       
+       function(var) {
+         
+         formula    <- as.formula(paste("RiskCalculatedDicotomized ~ `", var, '`', sep=''))
+         res.logist <- glm(formula, data = initialInfoDicotomized, family = binomial(logit))
+         anovaRes <- anova(res.logist,test='Chisq')
+         anovaRes$`Pr(>Chi)`[2]
+       })
 
+univariateAnalysisPvalues[is.na(univariateAnalysisPvalues)] = 1;
+
+pValueThreshold = 0.05;
+significantCharacteristics <- characteristicsWithoutClinicVTN[,univariateAnalysisPvalues < pValueThreshold]
+
+## Third step: Multiple logistic regression with all the variables
+
+significantAndClinicChars <- cbind(significantCharacteristics, characteristicsOnlyClinic)
+#library(leaps)
+colNamesOfFormula <- paste(names(signifcantAndClinicChars), collapse='` + `' );
+formula <- paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep='')
+#leapsResults <- regsubsets(RiskCalculatedDicotomized ~ `VTN++ - meanPercentageOfFibrePerFilledCell` + `VTN++ - stdPercentageOfFibrePerFilledCell` + `VTN++ - meanQuantityOfBranchesFilledPerCell` + `VTN++ - eulerNumberPerFilledCell` + `INRG_EDAD` + `INRG_ESTADIO` + `INRG_HistoCat` + `INRG_HistoDif` + `INRG_SCA` + `INRG_MYCN` + `INRG_PLOIDIA` + `INRG_11q`, data = initialInfoDicotomized, nbest= 1, nvmax = NULL, force.in = NULL, force.out = NULL, method = "exhaustive")
+#summary.leaps<-summary(leapsResults)
+#plot(summary.leaps, scale = "adjr2", main = "Adjusted R^2")
+
+require(leaps) 
+library(bestglm)
+lbw.for.best.logistic <-
+  cbind(significantAndClinicChars, initialInfoDicotomized$RiskCalculatedDicotomized)
+res.best.logistic <-
+  bestglm(Xy = lbw.for.best.logistic,
+          family = binomial,          # binomial family for logistic
+          IC = "AIC",                 # Information criteria for
+          method = "exhaustive")
+
+res.best.logistic$BestModels
+summary(res.best.logistic$BestModel)
+
+anovaRes <- anova(res.best.logistic$BestModel, test='Chisq')
+anovaRes$`Pr(>Chi)`[2]
+
+library(car)
+layout(matrix(1:2, ncol = 2))
+
+res.legend <-
+  subsets(res.best.logistic, statistic="adjr2", legend = FALSE, min.size = 5, main = "Adjusted R^2")
+
+glmulti.logistic.out <-
+  glmulti(formula, data = initialInfoDicotomized,
+          level = 1,               # No interaction considered
+          method = "h",            # Exhaustive approach
+          crit = "aic",            # AIC as criteria
+          confsetsize = 10,         # Keep 5 best models
+          plotty = F, report = F,  # No plot or interim reports
+          fitfunction = "glm",     # glm function
+          family = binomial) 
