@@ -44,15 +44,16 @@ univariateAnalysisPvalues <- lapply(colnames(characteristicsWithoutClinicVTN),
 
 univariateAnalysisPvalues[is.na(univariateAnalysisPvalues)] = 1;
 
-pValueThreshold = 0.05;
+pValueThreshold = 0.01;
 significantCharacteristics <- characteristicsWithoutClinicVTN[,univariateAnalysisPvalues < pValueThreshold]
 
 ## Third step: Multiple logistic regression with all the variables
 
 significantAndClinicChars <- cbind(significantCharacteristics, characteristicsOnlyClinic)
-#library(leaps)
 colNamesOfFormula <- paste(names(significantAndClinicChars), collapse='` + `' );
 formula <- paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep='')
+
+#library(leaps)
 #leapsResults <- regsubsets(RiskCalculatedDicotomized ~ `VTN++ - meanPercentageOfFibrePerFilledCell` + `VTN++ - stdPercentageOfFibrePerFilledCell` + `VTN++ - meanQuantityOfBranchesFilledPerCell` + `VTN++ - eulerNumberPerFilledCell` + `INRG_EDAD` + `INRG_ESTADIO` + `INRG_HistoCat` + `INRG_HistoDif` + `INRG_SCA` + `INRG_MYCN` + `INRG_PLOIDIA` + `INRG_11q`, data = initialInfoDicotomized, nbest= 1, nvmax = NULL, force.in = NULL, force.out = NULL, method = "exhaustive")
 #summary.leaps<-summary(leapsResults)
 #plot(summary.leaps, scale = "adjr2", main = "Adjusted R^2")
@@ -103,3 +104,13 @@ vif(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
 xtabs(finalFormula, data=initialInfoDicotomized)
 
 ## Fifth step: Calculate the relative importance of each predictor within the model
+library(relaimpo)
+calc.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rela=T)
+
+#Boostrapping 
+boot <- boot.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rank = TRUE, 
+                    diff = TRUE, rela = TRUE)
+
+booteval.relimp(boot)
+
+plot(booteval.relimp(boot,sort=TRUE))
