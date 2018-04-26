@@ -23,6 +23,8 @@ initialIndex <- 41;
 #Option 3: third quartile
 initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "3rdQuartile")
 
+#Option 4: Divide by quartiles
+initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Quartiles")
 
 initialInfoDicotomized$RiskCalculatedDicotomized <- as.numeric(initialInfoDicotomized$RiskCalculated == 'HighRisk')
 
@@ -47,7 +49,7 @@ univariateAnalysisPvalues <- lapply(colnames(characteristicsWithoutClinicVTN),
 
 univariateAnalysisPvalues[is.na(univariateAnalysisPvalues)] = 1;
 
-pValueThreshold = 0.01;
+pValueThreshold = 0.011;
 significantCharacteristics <- characteristicsWithoutClinicVTN[,univariateAnalysisPvalues < pValueThreshold]
 
 colNamesOfFormula <- paste(colnames(characteristicsWithoutClinicVTN), collapse='` + `' );
@@ -90,7 +92,12 @@ anovaRes <- anova(res.best.logistic$BestModel, test='Chisq')
 anovaRes$`Pr(>Chi)`[2]
 
 bestCharacteristics_Method1 = res.best.logistic$BestModel$model[, 2:length(res.best.logistic$BestModel$model)];
-
+#Refined, because we found these similarities:
+# 2) MYCN and SCAs. Removing SCAs
+# 3) VTN++ - eulerNumberPerFilledCell and VTN - Ratio of Strong-Positive pixels to total pixels ???? #This collinearity is low
+#   3.1) We tested which to remove if any. We should remove the latter, because the first is more informative.
+# 4) Histocat and Histodif. Removing HistoDif
+bestCharacteristics_Method1 <- bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
 
 # Another method
 library(glmulti)
@@ -110,7 +117,7 @@ glmulti.logistic.out <-
           confsetsize = 5,         # Keep 5 best models
           plotty = T, report = F,  # No plot or interim reports
           fitfunction = "glm",     # glm function
-          family = binomial) 
+          family = binomial)
 
 
 #Best model
@@ -121,9 +128,10 @@ glmulti.logistic.out@formulas
 #Before found collinearities
 bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)] 
 #Refined, because we found these similarities:
-# 1) VTN - Total cells and H-Score
-# 2) MYCN and SCAs
+# 1) VTN - Total cells and H-Score. Removin H-Score
+# 2) MYCN and SCAs. Removing SCAs
 # 3) VTN - Total cells and VTN++ - meanQuantityOfBranchesFilledPerCell ???? #This collinearity is low
+# 4) Histocat and Histodif. Removing HistoDif
 bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 8, 11:13, 16)]
 
 ## Forth step: Check collinearity and confusion/interaction
@@ -191,6 +199,6 @@ for (numChar in 1:length(bestCharacteristics)){
   #anova(my.mod1, my.mod2, test="LRT")
 }
 
-referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker
+barplot(referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker)
 
 
