@@ -56,6 +56,7 @@ initialGLM <- glm(initialFormula, data=initialInfoDicotomized, family = binomial
 summary(initialGLM)
 
 ## Third step: Multiple logistic regression with all the variables
+#https://rstudio-pubs-static.s3.amazonaws.com/2897_9220b21cfc0c43a396ff9abf122bb351.html
 
 significantAndClinicChars <- cbind(significantCharacteristics, characteristicsOnlyClinic)
 colNamesOfFormula <- paste(names(significantAndClinicChars), collapse='` + `' );
@@ -81,7 +82,9 @@ res.best.logistic <-
           method = "exhaustive")
 
 res.best.logistic$BestModels
-summary(res.best.logistic$BestModel)
+res.best.logistic$Subsets
+summary.bestglm <- res.best.logistic$BestModels;
+
 
 anovaRes <- anova(res.best.logistic$BestModel, test='Chisq')
 anovaRes$`Pr(>Chi)`[2]
@@ -131,6 +134,10 @@ bestCharacteristics <- bestCharacteristics_Method2
 colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
 finalFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
 vif(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
+
+summary(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
+anovaRes <- anova(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), test='Chisq')
+anovaRes$`Pr(>Chi)`[2]
 
 
 # Confusion and Interaction
