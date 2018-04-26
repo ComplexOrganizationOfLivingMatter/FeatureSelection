@@ -77,6 +77,7 @@ res.best.logistic <-
   bestglm(Xy = lbw.for.best.logistic,
           family = binomial,          # binomial family for logistic
           IC = "AIC",                 # Information criteria for
+          TopModels = 10,
           method = "exhaustive")
 
 res.best.logistic$BestModels
@@ -91,9 +92,19 @@ layout(matrix(1:2, ncol = 2))
 res.legend <-
   subsets(res.best.logistic, statistic="adjr2", legend = FALSE, min.size = 5, main = "Adjusted R^2")
 
+
+# Another method
 library(glmulti)
+significantAndClinicCharsWithoutColNames <- significantAndClinicChars;
+xnam <- paste0("x", 1:length(significantAndClinicChars))
+
+colnames(significantAndClinicCharsWithoutColNames) <- xnam
+newFormulaWithoutNames <- as.formula(paste("initialInfoDicotomized$RiskCalculatedDicotomized ~ ", paste(xnam, collapse= "+")))
+  
+# Weird variables were not allowed, so we need to transform them into variables without spaces.
+# We decided to transform them into x and the number of column (x1, x2, ...)
 glmulti.logistic.out <-
-  glmulti(as.formula(formula), data = initialInfoDicotomized,
+  glmulti(newFormulaWithoutNames, data = as.data.frame(cbind(significantAndClinicCharsWithoutColNames, initialInfoDicotomized$RiskCalculatedDicotomized)),
           level = 1,               # No interaction considered
           method = "h",            # Exhaustive approach
           crit = "aic",            # AIC as criteria
