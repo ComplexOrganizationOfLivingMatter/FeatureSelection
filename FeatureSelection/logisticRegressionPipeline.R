@@ -86,11 +86,7 @@ summary(res.best.logistic$BestModel)
 anovaRes <- anova(res.best.logistic$BestModel, test='Chisq')
 anovaRes$`Pr(>Chi)`[2]
 
-library(car)
-layout(matrix(1:2, ncol = 2))
-
-res.legend <-
-  subsets(res.best.logistic, statistic="adjr2", legend = FALSE, min.size = 5, main = "Adjusted R^2")
+bestCharacteristics_Method1 = res.best.logistic$BestModel$model[, 2:length(res.best.logistic$BestModel$model)];
 
 
 # Another method
@@ -109,14 +105,24 @@ glmulti.logistic.out <-
           method = "h",            # Exhaustive approach
           crit = "aic",            # AIC as criteria
           confsetsize = 5,         # Keep 5 best models
-          plotty = F, report = F,  # No plot or interim reports
+          plotty = T, report = F,  # No plot or interim reports
           fitfunction = "glm",     # glm function
           family = binomial) 
 
 
-bestCharacteristics = res.best.logistic$BestModel$model[, 2:length(res.best.logistic$BestModel$model)];
+#Best model
+glmulti.logistic.out@objects[[1]]
+#5 best models
+glmulti.logistic.out@formulas
+
+bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)]
+
+anovaRes <- anova(glmulti.logistic.out@objects[[1]], test='Chisq')
+anovaRes$`Pr(>Chi)`[2]
 
 ## Forth step: Check collinearity and confusion/interaction
+
+bestCharacteristics <- bestCharacteristics_Method2
 
 # Collinearity
 colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
