@@ -134,18 +134,19 @@ vif(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
 
 
 # Confusion and Interaction
+#https://www.statmethods.net/stats/frequencies.html
 mytable <- xtabs(finalFormula, data=initialInfoDicotomized)
 ftable(mytable) # print table 
 summary(mytable) # chi-square test of indepedence 
 
 ## Fifth step: Calculate the relative importance of each predictor within the model
-library(relaimpo) #Only for linear models... Not Logistic regression
-calc.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rela=T)
-#Boostrapping 
-boot <- boot.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rank = TRUE, 
-                    diff = TRUE, rela = TRUE)
-booteval.relimp(boot)
-plot(booteval.relimp(boot,sort=TRUE))
+# library(relaimpo) #Only for linear models... Not Logistic regression
+# calc.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rela=T)
+# #Boostrapping 
+# boot <- boot.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rank = TRUE, 
+#                     diff = TRUE, rela = TRUE)
+# booteval.relimp(boot)
+# plot(booteval.relimp(boot,sort=TRUE))
 
 library(relimp)
 allNumChars <- 1:length(bestCharacteristics)
@@ -178,9 +179,9 @@ for (numChar in 1:length(bestCharacteristics)){
   actualNagelkerke <- nagelkerke(actualGLM);
   results.glmWithoutActualChar[numChar] <- actualNagelkerke
   results.glmWithoutActualChar.negelker[numChar] <- actualNagelkerke$Pseudo.R.squared.for.model.vs.null[3]
-  comparison <- lrtest(finalGLM, actualGLM)
-  results.comparisonWithReference[numChar] <- comparison$LogLik[2];
-  anova(my.mod1, my.mod2, test="LRT")
+  # comparison <- lrtest(finalGLM, actualGLM)
+  # results.comparisonWithReference[numChar] <- comparison$LogLik[2];
+  #anova(my.mod1, my.mod2, test="LRT")
 }
 
 referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker
