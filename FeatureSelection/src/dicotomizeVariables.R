@@ -12,6 +12,11 @@ dicotomizeVariables <- function(initialInfo, initialIndex, columnStatus, healthy
     initialInfoDicotomized[, columnsUsed] <- mapply(initialInfo[, columnsUsed], FUN=function(column)
       as.numeric(column < quantile(column, 0.75)))
     
+  }else if (cutoffMethod == 'Quartiles'){ #Note that this option gets 4 categories, instead of dichotomize
+    initialInfoDicotomized[, columnsUsed] <- mapply(initialInfo[, columnsUsed], FUN=function(column)
+        findInterval( column, c(-Inf,
+                             quantile(column, probs=c(0.25, .5, .75)), Inf))
+    )
   } else {## Option using ROC curve
     
     library(OptimalCutpoints)
