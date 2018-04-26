@@ -115,10 +115,13 @@ glmulti.logistic.out@objects[[1]]
 #5 best models
 glmulti.logistic.out@formulas
 
-bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)]
-
-anovaRes <- anova(glmulti.logistic.out@objects[[1]], test='Chisq')
-anovaRes$`Pr(>Chi)`[2]
+#Before found collinearities
+bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)] 
+#Refined, because we found these similarities:
+# 1) VTN - Total cells and H-Score
+# 2) MYCN and SCAs
+# 3) VTN - Total cells and VTN++ - meanQuantityOfBranchesFilledPerCell ???? #This collinearity is low
+bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 8, 11:13, 16)]
 
 ## Forth step: Check collinearity and confusion/interaction
 
