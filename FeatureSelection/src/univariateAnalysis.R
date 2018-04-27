@@ -1,15 +1,18 @@
 univariateAnalysis <-
-  function(initialInfoDicotomized, initialIndex, dependentCategory) {
+  function(initialInfoDicotomized,
+           initialIndex,
+           dependentCategory,
+           pValueThreshold) {
     require(rms)
     characteristicsAll <-
-      initialInfoDicotomized[, initialIndex:length(initialInfoDicotomized[1, ])]
+      initialInfoDicotomized[, initialIndex:length(initialInfoDicotomized[1,])]
     
     characteristicsWithoutClinic <-
-      initialInfoDicotomized[, initialIndex:(length(initialInfoDicotomized[1, ]) -
+      initialInfoDicotomized[, initialIndex:(length(initialInfoDicotomized[1,]) -
                                                8)]
     
     characteristicsOnlyClinic <-
-      initialInfoDicotomized[, (length(initialInfoDicotomized[1, ]) - 7):length(initialInfoDicotomized[1, ])]
+      initialInfoDicotomized[, (length(initialInfoDicotomized[1,]) - 7):length(initialInfoDicotomized[1,])]
     
     
     characteristicsWithoutClinicVTN <-
@@ -24,7 +27,8 @@ univariateAnalysis <-
                res.logist <-
                  glm(formula, data = initialInfoDicotomized, family = binomial(logit))
                anovaRes <-
-                 anova(res.logist, test = 'Chisq')
+                 anova(res.logist, test =
+                         'Chisq')
                anovaRes$`Pr(>Chi)`[2]
              })
     
@@ -34,5 +38,6 @@ univariateAnalysis <-
     significantCharacteristics <-
       characteristicsWithoutClinicVTN[, univariateAnalysisPvalues < pValueThreshold]
     
-    return(significantCharacteristics);
+    return(significantCharacteristics)
+    
   }

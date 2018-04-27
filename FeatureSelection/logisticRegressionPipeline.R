@@ -57,9 +57,8 @@ if (dependentCategory == "Instability") {
 
 pValueThreshold <- 0.011
 
-
 significantCharacteristics <-
-  univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory)
+  univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory, pValueThreshold)
 
 
 colNamesOfFormula <-
