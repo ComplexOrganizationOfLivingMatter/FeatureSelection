@@ -1,71 +1,109 @@
 #Based on the pipeline of Juan Francisco Martín-Rodríguez
 
 #Source functions
-debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.R', echo=TRUE)
-debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/univariateAnalysis.R', echo=TRUE)
+debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.R',
+            echo = TRUE)
+debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/univariateAnalysis.R',
+            echo = TRUE)
 
 
 #Import data
 library(readxl)
-initialInfo <- read_excel("D:/Pablo/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/NewClinicClassification_NewControls_11_01_2018.xlsx")
+initialInfo <-
+  read_excel(
+    "D:/Pablo/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/NewClinicClassification_NewControls_11_01_2018.xlsx"
+  )
 
 dependentCategory <- "Instability"
 
-riskCalculatedLabels <- initialInfo[,dependentCategory];
+riskCalculatedLabels <- initialInfo[, dependentCategory]
 
-initialIndex <- 41;
+
+initialIndex <- 41
+
 
 ## First step: Dicotomize variables
 #Option 1: Younden's Index
 #initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
 
 #Option 2: Median
-initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Median")
+initialInfoDicotomized <-
+  dicotomizeVariables(initialInfo,
+                      initialIndex,
+                      "RiskCalculated",
+                      "NoRisk",
+                      "Median")
 
 #Option 3: third quartile
 #initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "3rdQuartile")
 
 #Option 4: Divide by quartiles
-initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Quartiles")
+initialInfoDicotomized <-
+  dicotomizeVariables(initialInfo,
+                      initialIndex,
+                      "RiskCalculated",
+                      "NoRisk",
+                      "Quartiles")
 
-if (dependentCategory == "Instability"){
-  initialInfoDicotomized[, dependentCategory] <- as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
+if (dependentCategory == "Instability") {
+  initialInfoDicotomized[, dependentCategory] <-
+    as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
 } else {
-  initialInfoDicotomized[, dependentCategory]  <- as.numeric(initialInfoDicotomized[, dependentCategory] == 'HighRisk')
+  initialInfoDicotomized[, dependentCategory]  <-
+    as.numeric(initialInfoDicotomized[, dependentCategory] == 'HighRisk')
 }
 
 ## Second step: Univariate analysis to remove non-significant variables
 
-pValueThreshold <- 0.011;
+pValueThreshold <- 0.011
 
-significantCharacteristics <- univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory);
 
-colNamesOfFormula <- paste(colnames(characteristicsWithoutClinicVTN), collapse='` + `' );
-initialFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
-initialGLM <- glm(initialFormula, data=initialInfoDicotomized, family = binomial(logit))
+significantCharacteristics <-
+  univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory)
+
+
+colNamesOfFormula <-
+  paste(colnames(characteristicsWithoutClinicVTN), collapse = '` + `')
+
+initialFormula <-
+  as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
+                     ''))
+initialGLM <-
+  glm(initialFormula, data = initialInfoDicotomized, family = binomial(logit))
 summary(initialGLM)
 
 ## Third step: Multiple logistic regression with all the variables
 #https://rstudio-pubs-static.s3.amazonaws.com/2897_9220b21cfc0c43a396ff9abf122bb351.html
 
-significantAndClinicChars <- cbind(significantCharacteristics, characteristicsOnlyClinic)
-colNamesOfFormula <- paste(names(significantAndClinicChars), collapse='` + `' );
-formula <- paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep='');
-allSignificantGLM <- glm(formula, data=initialInfoDicotomized, family = binomial(logit))
+significantAndClinicChars <-
+  cbind(significantCharacteristics, characteristicsOnlyClinic)
+colNamesOfFormula <-
+  paste(names(significantAndClinicChars), collapse = '` + `')
+
+formula <-
+  paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep = '')
+
+allSignificantGLM <-
+  glm(formula, data = initialInfoDicotomized, family = binomial(logit))
 summary(allSignificantGLM)
 
-bestCharacteristics_Method1 <- 
+bestCharacteristics_Method1 <-
+  logisticFeatureSelection(significantAndClinicChars,
+                           initialInfoDicotomized,
+                           dependentCategory,
+                           "method1")
 #Refined, because we found these similarities:
 # 2) MYCN and SCAs. Removing SCAs
 # 3) VTN++ - eulerNumberPerFilledCell and VTN - Ratio of Strong-Positive pixels to total pixels ???? #This collinearity is low
 #   3.1) We tested which to remove if any. We should remove the latter, because the first is more informative.
 # 4) Histocat and Histodif. Removing HistoDif
-bestCharacteristics_Method1 <- bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
+bestCharacteristics_Method1 <-
+  bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
 
 
 #Before found collinearities
 # #For Option 3: 3rd Quartile
-# bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)] 
+# bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)]
 # #Refined, because we found these similarities:
 # # 1) VTN - Total cells and H-Score. Removin H-Score
 # # 2) MYCN and SCAs. Removing SCAs
@@ -73,79 +111,105 @@ bestCharacteristics_Method1 <- bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
 # # 4) Histocat and Histodif. Removing HistoDif
 # bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 8, 11:13, 16)]
 #For Option 4: Quartiles
-bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 3, 8, 9, 10:15)]
+bestCharacteristics_Method2 <-
+  significantAndClinicChars[, c(1, 3, 8, 9, 10:15)]
 #Refined, because we found these similarities:
-# 1) 
+# 1)
 # 2) MYCN and SCAs. Removing SCAs
 # 3)  ???? #This collinearity is low
 # 4) Histocat and Histodif. Removing HistoDif
-bestCharacteristics_Method2 <- significantAndClinicChars[,c(3, 10:12, 15)]
+bestCharacteristics_Method2 <-
+  significantAndClinicChars[, c(3, 10:12, 15)]
 
 ## Forth step: Check collinearity and confusion/interaction
 
 bestCharacteristics <- bestCharacteristics_Method2
 
 # Collinearity
-colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
-finalFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
-vif(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
+colNamesOfFormula <-
+  paste(colnames(bestCharacteristics), collapse = '` + `')
 
-summary(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
-anovaRes <- anova(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), test='Chisq')
+finalFormula <-
+  as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
+                     ''))
+vif(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)))
+
+summary(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)))
+anovaRes <-
+  anova(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
+        test = 'Chisq')
 anovaRes$`Pr(>Chi)`[2]
 
 
 # Confusion and Interaction
 #https://www.statmethods.net/stats/frequencies.html
-mytable <- xtabs(finalFormula, data=initialInfoDicotomized)
-ftable(mytable) # print table 
-summary(mytable) # chi-square test of indepedence 
+mytable <- xtabs(finalFormula, data = initialInfoDicotomized)
+ftable(mytable) # print table
+summary(mytable) # chi-square test of indepedence
 
 ## Fifth step: Calculate the relative importance of each predictor within the model
 # library(relaimpo) #Only for linear models... Not Logistic regression
 # calc.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rela=T)
-# #Boostrapping 
-# boot <- boot.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rank = TRUE, 
+# #Boostrapping
+# boot <- boot.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rank = TRUE,
 #                     diff = TRUE, rela = TRUE)
 # booteval.relimp(boot)
 # plot(booteval.relimp(boot,sort=TRUE))
 
 library(relimp)
 allNumChars <- 1:length(bestCharacteristics)
-relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), set1 = allNumChars[-4], set=allNumChars)
+relimp(
+  glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
+  set1 = allNumChars[-4],
+  set = allNumChars
+)
 
 #https://www.researchgate.net/post/How_do_I_calculate_age_contribution_of_a_predictor_variable_for_logistic_regression_Have_used_varImp_function_but_it_does_not_give_percentage
-#In logistic regression, the log likelihood statistic can be used for comparison of nested models. 
-#So, run the full model (all IVs), and note the -2LL value (in general, smaller is better for this value). 
-#Then, run successive models, each omitting one of the IVs.  The omit-one run which results in the largest 
-# increase in log likelihood indicates the (omitted) IV that contributed most (given the other IVs) to the model.  
+#In logistic regression, the log likelihood statistic can be used for comparison of nested models.
+#So, run the full model (all IVs), and note the -2LL value (in general, smaller is better for this value).
+#Then, run successive models, each omitting one of the IVs.  The omit-one run which results in the largest
+# increase in log likelihood indicates the (omitted) IV that contributed most (given the other IVs) to the model.
 #There are no guarantees, of course, that the same sequence of 'impact' would be observed in another sample.
 
 library(rcompanion)
 require(lmtest)
 
-colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
-finalFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
-finalGLM <- glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit));
+colNamesOfFormula <-
+  paste(colnames(bestCharacteristics), collapse = '` + `')
+
+finalFormula <-
+  as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
+                     ''))
+finalGLM <-
+  glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
+
 referenceGLM <- nagelkerke(finalGLM)
 
 results.glmWithoutActualChar <- c()
-results.glmWithoutActualChar.negelker <- c();
-results.comparisonWithReference <- c();
-for (numChar in 1:length(bestCharacteristics)){
+results.glmWithoutActualChar.negelker <- c()
+
+results.comparisonWithReference <- c()
+
+for (numChar in 1:length(bestCharacteristics)) {
   actualDF <- bestCharacteristics
   actualDF <- actualDF[-numChar]
-  colNamesOfFormula <- paste(colnames(actualDF), collapse='` + `' );
-  finalFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
-  actualGLM <- glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit))
-  actualNagelkerke <- nagelkerke(actualGLM);
+  colNamesOfFormula <- paste(colnames(actualDF), collapse = '` + `')
+  
+  finalFormula <-
+    as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
+                       ''))
+  actualGLM <-
+    glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
+  actualNagelkerke <- nagelkerke(actualGLM)
+  
   results.glmWithoutActualChar[numChar] <- actualNagelkerke
-  results.glmWithoutActualChar.negelker[numChar] <- actualNagelkerke$Pseudo.R.squared.for.model.vs.null[3]
+  results.glmWithoutActualChar.negelker[numChar] <-
+    actualNagelkerke$Pseudo.R.squared.for.model.vs.null[3]
   # comparison <- lrtest(finalGLM, actualGLM)
   # results.comparisonWithReference[numChar] <- comparison$LogLik[2];
   #anova(my.mod1, my.mod2, test="LRT")
 }
 
-barplot(referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker)
-
-
+barplot(
+  referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker
+)
