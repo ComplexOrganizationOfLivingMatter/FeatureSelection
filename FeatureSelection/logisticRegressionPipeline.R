@@ -1,5 +1,7 @@
 #Based on the pipeline of Juan Francisco Martín-Rodríguez
 
+rm(list = setdiff(ls(), lsf.str()))
+
 #Source functions
 debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.R',
             echo = TRUE)
@@ -45,6 +47,7 @@ initialInfoDicotomized <-
                       "NoRisk",
                       "Quartiles")
 
+initialInfoDicotomized <- initialInfoDicotomized[is.na(initialInfoDicotomized[, dependentCategory]) == 0,];
 if (dependentCategory == "Instability") {
   initialInfoDicotomized[, dependentCategory] <-
     as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
@@ -55,10 +58,30 @@ if (dependentCategory == "Instability") {
 
 ## Second step: Univariate analysis to remove non-significant variables
 
-pValueThreshold <- 0.011
+pValueThreshold <- 0.05
+
+characteristicsAll <-
+  initialInfoDicotomized[, initialIndex:length(initialInfoDicotomized[1,])]
+
+characteristicsWithoutClinic <-
+  initialInfoDicotomized[, initialIndex:(length(initialInfoDicotomized[1,]) -
+                                           8)]
+
+characteristicsOnlyClinic <-
+  initialInfoDicotomized[, (length(initialInfoDicotomized[1,]) - 7):length(initialInfoDicotomized[1,])]
+
+
+characteristicsWithoutClinicVTN <-
+  characteristicsWithoutClinic[, grepl("VTN" , colnames(characteristicsWithoutClinic))]
+
+#Only our new features
+characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
+
+bestVTNMorphometricsFeatures <- c(109, 108, 110, 112, 118, 119, 120, 122);
+
 
 significantCharacteristics <-
-  univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory, pValueThreshold)
+  univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory, characteristicsWithoutClinicVTN, pValueThreshold)
 
 
 colNamesOfFormula <-
@@ -74,6 +97,7 @@ summary(initialGLM)
 ## Third step: Multiple logistic regression with all the variables
 #https://rstudio-pubs-static.s3.amazonaws.com/2897_9220b21cfc0c43a396ff9abf122bb351.html
 
+#Method 1: bestglm
 significantAndClinicChars <-
   cbind(significantCharacteristics, characteristicsOnlyClinic)
 colNamesOfFormula <-
@@ -99,7 +123,12 @@ bestCharacteristics_Method1 <-
 bestCharacteristics_Method1 <-
   bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
 
-
+#Method2: glmulti
+bestCharacteristics_Method2 <-
+  logisticFeatureSelection(significantAndClinicChars,
+                           initialInfoDicotomized,
+                           dependentCategory,
+                           "method2")
 #Before found collinearities
 # #For Option 3: 3rd Quartile
 # bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)]

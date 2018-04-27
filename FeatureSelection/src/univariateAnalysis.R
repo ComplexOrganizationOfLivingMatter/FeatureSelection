@@ -2,21 +2,9 @@ univariateAnalysis <-
   function(initialInfoDicotomized,
            initialIndex,
            dependentCategory,
+           characteristicsWithoutClinicVTN, 
            pValueThreshold) {
     require(rms)
-    characteristicsAll <-
-      initialInfoDicotomized[, initialIndex:length(initialInfoDicotomized[1,])]
-    
-    characteristicsWithoutClinic <-
-      initialInfoDicotomized[, initialIndex:(length(initialInfoDicotomized[1,]) -
-                                               8)]
-    
-    characteristicsOnlyClinic <-
-      initialInfoDicotomized[, (length(initialInfoDicotomized[1,]) - 7):length(initialInfoDicotomized[1,])]
-    
-    
-    characteristicsWithoutClinicVTN <-
-      characteristicsWithoutClinic[, grepl("VTN" , colnames(characteristicsWithoutClinic))]
     
     univariateAnalysisPvalues <-
       lapply(colnames(characteristicsWithoutClinicVTN),

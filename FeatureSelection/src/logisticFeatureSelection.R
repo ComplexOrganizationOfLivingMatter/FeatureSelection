@@ -31,6 +31,8 @@ logisticFeatureSelection <-
       
       bestCharacteristics_Method1 = res.best.logistic$BestModel$model[1:nrow(res.best.logistic$BestModel$model), 2:ncol(res.best.logistic$BestModel$model)]
       
+      return (bestCharacteristics_Method1);
+      
     } else if (usedMethod == "method2") {
       library(glmulti)
       significantAndClinicCharsWithoutColNames <-
@@ -73,5 +75,9 @@ logisticFeatureSelection <-
       glmulti.logistic.out@objects[[1]]
       #5 best models
       glmulti.logistic.out@formulas
+      
+      bestCharacteristics_Method2 <- glmulti.logistic.out@objects[[1]]
+      
+      return (bestCharacteristics_Method2);
     }
   }
