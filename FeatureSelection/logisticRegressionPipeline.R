@@ -54,26 +54,7 @@ formula <- paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep='');
 allSignificantGLM <- glm(formula, data=initialInfoDicotomized, family = binomial(logit))
 summary(allSignificantGLM)
 
-require(leaps)
-library(bestglm)
-lbw.for.best.logistic <-
-  cbind(significantAndClinicChars, initialInfoDicotomized[1:length(initialInfoDicotomized), dependentCategory])
-res.best.logistic <-
-  bestglm(Xy = lbw.for.best.logistic,
-          family = binomial,          # binomial family for logistic
-          IC = "AIC",                 # Information criteria for
-          TopModels = 10,
-          method = "exhaustive")
-
-res.best.logistic$BestModels
-res.best.logistic$Subsets
-summary.bestglm <- res.best.logistic$BestModels;
-
-
-anovaRes <- anova(res.best.logistic$BestModel, test='Chisq')
-anovaRes$`Pr(>Chi)`[2]
-
-bestCharacteristics_Method1 = res.best.logistic$BestModel$model[, 2:length(res.best.logistic$BestModel$model)];
+bestCharacteristics_Method1 <- 
 #Refined, because we found these similarities:
 # 2) MYCN and SCAs. Removing SCAs
 # 3) VTN++ - eulerNumberPerFilledCell and VTN - Ratio of Strong-Positive pixels to total pixels ???? #This collinearity is low
@@ -81,31 +62,6 @@ bestCharacteristics_Method1 = res.best.logistic$BestModel$model[, 2:length(res.b
 # 4) Histocat and Histodif. Removing HistoDif
 bestCharacteristics_Method1 <- bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
 
-# Another method
-library(glmulti)
-significantAndClinicCharsWithoutColNames <- significantAndClinicChars;
-xnam <- paste0("x", 1:length(significantAndClinicChars))
-
-colnames(significantAndClinicCharsWithoutColNames) <- xnam
-newFormulaWithoutNames <- as.formula(paste(dependentCategory, "~", paste(xnam, collapse= "+")))
-  
-# Weird variables were not allowed, so we need to transform them into variables without spaces.
-# We decided to transform them into x and the number of column (x1, x2, ...)
-glmulti.logistic.out <-
-  glmulti(newFormulaWithoutNames, data = as.data.frame(cbind(significantAndClinicCharsWithoutColNames, initialInfoDicotomized[, dependentCategory])),
-          level = 1,               # No interaction considered
-          method = "h",            # Exhaustive approach
-          crit = "aic",            # AIC as criteria
-          confsetsize = 5,         # Keep 5 best models
-          plotty = F, report = F,  # No plot or interim reports
-          fitfunction = "glm",     # glm function
-          family = binomial)
-
-
-#Best model
-glmulti.logistic.out@objects[[1]]
-#5 best models
-glmulti.logistic.out@formulas
 
 #Before found collinearities
 # #For Option 3: 3rd Quartile
