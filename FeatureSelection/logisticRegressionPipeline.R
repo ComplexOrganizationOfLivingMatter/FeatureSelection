@@ -2,14 +2,16 @@
 
 #Source functions
 debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.R', echo=TRUE)
-
+debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/univariateAnalysis.R', echo=TRUE)
 
 
 #Import data
 library(readxl)
 initialInfo <- read_excel("D:/Pablo/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/NewClinicClassification_NewControls_11_01_2018.xlsx")
 
-riskCalculatedLabels <- initialInfo$RiskCalculated;
+dependentCategory <- "Instability"
+
+riskCalculatedLabels <- initialInfo[,dependentCategory];
 
 initialIndex <- 41;
 
@@ -18,42 +20,28 @@ initialIndex <- 41;
 #initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
 
 #Option 2: Median
-#initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Median")
+initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Median")
 
 #Option 3: third quartile
-initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "3rdQuartile")
+#initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "3rdQuartile")
 
 #Option 4: Divide by quartiles
 initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "Quartiles")
 
-initialInfoDicotomized$RiskCalculatedDicotomized <- as.numeric(initialInfoDicotomized$RiskCalculated == 'HighRisk')
+if (dependentCategory == "Instability"){
+  initialInfoDicotomized[, dependentCategory] <- as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
+} else {
+  initialInfoDicotomized[, dependentCategory]  <- as.numeric(initialInfoDicotomized[, dependentCategory] == 'HighRisk')
+}
 
 ## Second step: Univariate analysis to remove non-significant variables
-require(rms)
 
-characteristicsAll <- initialInfoDicotomized[, initialIndex:length(initialInfo[1,])];
-characteristicsWithoutClinic <- initialInfoDicotomized[,initialIndex:(length(initialInfo[1,])-8)];
-characteristicsOnlyClinic <- initialInfoDicotomized[,(length(initialInfo[1,])-7):length(initialInfo[1,])];
+pValueThreshold <- 0.011;
 
-characteristicsWithoutClinicVTN <- characteristicsWithoutClinic[,grepl( "VTN" , colnames(characteristicsWithoutClinic) )]
-
-univariateAnalysisPvalues <- lapply(colnames(characteristicsWithoutClinicVTN),
-       
-       function(var) {
-         
-         formula    <- as.formula(paste("RiskCalculatedDicotomized ~ `", var, '`', sep=''))
-         res.logist <- glm(formula, data = initialInfoDicotomized, family = binomial(logit))
-         anovaRes <- anova(res.logist,test='Chisq')
-         anovaRes$`Pr(>Chi)`[2]
-       })
-
-univariateAnalysisPvalues[is.na(univariateAnalysisPvalues)] = 1;
-
-pValueThreshold = 0.011;
-significantCharacteristics <- characteristicsWithoutClinicVTN[,univariateAnalysisPvalues < pValueThreshold]
+significantCharacteristics <- univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory);
 
 colNamesOfFormula <- paste(colnames(characteristicsWithoutClinicVTN), collapse='` + `' );
-initialFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
+initialFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
 initialGLM <- glm(initialFormula, data=initialInfoDicotomized, family = binomial(logit))
 summary(initialGLM)
 
@@ -62,20 +50,14 @@ summary(initialGLM)
 
 significantAndClinicChars <- cbind(significantCharacteristics, characteristicsOnlyClinic)
 colNamesOfFormula <- paste(names(significantAndClinicChars), collapse='` + `' );
-formula <- paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep='');
+formula <- paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep='');
 allSignificantGLM <- glm(formula, data=initialInfoDicotomized, family = binomial(logit))
 summary(allSignificantGLM)
-
-
-#library(leaps)
-#leapsResults <- regsubsets(RiskCalculatedDicotomized ~ `VTN++ - meanPercentageOfFibrePerFilledCell` + `VTN++ - stdPercentageOfFibrePerFilledCell` + `VTN++ - meanQuantityOfBranchesFilledPerCell` + `VTN++ - eulerNumberPerFilledCell` + `INRG_EDAD` + `INRG_ESTADIO` + `INRG_HistoCat` + `INRG_HistoDif` + `INRG_SCA` + `INRG_MYCN` + `INRG_PLOIDIA` + `INRG_11q`, data = initialInfoDicotomized, nbest= 1, nvmax = NULL, force.in = NULL, force.out = NULL, method = "exhaustive")
-#summary.leaps<-summary(leapsResults)
-#plot(summary.leaps, scale = "adjr2", main = "Adjusted R^2")
 
 require(leaps)
 library(bestglm)
 lbw.for.best.logistic <-
-  cbind(significantAndClinicChars, initialInfoDicotomized$RiskCalculatedDicotomized)
+  cbind(significantAndClinicChars, initialInfoDicotomized[1:length(initialInfoDicotomized), dependentCategory])
 res.best.logistic <-
   bestglm(Xy = lbw.for.best.logistic,
           family = binomial,          # binomial family for logistic
@@ -105,17 +87,17 @@ significantAndClinicCharsWithoutColNames <- significantAndClinicChars;
 xnam <- paste0("x", 1:length(significantAndClinicChars))
 
 colnames(significantAndClinicCharsWithoutColNames) <- xnam
-newFormulaWithoutNames <- as.formula(paste("initialInfoDicotomized$RiskCalculatedDicotomized ~ ", paste(xnam, collapse= "+")))
+newFormulaWithoutNames <- as.formula(paste(dependentCategory, "~", paste(xnam, collapse= "+")))
   
 # Weird variables were not allowed, so we need to transform them into variables without spaces.
 # We decided to transform them into x and the number of column (x1, x2, ...)
 glmulti.logistic.out <-
-  glmulti(newFormulaWithoutNames, data = as.data.frame(cbind(significantAndClinicCharsWithoutColNames, initialInfoDicotomized$RiskCalculatedDicotomized)),
+  glmulti(newFormulaWithoutNames, data = as.data.frame(cbind(significantAndClinicCharsWithoutColNames, initialInfoDicotomized[, dependentCategory])),
           level = 1,               # No interaction considered
           method = "h",            # Exhaustive approach
           crit = "aic",            # AIC as criteria
           confsetsize = 5,         # Keep 5 best models
-          plotty = T, report = F,  # No plot or interim reports
+          plotty = F, report = F,  # No plot or interim reports
           fitfunction = "glm",     # glm function
           family = binomial)
 
@@ -126,13 +108,22 @@ glmulti.logistic.out@objects[[1]]
 glmulti.logistic.out@formulas
 
 #Before found collinearities
-bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)] 
+# #For Option 3: 3rd Quartile
+# bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)] 
+# #Refined, because we found these similarities:
+# # 1) VTN - Total cells and H-Score. Removin H-Score
+# # 2) MYCN and SCAs. Removing SCAs
+# # 3) VTN - Total cells and VTN++ - meanQuantityOfBranchesFilledPerCell ???? #This collinearity is low
+# # 4) Histocat and Histodif. Removing HistoDif
+# bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 8, 11:13, 16)]
+#For Option 4: Quartiles
+bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 3, 8, 9, 10:15)]
 #Refined, because we found these similarities:
-# 1) VTN - Total cells and H-Score. Removin H-Score
+# 1) 
 # 2) MYCN and SCAs. Removing SCAs
-# 3) VTN - Total cells and VTN++ - meanQuantityOfBranchesFilledPerCell ???? #This collinearity is low
+# 3)  ???? #This collinearity is low
 # 4) Histocat and Histodif. Removing HistoDif
-bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 8, 11:13, 16)]
+bestCharacteristics_Method2 <- significantAndClinicChars[,c(3, 10:12, 15)]
 
 ## Forth step: Check collinearity and confusion/interaction
 
@@ -140,7 +131,7 @@ bestCharacteristics <- bestCharacteristics_Method2
 
 # Collinearity
 colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
-finalFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
+finalFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
 vif(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
 
 summary(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)))
@@ -178,7 +169,7 @@ library(rcompanion)
 require(lmtest)
 
 colNamesOfFormula <- paste(colnames(bestCharacteristics), collapse='` + `' );
-finalFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
+finalFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
 finalGLM <- glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit));
 referenceGLM <- nagelkerke(finalGLM)
 
@@ -189,7 +180,7 @@ for (numChar in 1:length(bestCharacteristics)){
   actualDF <- bestCharacteristics
   actualDF <- actualDF[-numChar]
   colNamesOfFormula <- paste(colnames(actualDF), collapse='` + `' );
-  finalFormula <- as.formula(paste("RiskCalculatedDicotomized ~ `", colNamesOfFormula, "`", sep=''))
+  finalFormula <- as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep=''))
   actualGLM <- glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit))
   actualNagelkerke <- nagelkerke(actualGLM);
   results.glmWithoutActualChar[numChar] <- actualNagelkerke
