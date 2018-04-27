@@ -132,6 +132,8 @@ print("-------------Third step: Multiple logistic regression with all the variab
 
 #Method 1: bestglm
 
+library(mplot)
+
 #We have also added an independent standard Gaussian random variable to the
 #model matrix as a redundant variable (RV). This provides a baseline to help
 #determine which inclusion probabilities are "significant" in the sense that
