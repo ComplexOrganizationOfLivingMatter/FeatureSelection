@@ -181,26 +181,27 @@ bestCharacteristics_Method1 <- significantAndClinicChars[, c(1, 4, 6, 8, 10)]
 bestCharacteristics <- bestCharacteristics_Method1
 
 # Collinearity
+
+library(car)
 colNamesOfFormula <-
   paste(colnames(bestCharacteristics), collapse = '` + `')
 
 finalFormula <-
   as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
                      ''))
+print('Checking collinearity:')
 vif(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)))
 
-summary(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)))
-anovaRes <-
-  anova(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
-        test = 'Chisq')
-anovaRes$`Pr(>Chi)`[2]
-
+print('-----------------------------')
 
 # Confusion and Interaction
+print("Confusion and interaction")
 #https://www.statmethods.net/stats/frequencies.html
 mytable <- xtabs(finalFormula, data = initialInfoDicotomized)
-ftable(mytable) # print table
+#ftable(mytable) # print table
 summary(mytable) # chi-square test of indepedence
+
+print('-----------------------------')
 
 ## Fifth step: Calculate the relative importance of each predictor within the model
 # library(relaimpo) #Only for linear models... Not Logistic regression
@@ -211,14 +212,15 @@ summary(mytable) # chi-square test of indepedence
 # booteval.relimp(boot)
 # plot(booteval.relimp(boot,sort=TRUE))
 
-library(relimp)
-allNumChars <- 1:length(bestCharacteristics)+1
-res.relimp <- relimp(
-  glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
-  set1 = allNumChars[-1],
-  set2 = allNumChars
-)
-res.relimp
+# #Other option of seeing the relative importance
+# library(relimp)
+# allNumChars <- 1:length(bestCharacteristics)+1
+# res.relimp <- relimp(
+#   glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
+#   set1 = allNumChars[-1],
+#   set2 = allNumChars
+# )
+# res.relimp
 
 #https://www.researchgate.net/post/How_do_I_calculate_age_contribution_of_a_predictor_variable_for_logistic_regression_Have_used_varImp_function_but_it_does_not_give_percentage
 #In logistic regression, the log likelihood statistic can be used for comparison of nested models.
@@ -239,6 +241,18 @@ finalFormula <-
 finalGLM <-
   glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
 
+"Final logistic regression"
+summary(finalGLM)
+
+"---"
+"Anova chi square"
+anovaRes <-
+  anova(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
+        test = 'Chisq')
+anovaRes$`Pr(>Chi)`[2]
+
+
+"Odds ratio"
 exp(coefficients(finalGLM))
 Yhat <- fitted(finalGLM)
 
@@ -251,11 +265,14 @@ YhatFac <-
       labels = c("NoRisk", "HighRisk"))
 
 cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), YhatFac)
-addmargins(cTab) 
-sum(diag(cTab)) / sum(cTab)
-library(caret)
 
+"Confussion matrix"
+addmargins(cTab)
+
+library(caret)
+"Specificity (NoRisk)"
 sensitivity(cTab)
+"Sensitivity (HighRisk)"
 specificity(cTab)
 
 #Roc curve
