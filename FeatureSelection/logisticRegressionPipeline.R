@@ -17,10 +17,12 @@ initialInfo <-
   )
 
 dependentCategory <- "RiskCalculated" #"Instability" or "RiskCalculated"
+outputFile <- paste("outputResults", dependentCategory, format(Sys.time(), "%d-%m-%Y"),".txt", sep='_')
 
 
 initialIndex <- 41
 
+sink(temporaryFileObj <- textConnection("outputFileText", "w"), split=TRUE)
 
 ## First step: Dicotomize variables
 #Option 1: Younden's Index
@@ -121,7 +123,7 @@ summary(allSignificantGLM)
 vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = 5, cores = 8); #nbest also ="all"
 print(vis.glm, min.prob = 0.2)
 plot(vis.glm, interactive = FALSE, which="vip")
-plot(vis.glm, interactive = FALSE, which="boot") #HighLight to change the reference variable
+plot(vis.glm, interactive = FALSE, which="boot", hightlight = "INRG_Edad") #HighLight to change the reference variable
 plot(vis.glm, interactive = FALSE, which="lvk")
 
 bestCharacteristics_Method1 <-
@@ -176,7 +178,7 @@ bestCharacteristics_Method1 <- significantAndClinicChars[, c(1, 4, 6, 8, 10)]
 
 ## Forth step: Check collinearity and confusion/interaction
 
-bestCharacteristics <- bestCharacteristics_Method2
+bestCharacteristics <- bestCharacteristics_Method1
 
 # Collinearity
 colNamesOfFormula <-
@@ -252,14 +254,18 @@ cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRi
 addmargins(cTab) 
 sum(diag(cTab)) / sum(cTab)
 library(caret)
+
 sensitivity(cTab)
 specificity(cTab)
 
-predicting$prob <- prob;
-
+#Roc curve
 library(pROC)
+
+predicting$prob <- prob;
 g <- roc(RiskCalculated ~ prob, data = as.data.frame(riskCalculatedLabels))
-plot(g) 
+png(paste('rocCurve', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'))
+plot(g)
+dev.off()
 
 referenceGLM <- nagelkerke(finalGLM)
 
@@ -288,6 +294,19 @@ for (numChar in 1:length(bestCharacteristics)) {
   #anova(my.mod1, my.mod2, test="LRT")
 }
 
+#Opening file to export
+png(paste('barPlotOfImportance', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1200, height = 700)
 barplot(
-  referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker
+  referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker,
+  names.arg = colnames(bestCharacteristics),
+  ylab = "Change in Nagelkerke R^2",
+  col = terrain.colors(5),
+  cex.names = 0.8,
+  ylim = c(0, 0.5)
 )
+title(paste0("Relative importance for ", dependentCategory))
+dev.off()
+
+sink()
+close(temporaryFileObj)
+out<-capture.output(outputFileText, file = outputFile, split = T)
