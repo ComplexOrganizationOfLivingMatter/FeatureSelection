@@ -16,9 +16,7 @@ initialInfo <-
     "D:/Pablo/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/NewClinicClassification_NewControls_11_01_2018.xlsx"
   )
 
-dependentCategory <- "Instability" #"Instability" or "RiskCalculated"
-
-riskCalculatedLabels <- initialInfo[, dependentCategory]
+dependentCategory <- "RiskCalculated" #"Instability" or "RiskCalculated"
 
 
 initialIndex <- 41
@@ -48,6 +46,7 @@ initialInfoDicotomized <-
                       "Quartiles")
 
 initialInfoDicotomized <- initialInfoDicotomized[is.na(initialInfoDicotomized[, dependentCategory]) == 0,];
+riskCalculatedLabels <- initialInfoDicotomized[, dependentCategory]
 if (dependentCategory == "Instability") {
   initialInfoDicotomized[, dependentCategory] <-
     as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
@@ -56,12 +55,14 @@ if (dependentCategory == "Instability") {
     as.numeric(initialInfoDicotomized[, dependentCategory] == 'HighRisk')
 }
 
+
+
 ## Second step: Univariate analysis to remove non-significant variables
 
 #P-Values for categories:
-#RiskCalculated = 0.11
-#Instability = 0.05
-pValueThreshold <- 0.05
+#RiskCalculated = 0.011
+#Instability = 0.05 or 0.00001
+pValueThreshold <- 0.018
 
 characteristicsAll <-
   initialInfoDicotomized[, initialIndex:length(initialInfoDicotomized[1,])]
@@ -113,9 +114,12 @@ allSignificantGLM <-
   glm(formula, data = initialInfoDicotomized, family = binomial(logit))
 summary(allSignificantGLM)
 
-vif(allSignificantGLM)
-
-vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = "all", cores = 6);
+#We have also added an independent standard Gaussian random variable to the
+#model matrix as a redundant variable (RV). This provides a baseline to help
+#determine which inclusion probabilities are "significant" in the sense that
+#they exhibit a different behaviour to the RV curve.
+vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = 5, cores = 8); #nbest also ="all"
+print(vis.glm, min.prob = 0.2)
 plot(vis.glm, interactive = FALSE, which="vip")
 plot(vis.glm, interactive = FALSE, which="boot") #HighLight to change the reference variable
 plot(vis.glm, interactive = FALSE, which="lvk")
@@ -125,6 +129,8 @@ bestCharacteristics_Method1 <-
                            initialInfoDicotomized,
                            dependentCategory,
                            "method1")
+
+#-------------RiskCalculated----------------#
 #Refined, because we found these similarities:
 # 2) MYCN and SCAs. Removing SCAs
 # 3) VTN++ - eulerNumberPerFilledCell and VTN - Ratio of Strong-Positive pixels to total pixels ???? #This collinearity is low
@@ -158,6 +164,15 @@ bestCharacteristics_Method2 <-
 # 4) Histocat and Histodif. Removing HistoDif
 bestCharacteristics_Method2 <-
   significantAndClinicChars[, c(3, 10:12, 15)]
+
+#-------------END----------------#
+
+#-------------INSTABILITY----------------#
+#From mplot
+bestCharacteristics_Method1 <- significantAndClinicChars[, c(1, 4, 6, 8, 10)]
+
+
+#-------------END----------------#
 
 ## Forth step: Check collinearity and confusion/interaction
 
@@ -195,12 +210,13 @@ summary(mytable) # chi-square test of indepedence
 # plot(booteval.relimp(boot,sort=TRUE))
 
 library(relimp)
-allNumChars <- 1:length(bestCharacteristics)
-relimp(
+allNumChars <- 1:length(bestCharacteristics)+1
+res.relimp <- relimp(
   glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
-  set1 = allNumChars[-4],
-  set = allNumChars
+  set1 = allNumChars[-1],
+  set2 = allNumChars
 )
+res.relimp
 
 #https://www.researchgate.net/post/How_do_I_calculate_age_contribution_of_a_predictor_variable_for_logistic_regression_Have_used_varImp_function_but_it_does_not_give_percentage
 #In logistic regression, the log likelihood statistic can be used for comparison of nested models.
@@ -220,6 +236,30 @@ finalFormula <-
                      ''))
 finalGLM <-
   glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
+
+exp(coefficients(finalGLM))
+Yhat <- fitted(finalGLM)
+
+prob=predict(finalGLM,type=c("response"))
+
+thresh <- 0.5
+YhatFac <-
+  cut(Yhat,
+      breaks = c(-Inf, thresh, Inf),
+      labels = c("NoRisk", "HighRisk"))
+
+cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), YhatFac)
+addmargins(cTab) 
+sum(diag(cTab)) / sum(cTab)
+library(caret)
+sensitivity(cTab)
+specificity(cTab)
+
+predicting$prob <- prob;
+
+library(pROC)
+g <- roc(RiskCalculated ~ prob, data = as.data.frame(riskCalculatedLabels))
+plot(g) 
 
 referenceGLM <- nagelkerke(finalGLM)
 
