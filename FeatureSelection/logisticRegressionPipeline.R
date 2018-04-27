@@ -16,7 +16,7 @@ initialInfo <-
     "D:/Pablo/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/NewClinicClassification_NewControls_11_01_2018.xlsx"
   )
 
-dependentCategory <- "Instability"
+dependentCategory <- "Instability" #"Instability" or "RiskCalculated"
 
 riskCalculatedLabels <- initialInfo[, dependentCategory]
 
@@ -29,12 +29,12 @@ initialIndex <- 41
 #initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
 
 #Option 2: Median
-initialInfoDicotomized <-
-  dicotomizeVariables(initialInfo,
-                      initialIndex,
-                      "RiskCalculated",
-                      "NoRisk",
-                      "Median")
+# initialInfoDicotomized <-
+#   dicotomizeVariables(initialInfo,
+#                       initialIndex,
+#                       "RiskCalculated",
+#                       dependentCategory,
+#                       "Median")
 
 #Option 3: third quartile
 #initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "3rdQuartile")
@@ -43,7 +43,7 @@ initialInfoDicotomized <-
 initialInfoDicotomized <-
   dicotomizeVariables(initialInfo,
                       initialIndex,
-                      "RiskCalculated",
+                      dependentCategory,
                       "NoRisk",
                       "Quartiles")
 
@@ -58,6 +58,9 @@ if (dependentCategory == "Instability") {
 
 ## Second step: Univariate analysis to remove non-significant variables
 
+#P-Values for categories:
+#RiskCalculated = 0.11
+#Instability = 0.05
 pValueThreshold <- 0.05
 
 characteristicsAll <-
@@ -104,11 +107,18 @@ colNamesOfFormula <-
   paste(names(significantAndClinicChars), collapse = '` + `')
 
 formula <-
-  paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep = '')
+  as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep = ''))
 
 allSignificantGLM <-
   glm(formula, data = initialInfoDicotomized, family = binomial(logit))
 summary(allSignificantGLM)
+
+vif(allSignificantGLM)
+
+vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = "all", cores = 6);
+plot(vis.glm, interactive = FALSE, which="vip")
+plot(vis.glm, interactive = FALSE, which="boot") #HighLight to change the reference variable
+plot(vis.glm, interactive = FALSE, which="lvk")
 
 bestCharacteristics_Method1 <-
   logisticFeatureSelection(significantAndClinicChars,

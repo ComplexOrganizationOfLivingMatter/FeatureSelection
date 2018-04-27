@@ -6,7 +6,9 @@ logisticFeatureSelection <-
     
     if (usedMethod == "method1") {
       require(leaps)
+      require(mvoutlier)
       library(bestglm)
+      library(mplot)
       lbw.for.best.logistic <-
         cbind(significantAndClinicChars, initialInfoDicotomized[1:nrow(initialInfoDicotomized), dependentCategory])
       res.best.logistic <-
@@ -79,5 +81,7 @@ logisticFeatureSelection <-
       bestCharacteristics_Method2 <- glmulti.logistic.out@objects[[1]]
       
       return (bestCharacteristics_Method2);
+    } else if (usedMethod == "method3"){
+      
     }
   }
