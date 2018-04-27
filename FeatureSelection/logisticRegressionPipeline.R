@@ -58,18 +58,6 @@ if (dependentCategory == "Instability") {
     as.numeric(initialInfoDicotomized[, dependentCategory] == 'HighRisk')
 }
 
-
-print('-----------------------------')
-
-## Second step: Univariate analysis to remove non-significant variables
-
-print("-------------Second step: Univariate analysis to remove non-significant variables---------------")
-
-#P-Values for categories:
-#RiskCalculated = 0.011
-#Instability = 0.05 or 0.00001
-pValueThreshold <- 0.018
-
 characteristicsAll <-
   initialInfoDicotomized[, initialIndex:length(initialInfoDicotomized[1,])]
 
@@ -85,14 +73,7 @@ characteristicsWithoutClinicVTN <-
   characteristicsWithoutClinic[, grepl("VTN" , colnames(characteristicsWithoutClinic))]
 
 #Only our new features
-characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
-
-bestVTNMorphometricsFeatures <- c(109, 108, 110, 112, 118, 119, 120, 122);
-
-
-significantCharacteristics <-
-  univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory, characteristicsWithoutClinicVTN, pValueThreshold)
-
+characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:47];
 
 colNamesOfFormula <-
   paste(colnames(characteristicsWithoutClinicVTN), collapse = '` + `')
@@ -102,16 +83,32 @@ initialFormula <-
                      ''))
 initialGLM <-
   glm(initialFormula, data = initialInfoDicotomized, family = binomial(logit))
-summary(initialGLM)
+
+print("Initial glm with all the variables")
+print(summary(initialGLM))
+
 
 print('-----------------------------')
 
-## Third step: Multiple logistic regression with all the variables
-#https://rstudio-pubs-static.s3.amazonaws.com/2897_9220b21cfc0c43a396ff9abf122bb351.html
+## Second step: Univariate analysis to remove non-significant variables
 
-print("-------------Third step: Multiple logistic regression with all the variables---------------")
+print("-------------Second step: Univariate analysis to remove non-significant variables---------------")
 
-#Method 1: bestglm
+#P-Values for categories:
+#RiskCalculated = 0.011
+#Instability = 0.05 or 0.00001
+if (dependentCategory == "Instability") {
+  pValueThreshold <- 0.05
+} else {
+  pValueThreshold <- 0.05
+}
+
+bestVTNMorphometricsFeatures <- c(109, 108, 110, 112, 118, 119, 120, 122);
+
+
+significantCharacteristics <-
+  univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory, characteristicsWithoutClinicVTN, pValueThreshold)
+
 significantAndClinicChars <-
   cbind(significantCharacteristics, characteristicsOnlyClinic)
 colNamesOfFormula <-
@@ -122,7 +119,18 @@ formula <-
 
 allSignificantGLM <-
   glm(formula, data = initialInfoDicotomized, family = binomial(logit))
-summary(allSignificantGLM)
+
+print('Regression with significant variables')
+print(summary(allSignificantGLM))
+
+print('-----------------------------')
+
+## Third step: Multiple logistic regression with all the variables
+#https://rstudio-pubs-static.s3.amazonaws.com/2897_9220b21cfc0c43a396ff9abf122bb351.html
+
+print("-------------Third step: Multiple logistic regression with all the variables---------------")
+
+#Method 1: bestglm
 
 #We have also added an independent standard Gaussian random variable to the
 #model matrix as a redundant variable (RV). This provides a baseline to help
@@ -205,7 +213,7 @@ finalFormula <-
   as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
                      ''))
 print('Checking collinearity:')
-vif(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)))
+print(vif(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))))
 
 print('-----------------------------')
 
@@ -214,7 +222,7 @@ print("Confusion and interaction")
 #https://www.statmethods.net/stats/frequencies.html
 mytable <- xtabs(finalFormula, data = initialInfoDicotomized)
 #ftable(mytable) # print table
-summary(mytable) # chi-square test of indepedence
+print(summary(mytable)) # chi-square test of indepedence
 
 print('-----------------------------')
 
@@ -260,18 +268,18 @@ finalGLM <-
   glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
 
 "Final logistic regression"
-summary(finalGLM)
+print(summary(finalGLM))
 
 "---"
 "Anova chi square"
 anovaRes <-
   anova(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit)),
         test = 'Chisq')
-anovaRes$`Pr(>Chi)`[2]
+print(anovaRes$`Pr(>Chi)`[2])
 
 
 "Odds ratio"
-exp(coefficients(finalGLM))
+print(exp(coefficients(finalGLM)))
 Yhat <- fitted(finalGLM)
 
 prob=predict(finalGLM,type=c("response"))
@@ -285,13 +293,13 @@ YhatFac <-
 cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), YhatFac)
 
 "Confussion matrix"
-addmargins(cTab)
+print(addmargins(cTab))
 
 library(caret)
-"Specificity (NoRisk)"
-sensitivity(cTab)
-"Sensitivity (HighRisk)"
-specificity(cTab)
+print("Specificity (NoRisk)")
+print(sensitivity(cTab))
+print("Sensitivity (HighRisk)")
+print(specificity(cTab))
 
 #Roc curve
 library(pROC)
