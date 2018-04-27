@@ -25,6 +25,7 @@ initialIndex <- 41
 sink(temporaryFileObj <- textConnection("outputFileText", "w"), split=TRUE)
 
 ## First step: Dicotomize variables
+print("-------------First step: Dicotomize variables---------------")
 #Option 1: Younden's Index
 #initialInfoDicotomized <- dicotomizeVariables(initialInfo, initialIndex, "RiskCalculated", "NoRisk", "MaxSpSe")
 
@@ -58,8 +59,11 @@ if (dependentCategory == "Instability") {
 }
 
 
+print('-----------------------------')
 
 ## Second step: Univariate analysis to remove non-significant variables
+
+print("-------------Second step: Univariate analysis to remove non-significant variables---------------")
 
 #P-Values for categories:
 #RiskCalculated = 0.011
@@ -100,8 +104,12 @@ initialGLM <-
   glm(initialFormula, data = initialInfoDicotomized, family = binomial(logit))
 summary(initialGLM)
 
+print('-----------------------------')
+
 ## Third step: Multiple logistic regression with all the variables
 #https://rstudio-pubs-static.s3.amazonaws.com/2897_9220b21cfc0c43a396ff9abf122bb351.html
+
+print("-------------Third step: Multiple logistic regression with all the variables---------------")
 
 #Method 1: bestglm
 significantAndClinicChars <-
@@ -121,10 +129,13 @@ summary(allSignificantGLM)
 #determine which inclusion probabilities are "significant" in the sense that
 #they exhibit a different behaviour to the RV curve.
 vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = 5, cores = 8); #nbest also ="all"
+"Vis output"
 print(vis.glm, min.prob = 0.2)
+png(paste('boostrapVariablesProbability', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1200, height = 500)
 plot(vis.glm, interactive = FALSE, which="vip")
-plot(vis.glm, interactive = FALSE, which="boot", hightlight = "INRG_Edad") #HighLight to change the reference variable
-plot(vis.glm, interactive = FALSE, which="lvk")
+dev.off()
+#plot(vis.glm, interactive = FALSE, which="boot") #HighLight to change the reference variable
+#plot(vis.glm, interactive = FALSE, which="lvk")
 
 bestCharacteristics_Method1 <-
   logisticFeatureSelection(significantAndClinicChars,
@@ -176,7 +187,11 @@ bestCharacteristics_Method1 <- significantAndClinicChars[, c(1, 4, 6, 8, 10)]
 
 #-------------END----------------#
 
+print('-----------------------------')
+
 ## Forth step: Check collinearity and confusion/interaction
+
+print("-------------Forth step: Check collinearity and confusion/interaction---------------")
 
 bestCharacteristics <- bestCharacteristics_Method1
 
@@ -204,6 +219,9 @@ summary(mytable) # chi-square test of indepedence
 print('-----------------------------')
 
 ## Fifth step: Calculate the relative importance of each predictor within the model
+
+print("-------------Fifth step: Calculate the relative importance of each predictor within the model---------------")
+
 # library(relaimpo) #Only for linear models... Not Logistic regression
 # calc.relimp(glm(finalFormula, data=initialInfoDicotomized, family = binomial(logit)), rela=T)
 # #Boostrapping
