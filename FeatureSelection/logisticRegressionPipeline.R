@@ -7,6 +7,7 @@ debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/dicotomizeVariables.
             echo = TRUE)
 debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/univariateAnalysis.R',
             echo = TRUE)
+debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/logisticFeatureSelection.R', echo = T)
 
 
 #Import data
