@@ -52,6 +52,7 @@ initialInfoDicotomized <-
 initialInfoDicotomized <- initialInfoDicotomized[is.na(initialInfoDicotomized[, dependentCategory]) == 0,];
 riskCalculatedLabels <- initialInfoDicotomized[, dependentCategory]
 if (dependentCategory == "Instability") {
+  riskCalculatedLabels[riskCalculatedLabels != 'High'] <- 'NoHigh'
   initialInfoDicotomized[, dependentCategory] <-
     as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
 } else {
@@ -212,7 +213,9 @@ bestCharacteristics_Method2 <-
 
 #-------------INSTABILITY----------------#
 #From mplot
-bestCharacteristics_Method1 <- 
+bestCharacteristics_Method1 <- significantAndClinicChars[, c(-2, -4, -6, -8, -15)]
+#Removing collinearities:
+#bestCharacteristics_Method1 <- bestCharacteristics_Method1[, c(-4, -7)]
 
 bestCharacteristics_Method2 <- significantAndClinicChars[, c(1, 3, 6, 9, 13)]
 
