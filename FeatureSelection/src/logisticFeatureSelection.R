@@ -37,26 +37,24 @@ logisticFeatureSelection <-
       
     } else if (usedMethod == "method2") {
       library(glmulti)
-      significantAndClinicCharsWithoutColNames <-
-        significantAndClinicChars
       
       xnam <- paste0("x", 1:length(significantAndClinicChars))
       
-      colnames(significantAndClinicCharsWithoutColNames) <- xnam
+      colnames(significantAndClinicChars) <- xnam
       newFormulaWithoutNames <-
-        as.formula(paste(dependentCategory, "~", paste(xnam, collapse = "+")))
+       paste(dependentCategory, "~", paste(xnam, collapse = "+"))
       
       # Weird variables were not allowed, so we need to transform them into variables without spaces.
       # We decided to transform them into x and the number of column (x1, x2, ...)
       glmulti.logistic.out <-
         glmulti(
           newFormulaWithoutNames,
-          data = as.data.frame(
+          data = 
             cbind(
-              significantAndClinicCharsWithoutColNames,
+              significantAndClinicChars,
               initialInfoDicotomized[1:nrow(initialInfoDicotomized), dependentCategory]
             )
-          ),
+          ,
           level = 1,
           # No interaction considered
           method = "h",
@@ -74,9 +72,12 @@ logisticFeatureSelection <-
         )
       
       #Best model
-      glmulti.logistic.out@objects[[1]]
+      summary(glmulti.logistic.out@objects[[1]])
       #5 best models
       glmulti.logistic.out@formulas
+
+      #http://www.metafor-project.org/doku.php/tips:model_selection_with_glmulti
+      plot(glmulti.logistic.out, type="s")
       
       bestCharacteristics_Method2 <- glmulti.logistic.out@objects[[1]]
       

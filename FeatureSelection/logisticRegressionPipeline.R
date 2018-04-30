@@ -99,16 +99,35 @@ print("-------------Second step: Univariate analysis to remove non-significant v
 #RiskCalculated = 0.011
 #Instability = 0.05 or 0.00001
 if (dependentCategory == "Instability") {
-  pValueThreshold <- 0.05
+  pValueThreshold <- 0.00005
 } else {
-  pValueThreshold <- 0.05
+  pValueThreshold <- 0.011
 }
 
 bestVTNMorphometricsFeatures <- c(109, 108, 110, 112, 118, 119, 120, 122);
+#Removed by collinearities:
+# - 122 - H-Score -> 15.2
+# - 108 - VTN - Percentage of stained area negative cells
+# - 110 - VTN - Percantege of stained area VN EXTRAC +
+# - 112 - VTN - Percentage of stained area INTRAC ++
+bestVTNMorphometricsFeatures <- c(109, 118, 119, 120)
 
 
-significantCharacteristics <-
+pvaluesChars <-
   univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory, characteristicsWithoutClinicVTN, pValueThreshold)
+
+which(pvaluesChars < pValueThreshold)
+#ToSave
+significantCharNames <- colnames(characteristicsWithoutClinicVTN[, pvaluesChars < pValueThreshold])
+
+outputFile <- paste("significantList_", dependentCategory, '_', format(Sys.time(), "%d-%m-%Y"), ".RData", sep='');
+saveRDS(significantCharNames, pvaluesChars, file = outputFile)
+
+if (dependentCategory == "Instability") {
+  significantCharacteristics <- cbind(characteristicsWithoutClinicVTN[,c(2,17,22,27)], characteristicsWithoutClinic[, bestVTNMorphometricsFeatures])
+} else {
+  
+}
 
 significantAndClinicChars <-
   cbind(significantCharacteristics, characteristicsOnlyClinic)
@@ -193,7 +212,9 @@ bestCharacteristics_Method2 <-
 
 #-------------INSTABILITY----------------#
 #From mplot
-bestCharacteristics_Method1 <- significantAndClinicChars[, c(1, 4, 6, 8, 10)]
+bestCharacteristics_Method1 <- 
+
+bestCharacteristics_Method2 <- significantAndClinicChars[, c(1, 3, 6, 9, 13)]
 
 
 #-------------END----------------#
@@ -288,12 +309,22 @@ Yhat <- fitted(finalGLM)
 prob=predict(finalGLM,type=c("response"))
 
 thresh <- 0.5
-YhatFac <-
-  cut(Yhat,
-      breaks = c(-Inf, thresh, Inf),
-      labels = c("NoRisk", "HighRisk"))
-
-cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), YhatFac)
+riskCalculatedLabels <- as.data.frame(riskCalculatedLabels)
+if (dependentCategory == 'Instability'){
+  YhatFac <-
+    cut(Yhat,
+        breaks = c(-Inf, thresh, Inf),
+        labels = c("NoHigh", "High"))
+  
+  cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoHigh", "High")), YhatFac)  
+} else {
+  YhatFac <-
+    cut(Yhat,
+        breaks = c(-Inf, thresh, Inf),
+        labels = c("NoRisk", "HighRisk"))
+  
+  cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), as.data.frame(YhatFac))
+}
 
 "Confussion matrix"
 print(addmargins(cTab))
@@ -307,8 +338,7 @@ print(specificity(cTab))
 #Roc curve
 library(pROC)
 
-predicting$prob <- prob;
-g <- roc(RiskCalculated ~ prob, data = as.data.frame(riskCalculatedLabels))
+g <- roc(riskCalculatedLabels[, dependentCategory], prob)
 png(paste('rocCurve', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'))
 plot(g)
 dev.off()

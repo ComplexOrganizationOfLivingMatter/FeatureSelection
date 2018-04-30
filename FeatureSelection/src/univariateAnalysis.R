@@ -6,6 +6,8 @@ univariateAnalysis <-
            pValueThreshold) {
     require(rms)
     
+    #http://rstudio-pubs-static.s3.amazonaws.com/2989_ceae90d128554c728d5388439adf0661.html
+    
     univariateAnalysisPvalues <-
       lapply(colnames(characteristicsWithoutClinicVTN),
              
@@ -26,6 +28,6 @@ univariateAnalysis <-
     significantCharacteristics <-
       characteristicsWithoutClinicVTN[, univariateAnalysisPvalues < pValueThreshold]
     
-    return(significantCharacteristics)
+    return(univariateAnalysisPvalues)
     
   }
