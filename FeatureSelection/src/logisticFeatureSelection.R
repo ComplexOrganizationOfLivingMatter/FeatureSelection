@@ -31,9 +31,9 @@ logisticFeatureSelection <-
       anovaRes <- anova(res.best.logistic$BestModel, test = 'Chisq')
       anovaRes$`Pr(>Chi)`[2]
       
-      bestCharacteristics_Method1 = res.best.logistic$BestModel$model[1:nrow(res.best.logistic$BestModel$model), 2:ncol(res.best.logistic$BestModel$model)]
       
-      return (bestCharacteristics_Method1);
+      
+      return (res.best.logistic);
       
     } else if (usedMethod == "method2") {
       library(glmulti)
@@ -79,9 +79,9 @@ logisticFeatureSelection <-
       #http://www.metafor-project.org/doku.php/tips:model_selection_with_glmulti
       plot(glmulti.logistic.out, type="s")
       
-      bestCharacteristics_Method2 <- glmulti.logistic.out@objects[[1]]
       
-      return (bestCharacteristics_Method2);
+      
+      return (glmulti.logistic.out);
     } else if (usedMethod == "method3"){
       
     }
