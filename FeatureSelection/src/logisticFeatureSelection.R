@@ -36,7 +36,7 @@ logisticFeatureSelection <-
       return (res.best.logistic);
       
     } else if (usedMethod == "method2") {
-      library(glmulti)
+      
       
       xnam <- paste0("x", 1:length(significantAndClinicChars))
       
@@ -44,17 +44,18 @@ logisticFeatureSelection <-
       newFormulaWithoutNames <-
        paste(dependentCategory, "~", paste(xnam, collapse = "+"))
       
+      completeData <- cbind(
+        significantAndClinicChars,
+        initialInfoDicotomized[1:nrow(initialInfoDicotomized), dependentCategory]
+      )
+      
       # Weird variables were not allowed, so we need to transform them into variables without spaces.
       # We decided to transform them into x and the number of column (x1, x2, ...)
       glmulti.logistic.out <-
         glmulti(
-          newFormulaWithoutNames,
-          data = 
-            cbind(
-              significantAndClinicChars,
-              initialInfoDicotomized[1:nrow(initialInfoDicotomized), dependentCategory]
-            )
-          ,
+          y = dependentCategory,
+          xr = colnames(significantAndClinicChars),
+          data = as.data.frame(completeData),
           level = 1,
           # No interaction considered
           method = "h",
