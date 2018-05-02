@@ -89,6 +89,14 @@ initialGLM <-
 print("Initial glm with all the variables")
 print(summary(initialGLM))
 
+"Anova chi square"
+anovaRes <-
+  anova(glm(initialFormula, data = initialInfoDicotomized, family = binomial(logit)),
+        test = 'Chisq')
+print(anovaRes$`Pr(>Chi)`[2])
+
+initialNagelkerke <- nagelkerke(initialGLM)
+
 
 print('-----------------------------')
 
@@ -96,23 +104,29 @@ print('-----------------------------')
 
 print("-------------Second step: Univariate analysis to remove non-significant variables---------------")
 
+bestVTNMorphometricsFeatures <- c(109, 108, 110, 112, 118, 119, 120, 122);
+
 #P-Values for categories:
 #RiskCalculated = 0.011
 #Instability = 0.05 or 0.00001
 if (dependentCategory == "Instability") {
+  #Removed by collinearities:
+  # - 122 - H-Score -> 15.2
+  # - 108 - VTN - Percentage of stained area negative cells
+  # - 110 - VTN - Percantege of stained area VN EXTRAC +
+  # - 112 - VTN - Percentage of stained area INTRAC ++
+  bestVTNMorphometricsFeatures <- c(109, 118, 119, 120)
   pValueThreshold <- 0.00005
 } else {
+  bestVTNMorphometricsFeatures <- c(109, 108, 118, 119, 120);
   pValueThreshold <- 0.011
+  colNamesOfFormula <-
+    paste(names(characteristicsWithoutClinic[, bestVTNMorphometricsFeatures]), collapse = '` + `')
+  
+  formula <-
+    as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep = ''))
+  print(vif(glm(formula, data = initialInfoDicotomized, family = binomial(logit))))
 }
-
-bestVTNMorphometricsFeatures <- c(109, 108, 110, 112, 118, 119, 120, 122);
-#Removed by collinearities:
-# - 122 - H-Score -> 15.2
-# - 108 - VTN - Percentage of stained area negative cells
-# - 110 - VTN - Percantege of stained area VN EXTRAC +
-# - 112 - VTN - Percentage of stained area INTRAC ++
-bestVTNMorphometricsFeatures <- c(109, 118, 119, 120)
-
 
 pvaluesChars <-
   univariateAnalysis(initialInfoDicotomized, initialIndex, dependentCategory, characteristicsWithoutClinicVTN, pValueThreshold)
@@ -122,12 +136,12 @@ which(pvaluesChars < pValueThreshold)
 significantCharNames <- colnames(characteristicsWithoutClinicVTN[, pvaluesChars < pValueThreshold])
 
 outputFile <- paste("significantList_", dependentCategory, '_', format(Sys.time(), "%d-%m-%Y"), ".RData", sep='');
-saveRDS(significantCharNames, pvaluesChars, file = outputFile)
+saveRDS(list(significantCharNames, pvaluesChars), file = outputFile)
 
 if (dependentCategory == "Instability") {
   significantCharacteristics <- cbind(characteristicsWithoutClinicVTN[,c(2,17,22,27)], characteristicsWithoutClinic[, bestVTNMorphometricsFeatures])
 } else {
-  
+  significantCharacteristics <- cbind(characteristicsWithoutClinicVTN[,pvaluesChars < pValueThreshold], characteristicsWithoutClinic[, bestVTNMorphometricsFeatures])
 }
 
 significantAndClinicChars <-
@@ -144,6 +158,13 @@ allSignificantGLM <-
 print('Regression with significant variables')
 print(summary(allSignificantGLM))
 
+anovaRes <-
+  anova(glm(formula, data = initialInfoDicotomized, family = binomial(logit)),
+        test = 'Chisq')
+print(anovaRes$`Pr(>Chi)`[2])
+
+initialNagelkerke <- nagelkerke(allSignificantGLM)
+
 print('-----------------------------')
 
 ## Third step: Multiple logistic regression with all the variables
@@ -159,20 +180,40 @@ library(mplot)
 #model matrix as a redundant variable (RV). This provides a baseline to help
 #determine which inclusion probabilities are "significant" in the sense that
 #they exhibit a different behaviour to the RV curve.
-vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = 5, cores = 8); #nbest also ="all"
+vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = 1, cores = 8); #nbest also ="all"
+
+outputFile <- paste("results/multiple_LogisticRegression_", dependentCategory, '_', format(Sys.time(), "%d-%m-%Y"), ".RData", sep='');
+
+
 "Vis output"
 print(vis.glm, min.prob = 0.2)
 png(paste('boostrapVariablesProbability', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1200, height = 500)
-plot(vis.glm, interactive = FALSE, which="vip")
+plot(vis.glm, interactive = T, which="vip")
 dev.off()
-#plot(vis.glm, interactive = FALSE, which="boot") #HighLight to change the reference variable
-#plot(vis.glm, interactive = FALSE, which="lvk")
+colnames(vis.glm$res.single.pass)
+plot(vis.glm, interactive = FALSE, which="boot", highlight = 'X.VTN...Objs.mm2.negative.cells.') #HighLight to change the reference variable
+plot(vis.glm, interactive = F, which="lvk", highlight = 'INRG_EDAD')
 
-bestCharacteristics_Method1 <-
+res.best.logistic <-
   logisticFeatureSelection(significantAndClinicChars,
                            initialInfoDicotomized,
                            dependentCategory,
                            "method1")
+
+appearancesPerVariable <- rapply(res.best.logistic$BestModels[, 1:(ncol(res.best.logistic$BestModels)-1)], function(columnValues){
+  sum(columnValues)
+})
+
+png(paste('results/barPlotOfOccurrences_Method1', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1000, height = 700)
+par(mar=c(15,4,4,2)) 
+barplot(appearancesPerVariable/10,
+        ylab = "Occurrences",
+        col = terrain.colors(ncol(res.best.logistic$BestModels)-1),
+        cex.names = 0.7,
+        las=2)
+dev.off()
+
+bestCharacteristics_Method1 = res.best.logistic$BestModel$model[1:nrow(res.best.logistic$BestModel$model), 2:ncol(res.best.logistic$BestModel$model)]
 
 #-------------RiskCalculated----------------#
 #Refined, because we found these similarities:
@@ -180,15 +221,23 @@ bestCharacteristics_Method1 <-
 # 3) VTN++ - eulerNumberPerFilledCell and VTN - Ratio of Strong-Positive pixels to total pixels ???? #This collinearity is low
 #   3.1) We tested which to remove if any. We should remove the latter, because the first is more informative.
 # 4) Histocat and Histodif. Removing HistoDif
-bestCharacteristics_Method1 <-
-  bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
+# bestCharacteristics_Method1 <-
+#   bestCharacteristics_Method1[, c(1, 3, 4, 6, 8)]
 
 #Method2: glmulti
-bestCharacteristics_Method2 <-
+library(glmulti)
+glmulti.logistic.out <-
   logisticFeatureSelection(significantAndClinicChars,
                            initialInfoDicotomized,
                            dependentCategory,
                            "method2")
+
+bestCharacteristics_Method2 <- glmulti.logistic.out@objects[[1]]
+
+png(paste('results/Model-averaged_importanceOfTerms', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1000, height = 700)
+plot(glmulti.logistic.out, type='s')
+dev.off()
+
 #Before found collinearities
 # #For Option 3: 3rd Quartile
 # bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)]
@@ -200,14 +249,11 @@ bestCharacteristics_Method2 <-
 # bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 8, 11:13, 16)]
 #For Option 4: Quartiles
 bestCharacteristics_Method2 <-
-  significantAndClinicChars[, c(1, 3, 8, 9, 10:15)]
+  significantAndClinicChars[, c(3, 10:11, 13:14)]
 #Refined, because we found these similarities:
-# 1)
-# 2) MYCN and SCAs. Removing SCAs
-# 3)  ???? #This collinearity is low
-# 4) Histocat and Histodif. Removing HistoDif
+# 1) MYCN and SCAs. Removing SCAs
 bestCharacteristics_Method2 <-
-  significantAndClinicChars[, c(3, 10:12, 15)]
+  significantAndClinicChars[, c(3, 10:11, 14)]
 
 #-------------END----------------#
 
@@ -219,6 +265,9 @@ bestCharacteristics_Method1 <- significantAndClinicChars[, c(-2, -4, -6, -8, -15
 
 bestCharacteristics_Method2 <- significantAndClinicChars[, c(1, 3, 6, 9, 13)]
 
+
+
+saveRDS(list(vis.glm, glmulti.logistic.out, res.best.logistic), file = outputFile)
 
 #-------------END----------------#
 
@@ -234,7 +283,7 @@ bestCharacteristics <- bestCharacteristics_Method1
 
 library(car)
 colNamesOfFormula <-
-  paste(colnames(bestCharacteristics), collapse = '` + `')
+  paste(colnames(cbind(bestCharacteristics)), collapse = '` + `')
 
 finalFormula <-
   as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
@@ -326,7 +375,7 @@ if (dependentCategory == 'Instability'){
         breaks = c(-Inf, thresh, Inf),
         labels = c("NoRisk", "HighRisk"))
   
-  cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), as.data.frame(YhatFac))
+  cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), YhatFac)
 }
 
 "Confussion matrix"
@@ -374,14 +423,16 @@ for (numChar in 1:length(bestCharacteristics)) {
 }
 
 #Opening file to export
-png(paste('barPlotOfImportance', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1200, height = 700)
+png(paste('barPlotOfImportance', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 500, height = 1000)
+par(mar=c(20,4,4,2))
 barplot(
   referenceGLM$Pseudo.R.squared.for.model.vs.null[3] - results.glmWithoutActualChar.negelker,
   names.arg = colnames(bestCharacteristics),
   ylab = "Change in Nagelkerke R^2",
   col = terrain.colors(5),
-  cex.names = 0.8,
-  ylim = c(0, 0.5)
+  cex.names = 0.9,
+  ylim = c(0, 0.5),
+  las = 2
 )
 title(paste0("Relative importance for ", dependentCategory))
 dev.off()
