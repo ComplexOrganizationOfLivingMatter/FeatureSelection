@@ -251,9 +251,9 @@ dev.off()
 bestCharacteristics_Method2 <-
   significantAndClinicChars[, c(3, 10:11, 13:14)]
 #Refined, because we found these similarities:
-# 1) MYCN and SCAs. Removing SCAs
+# 1) MYCN and SCAs. Removing MYCN
 bestCharacteristics_Method2 <-
-  significantAndClinicChars[, c(3, 10:11, 14)]
+  significantAndClinicChars[, c(3, 10:11, 13)]
 
 #-------------END----------------#
 
