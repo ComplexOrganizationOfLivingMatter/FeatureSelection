@@ -69,13 +69,15 @@ characteristicsWithoutClinic <-
 
 characteristicsOnlyClinic <-
   initialInfoDicotomized[, (length(initialInfoDicotomized[1,]) - 7):length(initialInfoDicotomized[1,])]
+#Removing histoCat
+characteristicsOnlyClinic <- characteristicsOnlyClinic[, -3]
 
 
 characteristicsWithoutClinicVTN <-
   characteristicsWithoutClinic[, grepl("VTN" , colnames(characteristicsWithoutClinic))]
 
 #Only our new features
-characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:47];
+characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
 
 colNamesOfFormula <-
   paste(colnames(characteristicsWithoutClinicVTN), collapse = '` + `')
@@ -235,7 +237,8 @@ glmulti.logistic.out <-
 bestCharacteristics_Method2 <- glmulti.logistic.out@objects[[1]]
 
 png(paste('results/Model-averaged_importanceOfTerms', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1000, height = 700)
-plot(glmulti.logistic.out, type='s')
+plot(glmulti.logistic.out, type='s', cex.names = 1.3)
+title(xlab = 'Importance')#, ylab = 'Independent variables')
 dev.off()
 
 #Before found collinearities
@@ -252,6 +255,9 @@ bestCharacteristics_Method2 <-
   significantAndClinicChars[, c(3, 10:11, 13:14)]
 #Refined, because we found these similarities:
 # 1) MYCN and SCAs. Removing MYCN
+# 2) We may want to add 9 (ratio of strong pixels), 
+# however, exists a bit of collinearity between euler number per filled cell and 9. 
+# Moreover, it does not add any value to the logistic regression. Thus, rejected.
 bestCharacteristics_Method2 <-
   significantAndClinicChars[, c(3, 10:11, 13)]
 
@@ -368,14 +374,14 @@ if (dependentCategory == 'Instability'){
         breaks = c(-Inf, thresh, Inf),
         labels = c("NoHigh", "High"))
   
-  cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoHigh", "High")), YhatFac)  
+  cTab <- table(YhatFac, factor(riskCalculatedLabels[, dependentCategory], levels = c("NoHigh", "High")))  
 } else {
   YhatFac <-
     cut(Yhat,
         breaks = c(-Inf, thresh, Inf),
         labels = c("NoRisk", "HighRisk"))
   
-  cTab <- table(factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")), YhatFac)
+  cTab <- table(YhatFac, factor(riskCalculatedLabels[, dependentCategory], levels = c("NoRisk", "HighRisk")))
 }
 
 "Confussion matrix"
@@ -390,7 +396,8 @@ print(specificity(cTab))
 #Roc curve
 library(pROC)
 
-g <- roc(riskCalculatedLabels[, dependentCategory], prob)
+#Yeahp, Real values first, predicter second.
+g <- roc(riskCalculatedLabels[, dependentCategory], prob) #Checkear que est� bien
 png(paste('rocCurve', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'))
 plot(g)
 dev.off()
