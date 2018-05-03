@@ -77,7 +77,11 @@ characteristicsWithoutClinicVTN <-
   characteristicsWithoutClinic[, grepl("VTN" , colnames(characteristicsWithoutClinic))]
 
 #Only our new features
-characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
+if (dependentCategory == "Instability") {
+  characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
+} else {
+  characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:47];
+}
 
 colNamesOfFormula <-
   paste(colnames(characteristicsWithoutClinicVTN), collapse = '` + `')
@@ -120,14 +124,7 @@ if (dependentCategory == "Instability") {
   bestVTNMorphometricsFeatures <- c(109, 118, 119, 120)
   pValueThreshold <- 0.00005
 } else {
-  bestVTNMorphometricsFeatures <- c(109, 108, 118, 119, 120);
   pValueThreshold <- 0.011
-  colNamesOfFormula <-
-    paste(names(characteristicsWithoutClinic[, bestVTNMorphometricsFeatures]), collapse = '` + `')
-  
-  formula <-
-    as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep = ''))
-  print(vif(glm(formula, data = initialInfoDicotomized, family = binomial(logit))))
 }
 
 pvaluesChars <-
@@ -143,7 +140,7 @@ saveRDS(list(significantCharNames, pvaluesChars), file = outputFile)
 if (dependentCategory == "Instability") {
   significantCharacteristics <- cbind(characteristicsWithoutClinicVTN[,c(2,17,22,27)], characteristicsWithoutClinic[, bestVTNMorphometricsFeatures])
 } else {
-  significantCharacteristics <- cbind(characteristicsWithoutClinicVTN[,pvaluesChars < pValueThreshold], characteristicsWithoutClinic[, bestVTNMorphometricsFeatures])
+  significantCharacteristics <- characteristicsWithoutClinicVTN[,pvaluesChars < pValueThreshold];
 }
 
 significantAndClinicChars <-
@@ -182,7 +179,7 @@ library(mplot)
 #model matrix as a redundant variable (RV). This provides a baseline to help
 #determine which inclusion probabilities are "significant" in the sense that
 #they exhibit a different behaviour to the RV curve.
-vis.glm = vis(allSignificantGLM, B = 100, redundant = TRUE, nbest = 1, cores = 8); #nbest also ="all"
+vis.glm = vis(allSignificantGLM, B = 150, redundant = TRUE, nbest = 5, cores = 8); #nbest also ="all"
 
 outputFile <- paste("results/multiple_LogisticRegression_", dependentCategory, '_', format(Sys.time(), "%d-%m-%Y"), ".RData", sep='');
 
@@ -234,12 +231,12 @@ glmulti.logistic.out <-
                            dependentCategory,
                            "method2")
 
-bestCharacteristics_Method2 <- glmulti.logistic.out@objects[[1]]
-
 png(paste('results/Model-averaged_importanceOfTerms', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'), width = 1000, height = 700)
 plot(glmulti.logistic.out, type='s', cex.names = 1.3)
 title(xlab = 'Importance')#, ylab = 'Independent variables')
 dev.off()
+
+saveRDS(list(vis.glm, glmulti.logistic.out, res.best.logistic), file = outputFile)
 
 #Before found collinearities
 # #For Option 3: 3rd Quartile
@@ -273,7 +270,7 @@ bestCharacteristics_Method2 <- significantAndClinicChars[, c(1, 3, 6, 9, 13)]
 
 
 
-saveRDS(list(vis.glm, glmulti.logistic.out, res.best.logistic), file = outputFile)
+
 
 #-------------END----------------#
 
@@ -283,7 +280,7 @@ print('-----------------------------')
 
 print("-------------Forth step: Check collinearity and confusion/interaction---------------")
 
-bestCharacteristics <- bestCharacteristics_Method1
+bestCharacteristics <- bestCharacteristics_Method2
 
 # Collinearity
 
@@ -397,7 +394,7 @@ print(specificity(cTab))
 library(pROC)
 
 #Yeahp, Real values first, predicter second.
-g <- roc(riskCalculatedLabels[, dependentCategory], prob) #Checkear que est� bien
+g <- roc(riskCalculatedLabels[, dependentCategory], prob)
 png(paste('rocCurve', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'))
 plot(g)
 dev.off()
