@@ -9,6 +9,8 @@ debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/univariateAnalysis.R
             echo = TRUE)
 debugSource('D:/Pablo/FeatureSelection/FeatureSelection/src/logisticFeatureSelection.R', echo = T)
 
+library(rcompanion)
+require(lmtest)
 
 #Import data
 library(readxl)
@@ -17,13 +19,13 @@ initialInfo <-
     "D:/Pablo/Neuroblastoma/Results/graphletsCount/NuevosCasos/Analysis/NewClinicClassification_NewControls_11_01_2018.xlsx"
   )
 
-dependentCategory <- "RiskCalculated" #"Instability" or "RiskCalculated"
-outputFile <- paste("outputResults", dependentCategory, format(Sys.time(), "%d-%m-%Y"),".txt", sep='_')
-
+dependentCategory <- "Instability" #"Instability" or "RiskCalculated"
 
 initialIndex <- 41
 
-sink(temporaryFileObj <- textConnection("outputFileText", "w"), split=TRUE)
+#outputFile <- paste("outputResults", dependentCategory, format(Sys.time(), "%d-%m-%Y"),".txt", sep='_')
+
+#sink(temporaryFileObj <- textConnection("outputFileText", "w"), split=TRUE)
 
 ## First step: Dicotomize variables
 print("-------------First step: Dicotomize variables---------------")
@@ -238,6 +240,8 @@ dev.off()
 
 saveRDS(list(vis.glm, glmulti.logistic.out, res.best.logistic), file = outputFile)
 
+#Method 3: stepAIC?
+
 #Before found collinearities
 # #For Option 3: 3rd Quartile
 # bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 2, 8, 10:16)]
@@ -256,7 +260,7 @@ bestCharacteristics_Method2 <-
 # however, exists a bit of collinearity between euler number per filled cell and 9. 
 # Moreover, it does not add any value to the logistic regression. Thus, rejected.
 bestCharacteristics_Method2 <-
-  significantAndClinicChars[, c(3, 10:11, 13)]
+  significantAndClinicChars[, c(3, 10:11, 14)]
 
 #-------------END----------------#
 
@@ -266,7 +270,7 @@ bestCharacteristics_Method1 <- significantAndClinicChars[, c(-2, -4, -6, -8, -15
 #Removing collinearities:
 #bestCharacteristics_Method1 <- bestCharacteristics_Method1[, c(-4, -7)]
 
-bestCharacteristics_Method2 <- significantAndClinicChars[, c(1, 3, 6, 9, 13)]
+bestCharacteristics_Method2 <- significantAndClinicChars[, c(3, 6, 9, 13)]
 
 
 
@@ -293,6 +297,23 @@ finalFormula <-
                      ''))
 print('Checking collinearity:')
 print(vif(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))))
+
+library(glmnet)
+glmmod <- glmnet(as.matrix(bestCharacteristics), y=factor(riskCalculatedLabels[, dependentCategory]), alpha=1, family="binomial")
+plot(glmmod, xvar="lambda")
+
+#https://stackoverflow.com/questions/30566788/legend-label-errors-with-glmnet-plot-in-r
+lbs_fun <- function(fit, ...) {
+  L <- length(fit$lambda)
+  y <- fit$beta[, L]
+  labs <- names(y)
+  #text(x, y, labels=labs, ...)
+  legend('topright', legend=labs, col=1:6, lty=1) # only 6 colors
+}
+lbs_fun(glmmod)
+
+library(glmmLasso)
+glmLasso.results <- glmmLasso(finalFormula, NULL, data = initialInfoDicotomized, family = binomial(logit), lambda = 3) #lambda should change
 
 print('-----------------------------')
 
@@ -334,8 +355,7 @@ print("-------------Fifth step: Calculate the relative importance of each predic
 # increase in log likelihood indicates the (omitted) IV that contributed most (given the other IVs) to the model.
 #There are no guarantees, of course, that the same sequence of 'impact' would be observed in another sample.
 
-library(rcompanion)
-require(lmtest)
+
 
 colNamesOfFormula <-
   paste(colnames(bestCharacteristics), collapse = '` + `')
@@ -356,12 +376,13 @@ anovaRes <-
         test = 'Chisq')
 print(anovaRes$`Pr(>Chi)`[2])
 
-
 "Odds ratio"
 print(exp(coefficients(finalGLM)))
+library(MASS)
+exp(confint.default(finalGLM))
 Yhat <- fitted(finalGLM)
 
-prob=predict(finalGLM,type=c("response"))
+prob=predict(finalGLM,type="response")
 
 thresh <- 0.5
 riskCalculatedLabels <- as.data.frame(riskCalculatedLabels)
@@ -435,11 +456,18 @@ barplot(
   ylab = "Change in Nagelkerke R^2",
   col = terrain.colors(5),
   cex.names = 0.9,
-  ylim = c(0, 0.5),
+  ylim = c(0, 0.2),
   las = 2
 )
 title(paste0("Relative importance for ", dependentCategory))
 dev.off()
+
+riskWithAgeLowerOf18Months <- initialInfoDicotomized[bestCharacteristics_Method2[2] == 1,dependentCategory]
+featureWithLowAge <- bestCharacteristics_Method2[bestCharacteristics_Method2[2] == 1, c(1, 3, 4)]
+
+glm.results <- glm(RiskCalculated ~ `VTN++ - eulerNumberPerFilledCell`, family = binomial(logit), data = cbind(riskWithAgeLowerOf18Months, featureWithLowAge))
+
+summary(glm.results)
 
 sink()
 close(temporaryFileObj)
