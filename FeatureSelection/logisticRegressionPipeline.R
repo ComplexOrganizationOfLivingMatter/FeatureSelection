@@ -469,6 +469,44 @@ glm.results <- glm(RiskCalculated ~ `VTN++ - eulerNumberPerFilledCell`, family =
 
 summary(glm.results)
 
+
+## ADDITIONAL STEPS The VN numerical continuous variables derived from the
+#morphometric analysis that did not follow a normal distribution were related to
+#the INRG prognostic categories using the non-parametric Mann-Whitney and
+#Kruskal-Wallis tests
+
+characteristicsWithoutClinicVTN <-
+  characteristicsWithoutClinic[, grepl("VTN" , colnames(characteristicsWithoutClinic))]
+
+#Only our new features
+characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
+
+significantCharacteristics <- characteristicsWithoutClinicVTN[,pvaluesChars[1:32] < 0.05];
+
+characteristicsOnlyClinic
+
+colClasses <- rep("list", length(significantCharacteristics))
+
+wilcoxResults <- read.table(text = "",
+                            colClasses = colClasses,
+                            col.names = colnames(significantCharacteristics));
+numClinic <- 1
+numChar <- 1
+
+for (varClinic in colnames(characteristicsOnlyClinic)) {
+  numChar <- 1
+  for (significantChar in colnames(significantCharacteristics)){
+    #wilcox.test(as.formula(paste0(varClinic, " ~ `",significantChar, "`")), data = initialInfo)
+    wilcoxResults[numClinic, numChar] <- wilcox.test(varClinic, as.numeric(unlist(initialInfo[,significantChar])))
+    numChar <- numChar + 1
+  }
+  
+  numClinic <- numClinic + 1
+}
+
+
+
+
 sink()
 close(temporaryFileObj)
 out<-capture.output(outputFileText, file = outputFile, split = T)
