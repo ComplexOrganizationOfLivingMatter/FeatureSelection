@@ -21,11 +21,14 @@ initialInfo <-
 
 dependentCategory <- "Instability" #"Instability" or "RiskCalculated"
 
+missingValues <- initialInfo$`VTN++ - Sorting` == 0 & initialInfo$`VTN++ - Iteration` == 0;
+
 initialIndex <- 41
 
 #outputFile <- paste("outputResults", dependentCategory, format(Sys.time(), "%d-%m-%Y"),".txt", sep='_')
 
 #sink(temporaryFileObj <- textConnection("outputFileText", "w"), split=TRUE)
+
 
 ## First step: Dicotomize variables
 print("-------------First step: Dicotomize variables---------------")
@@ -51,12 +54,20 @@ initialInfoDicotomized <-
                       "NoRisk",
                       "Quartiles")
 
+initialInfoDicotomized$`VTN++ - Sorting`[missingValues] <- 999;
+initialInfoDicotomized$`VTN++ - Iteration`[missingValues] <- 999;
+initialInfoDicotomized$`VTN++ - MST`[missingValues] <- 999;
+
 initialInfoDicotomized <- initialInfoDicotomized[is.na(initialInfoDicotomized[, dependentCategory]) == 0,];
 riskCalculatedLabels <- initialInfoDicotomized[, dependentCategory]
 if (dependentCategory == "Instability") {
-  riskCalculatedLabels[riskCalculatedLabels != 'High'] <- 'NoHigh'
+  riskCalculatedLabels[riskCalculatedLabels != 'High' & riskCalculatedLabels != 'Medium'] <- 'NoHigh'
+  riskCalculatedLabels[riskCalculatedLabels == 'High' | riskCalculatedLabels == 'Medium'] <- 'High'
   initialInfoDicotomized[, dependentCategory] <-
-    as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
+    as.numeric(initialInfoDicotomized[, dependentCategory] == 'High' | initialInfoDicotomized[, dependentCategory] == 'Medium')
+  # riskCalculatedLabels[riskCalculatedLabels != 'High'] <- 'NoHigh'
+  # initialInfoDicotomized[, dependentCategory] <-
+  #   as.numeric(initialInfoDicotomized[, dependentCategory] == 'High')
 } else {
   initialInfoDicotomized[, dependentCategory]  <-
     as.numeric(initialInfoDicotomized[, dependentCategory] == 'HighRisk')
@@ -80,7 +91,7 @@ characteristicsWithoutClinicVTN <-
 
 #Only our new features
 if (dependentCategory == "Instability") {
-  characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
+  characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:47]; #/32 for high vs no high
 } else {
   characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:47];
 }
@@ -124,7 +135,8 @@ if (dependentCategory == "Instability") {
   # - 110 - VTN - Percantege of stained area VN EXTRAC +
   # - 112 - VTN - Percentage of stained area INTRAC ++
   bestVTNMorphometricsFeatures <- c(109, 118, 119, 120)
-  pValueThreshold <- 0.00005
+  pValueThreshold <- 0.0003
+  #pValueThreshold <- 0.0002
 } else {
   pValueThreshold <- 0.011
 }
@@ -139,11 +151,7 @@ significantCharNames <- colnames(characteristicsWithoutClinicVTN[, pvaluesChars 
 outputFile <- paste("significantList_", dependentCategory, '_', format(Sys.time(), "%d-%m-%Y"), ".RData", sep='');
 saveRDS(list(significantCharNames, pvaluesChars), file = outputFile)
 
-if (dependentCategory == "Instability") {
-  significantCharacteristics <- cbind(characteristicsWithoutClinicVTN[,c(2,17,22,27)], characteristicsWithoutClinic[, bestVTNMorphometricsFeatures])
-} else {
-  significantCharacteristics <- characteristicsWithoutClinicVTN[,pvaluesChars < pValueThreshold];
-}
+significantCharacteristics <- characteristicsWithoutClinicVTN[,pvaluesChars < pValueThreshold];
 
 significantAndClinicChars <-
   cbind(significantCharacteristics, characteristicsOnlyClinic)
@@ -192,7 +200,7 @@ png(paste('boostrapVariablesProbability', dependentCategory, format(Sys.time(), 
 plot(vis.glm, interactive = T, which="vip")
 dev.off()
 colnames(vis.glm$res.single.pass)
-plot(vis.glm, interactive = FALSE, which="boot", highlight = 'X.VTN...Objs.mm2.negative.cells.') #HighLight to change the reference variable
+#plot(vis.glm, interactive = FALSE, which="boot", highlight = 'X.VTN...Objs.mm2.negative.cells.') #HighLight to change the reference variable
 plot(vis.glm, interactive = F, which="lvk", highlight = 'INRG_EDAD')
 
 res.best.logistic <-
@@ -265,13 +273,16 @@ bestCharacteristics_Method2 <-
 #-------------END----------------#
 
 #-------------INSTABILITY----------------#
-#From mplot
-bestCharacteristics_Method1 <- significantAndClinicChars[, c(-2, -4, -6, -8, -15)]
+
+#High vs Rest
 #Removing collinearities:
-#bestCharacteristics_Method1 <- bestCharacteristics_Method1[, c(-4, -7)]
+bestCharacteristics_Method2 <-
+  significantAndClinicChars[, c(2, 5, 10, 12:13)]
 
-bestCharacteristics_Method2 <- significantAndClinicChars[, c(3, 6, 9, 13)]
-
+#High and medium vs Low and very low
+#Removing: Estadio due to collinearities (8)
+#Removing in lasso ploidia and 11q
+bestCharacteristics_Method2 <- significantAndClinicChars[, c(3, 10,11,12,13)]
 
 
 
@@ -299,7 +310,7 @@ print('Checking collinearity:')
 print(vif(glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))))
 
 library(glmnet)
-glmmod <- glmnet(as.matrix(bestCharacteristics), y=factor(riskCalculatedLabels[, dependentCategory]), alpha=1, family="binomial")
+glmmod <- glmnet(as.matrix(bestCharacteristics), y=initialInfoDicotomized$Instability , alpha=1, family="binomial")
 plot(glmmod, xvar="lambda")
 
 #https://stackoverflow.com/questions/30566788/legend-label-errors-with-glmnet-plot-in-r
@@ -363,8 +374,14 @@ colNamesOfFormula <-
 finalFormula <-
   as.formula(paste(dependentCategory, " ~ `", colNamesOfFormula, "`", sep =
                      ''))
+
+library(logistf)
+
 finalGLM <-
   glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
+
+finalGLM <-
+  logistf(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
 
 "Final logistic regression"
 print(summary(finalGLM))
@@ -380,22 +397,22 @@ print(anovaRes$`Pr(>Chi)`[2])
 print(exp(coefficients(finalGLM)))
 library(MASS)
 exp(confint.default(finalGLM))
-Yhat <- fitted(finalGLM)
 
-prob=predict(finalGLM,type="response")
+#prob=predict(finalGLM,type="response")
+prob = finalGLM$predict;
 
 thresh <- 0.5
 riskCalculatedLabels <- as.data.frame(riskCalculatedLabels)
 if (dependentCategory == 'Instability'){
   YhatFac <-
-    cut(Yhat,
+    cut(prob,
         breaks = c(-Inf, thresh, Inf),
         labels = c("NoHigh", "High"))
   
   cTab <- table(YhatFac, factor(riskCalculatedLabels[, dependentCategory], levels = c("NoHigh", "High")))  
 } else {
   YhatFac <-
-    cut(Yhat,
+    cut(prob,
         breaks = c(-Inf, thresh, Inf),
         labels = c("NoRisk", "HighRisk"))
   
@@ -413,11 +430,15 @@ print(specificity(cTab))
 
 #Roc curve
 library(pROC)
+library(plotROC)
 
 #Yeahp, Real values first, predicter second.
-g <- roc(riskCalculatedLabels[, dependentCategory], prob)
-png(paste('rocCurve', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.png', sep = '_'))
-plot(g)
+
+tiff(paste('rocCurve', dependentCategory, format(Sys.time(), "%d-%m-%Y"), '.tif', sep = '_'), width = 4, height = 4, units = 'in', res = 300)
+roc(riskCalculatedLabels[, dependentCategory], prob, plot = T, ylim = c(0, 1), xlim = c(1, 0), smooth = T)
+#plot_roc(roc, 0.7, 1, 2)
+#ggplot(g, aes(d = D, m = M1)) + geom_roc(n.cuts = 50, labels = FALSE)
+#plot(g)
 dev.off()
 
 referenceGLM <- nagelkerke(finalGLM)
@@ -482,8 +503,7 @@ characteristicsWithoutClinicVTN <-
 characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:32];
 
 significantCharacteristics <- characteristicsWithoutClinicVTN[,pvaluesChars[1:32] < 0.05];
-
-characteristicsOnlyClinic
+significantCharacteristics <- characteristicsWithoutClinic[, bestVTNMorphometricsFeatures]
 
 colClasses <- rep("list", length(significantCharacteristics))
 
@@ -497,13 +517,15 @@ for (varClinic in colnames(characteristicsOnlyClinic)) {
   numChar <- 1
   for (significantChar in colnames(significantCharacteristics)){
     #wilcox.test(as.formula(paste0(varClinic, " ~ `",significantChar, "`")), data = initialInfo)
-    wilcoxResults[numClinic, numChar] <- wilcox.test(varClinic, as.numeric(unlist(initialInfo[,significantChar])))
+    testPerformed <- wilcox.test(as.numeric(unlist(characteristicsOnlyClinic[,varClinic])), as.numeric(unlist(initialInfoDicotomized[,significantChar])))
+    #testPerformed <- kruskal.test(as.formula(paste0(varClinic, " ~ `",significantChar, "`")), data = initialInfoDicotomized)
+    wilcoxResults[numClinic, numChar] <- testPerformed$p.value
     numChar <- numChar + 1
   }
   
   numClinic <- numClinic + 1
 }
-
+row.names(wilcoxResults) <- colnames(characteristicsOnlyClinic)
 
 
 
