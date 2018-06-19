@@ -57,7 +57,11 @@ initialInfoDicotomized <-
 initialInfoDicotomized$`VTN++ - Sorting`[missingValues] <- 999;
 initialInfoDicotomized$`VTN++ - Iteration`[missingValues] <- 999;
 initialInfoDicotomized$`VTN++ - MST`[missingValues] <- 999;
+initialInfo$`VTN++ - Sorting`[missingValues] <- 0;
+initialInfo$`VTN++ - Iteration`[missingValues] <- 0;
+initialInfo$`VTN++ - MST`[missingValues] <- 0;
 
+initialInfo <- initialInfo[is.na(initialInfoDicotomized[, dependentCategory]) == 0,];
 initialInfoDicotomized <- initialInfoDicotomized[is.na(initialInfoDicotomized[, dependentCategory]) == 0,];
 riskCalculatedLabels <- initialInfoDicotomized[, dependentCategory]
 if (dependentCategory == "Instability") {
@@ -72,6 +76,63 @@ if (dependentCategory == "Instability") {
   initialInfoDicotomized[, dependentCategory]  <-
     as.numeric(initialInfoDicotomized[, dependentCategory] == 'HighRisk')
 }
+
+#T-Test
+#Normality test -> if non-signifincant pvalue, then it has a normal distribution
+shapiro.test(initialInfo$`VTN+ - Sorting`) 
+shapiro.test(initialInfo$`VTN+ - Iteration`) 
+shapiro.test(initialInfo$`VTN+ - MST`) 
+shapiro.test(initialInfo$`VTN++ - Sorting`) 
+shapiro.test(initialInfo$`VTN++ - Iteration`) 
+shapiro.test(initialInfo$`VTN++ - MST`)
+#shapiro.test(initialInfoDicotomized$RiskCalculated)
+
+# wilcox.test(initialInfo$`VTN+ - Sorting` ~ initialInfoDicotomized$Instability)
+# wilcox.test(initialInfo$`VTN+ - Iteration` ~ initialInfoDicotomized$Instability)
+# wilcox.test(initialInfo$`VTN+ - MST` ~ initialInfoDicotomized$Instability)
+# 
+# wilcox.test(initialInfo$`VTN++ - Sorting` ~ initialInfoDicotomized$Instability)
+# wilcox.test(initialInfo$`VTN++ - Iteration` ~ initialInfoDicotomized$Instability)
+# wilcox.test(initialInfo$`VTN++ - MST` ~ initialInfoDicotomized$Instability)
+# 
+# #Low
+# vlues <- na.omit(initialInfo[initialInfoDicotomized$Instability == 0, "VTN+ - Iteration"]);
+# mean(as.numeric(vlues$`VTN+ - Iteration`))
+# sd(as.numeric(vlues$`VTN+ - Iteration`))
+# 
+# #High 
+# vlues <- na.omit(initialInfo[initialInfoDicotomized$Instability == 1, "VTN+ - Iteration"]);
+# mean(as.numeric(vlues$`VTN+ - Iteration`))
+# sd(as.numeric(vlues$`VTN+ - Iteration`))
+# 
+# #Low
+# vlues <- na.omit(initialInfo[initialInfoDicotomized$Instability == 0, "VTN++ - Iteration"]);
+# mean(as.numeric(vlues$`VTN++ - Iteration`))
+# sd(as.numeric(vlues$`VTN++ - Iteration`))
+# 
+# #High
+# vlues <- na.omit(initialInfo[initialInfoDicotomized$Instability == 1, "VTN++ - Iteration"]);
+# mean(as.numeric(vlues$`VTN++ - Iteration`))
+# sd(as.numeric(vlues$`VTN++ - Iteration`))
+
+wilcox.test(initialInfo$`VTN+ - Sorting` ~ initialInfoDicotomized$RiskCalculated)
+wilcox.test(initialInfo$`VTN+ - Iteration` ~ initialInfoDicotomized$RiskCalculated)
+wilcox.test(initialInfo$`VTN+ - MST` ~ initialInfoDicotomized$RiskCalculated)
+
+wilcox.test(initialInfo$`VTN++ - Sorting` ~ initialInfoDicotomized$RiskCalculated)
+wilcox.test(initialInfo$`VTN++ - Iteration` ~ initialInfoDicotomized$RiskCalculated)
+wilcox.test(initialInfo$`VTN++ - MST` ~ initialInfoDicotomized$RiskCalculated)
+
+#Low
+vlues <- na.omit(initialInfo[initialInfoDicotomized$RiskCalculated == 0, "VTN+ - Iteration"]);
+mean(as.numeric(vlues$`VTN+ - Iteration`))
+sd(as.numeric(vlues$`VTN+ - Iteration`))
+
+#High
+vlues <- na.omit(initialInfo[initialInfoDicotomized$RiskCalculated == 1, "VTN+ - Iteration"]);
+mean(as.numeric(vlues$`VTN+ - Iteration`))
+sd(as.numeric(vlues$`VTN+ - Iteration`))
+
 
 characteristicsAll <-
   initialInfoDicotomized[, initialIndex:length(initialInfoDicotomized[1,])]
@@ -95,6 +156,9 @@ if (dependentCategory == "Instability") {
 } else {
   characteristicsWithoutClinicVTN <- characteristicsWithoutClinicVTN[, 1:47];
 }
+
+# library(xlsx)
+# write.xlsx(characteristicsWithoutClinicVTN, 'file.xlsx', sheetName="Sheet1")
 
 colNamesOfFormula <-
   paste(colnames(characteristicsWithoutClinicVTN), collapse = '` + `')
@@ -260,14 +324,14 @@ saveRDS(list(vis.glm, glmulti.logistic.out, res.best.logistic), file = outputFil
 # # 4) Histocat and Histodif. Removing HistoDif
 # bestCharacteristics_Method2 <- significantAndClinicChars[,c(1, 8, 11:13, 16)]
 #For Option 4: Quartiles
-bestCharacteristics_Method2 <-
+bestCharacteristics <-
   significantAndClinicChars[, c(3, 10:11, 13:14)]
 #Refined, because we found these similarities:
 # 1) MYCN and SCAs. Removing MYCN
 # 2) We may want to add 9 (ratio of strong pixels), 
 # however, exists a bit of collinearity between euler number per filled cell and 9. 
 # Moreover, it does not add any value to the logistic regression. Thus, rejected.
-bestCharacteristics_Method2 <-
+bestCharacteristics <-
   significantAndClinicChars[, c(3, 10:11, 14)]
 
 #-------------END----------------#
@@ -276,13 +340,13 @@ bestCharacteristics_Method2 <-
 
 #High vs Rest
 #Removing collinearities:
-bestCharacteristics_Method2 <-
+bestCharacteristics <-
   significantAndClinicChars[, c(2, 5, 10, 12:13)]
 
 #High and medium vs Low and very low
-#Removing: Estadio due to collinearities (8)
-#Removing in lasso ploidia and 11q
-bestCharacteristics_Method2 <- significantAndClinicChars[, c(3, 10,11,12,13)]
+#Removing: Estadio due to collinearities (10)
+#Removing: 11q it didn't appear in the first method
+bestCharacteristics <- significantAndClinicChars[, c(4, 12:14)]
 
 
 
@@ -294,8 +358,6 @@ print('-----------------------------')
 ## Forth step: Check collinearity and confusion/interaction
 
 print("-------------Forth step: Check collinearity and confusion/interaction---------------")
-
-bestCharacteristics <- bestCharacteristics_Method2
 
 # Collinearity
 
@@ -380,8 +442,7 @@ library(logistf)
 finalGLM <-
   glm(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
 
-finalGLM <-
-  logistf(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
+#finalGLM <- logistf(finalFormula, data = initialInfoDicotomized, family = binomial(logit))
 
 "Final logistic regression"
 print(summary(finalGLM))
@@ -532,3 +593,9 @@ row.names(wilcoxResults) <- colnames(characteristicsOnlyClinic)
 sink()
 close(temporaryFileObj)
 out<-capture.output(outputFileText, file = outputFile, split = T)
+
+
+vlues <- na.omit(initialInfo[initialInfo$RiskCalculated == "HighRisk", 'VTN++ - stdPercentageOfFibrePerCell']);
+mean(as.numeric(vlues$`VTN++ - stdPercentageOfFibrePerCell`))
+sd(as.numeric(vlues$`VTN++ - stdPercentageOfFibrePerCell`))
+
